@@ -1,0 +1,69 @@
+
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgb(4, 204, 80);">
+  <div class="container-fluid">
+    <div style="height: 40px; width: 40px; background-color: black; color: green; border-radius: 10px; font-weight: bold; padding-right: 5px;" >Og</div>
+  <a class="navbar-brand ms-3" href="/" style="color: white;">Organic Store</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link active" href="/" style="color: white;">Fruits </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/" style="color: white;">Vegitables </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/" style="color: white;">Salads </a>
+      </li>
+       {{!--
+      <li class="nav-item">
+        <a class="nav-link" href="/cart">Cart</a>
+      </li>
+       
+      {{#if user}}
+      <li class="nav-item">
+        <a class="nav-link" href="#">Orders</a>
+      </li>
+      {{else}}
+      {{/if}}--}}
+    </ul>
+  <div class="" style="margin-left: auto;">
+    <div class="container-fluid">
+      
+    </div>
+    <div class="container-fluid d-flex">
+      <label style="color: white;"class="me-3"><h4>Search</h4></label>
+      <input type="text" class="form-outline form-control-sm me-3" style="border-radius: 10px;">
+       <a class="navbar-brand" href="#">
+      <img src="/images/talk.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+    </a>
+    <a class="navbar-brand" href="#">
+      <img src="/images/png-clipart-shopping-cart-icon-shopping-cart-black-design.png" alt="" width="30" height="24" class="d-inline-block align-text-top" style="background-blend-mode: luminosity;">
+    </a>
+    <a class="navbar-brand" href="/login">
+      <img src="/images/abstract-user-flat-1.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+      </a>
+      {{#if user}}
+
+    <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                        {{user}}
+                    </button>
+                  
+                    <div class="dropdown-menu btn btn-warning" aria-labelledby="dropdownMenuButton" style="width: fit-content ;">
+                        <a class="dropdown-item " href="/logout" >Logout</a>
+                    </div>
+                </div>
+       {{!-- <a class="dropdown-item" href="/logout">Logout</a> --}}
+      {{/if}}
+  </div>
+    
+    
+     </div>
+  </div>
+  </div>
+</nav>

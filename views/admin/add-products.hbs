@@ -1,0 +1,221 @@
+<section>
+    <div class="container">
+      <h3>Add Product</h3>
+      <div class="row  d-flex justify-content-center m-5" >
+        <div class="col-md-6 d-flex justify-content-center pb-4" style="background-color: rgb(187, 195, 202); border-radius: 10px;">
+           <form enctype="multipart/form-data" method="post" action="add-products">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Title</label>
+    <input type="text" class="form-control" name="title" id="title" onkeyup="validTitle()">
+    <span id="title-error" class="text-danger text-center"></span>    
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Category</label>
+    <select class="form-select" aria-label="Default select example" name="category" id="category" onselect="validCategory()">
+  <option selected>Default</option>
+  {{#each category}}
+  <option value="{{this.category-name}}">{{this.category-name}}</option>
+  {{/each}}
+  </select>
+  <span id="category-error" class="text-danger text-center"></span>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Description</label>
+    <input type="text" class="form-control" name="description" id="description" onkeyup="validDescription()">
+    <span id="description-error" class="text-danger text-center"></span>
+  </div>
+
+   <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Storage Specification</label>
+    <input type="text" class="form-control" name="storage-spec" id="spec" onkeyup="validSpecification()">
+    <span id="spec-error" class="text-danger text-center"></span>
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Price</label>
+    <input type="text" class="form-control" name="price" id="price" onkeyup="validPrice()">
+    <span id="price-error" class="text-danger text-center"></span>
+  </div>
+
+   <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Godown Stock</label>
+    <input type="text" class="form-control" name="godown-stock" id="gdStock" onkeyup="validGdStock()">
+    <span id="gdStock-error" class="text-danger text-center"></span>
+  </div>
+
+   <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Status</label>
+    <select class="form-select" aria-label="Default select example" name="status" id="status" onselect="validStatus()">
+  <option selected>Default</option>
+  <option value="Available">Available</option>
+  <option value="Out of Stock">Out of Stock</option>
+  </select>
+    <span id="status-error" class="text-danger text-center"></span>
+  </div>
+
+  <div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label">Image Upload</label>
+  <input class="form-control" type="file" id="formFile" name="image" onkeyup="validImage()" multiple>
+  <span id="image-error" class="text-danger text-center"></span>
+  {{#if add2Error}}
+<span id="add-error" class="text-danger text-center">Two Files Minimum Needed....</span>
+{{/if}}
+</div>
+  <button type="submit" class="btn btn-primary" onclick="return validForm()">Submit</button>
+  <button type="reset" class="btn btn-primary">Clear</button>
+
+{{#if addError}}
+<span id="add-error" class="text-danger text-center">Files not Added....</span>
+{{/if}}
+{{#if addSucces}}
+<span id="add-error" class="text-success text-center">Files Added....</span>
+{{/if}}
+</form>
+        </div>
+      </div>
+   
+    </div>
+</section>
+ 
+  <script>
+   var titleError = document.getElementById('title-error');
+   var categoryError = document.getElementById('category-error');
+   var descriptionError = document.getElementById('description-error');
+   var imageError = document.getElementById('image-error');
+   var priceError = document.getElementById('price-error');
+   var specError = document.getElementById('spec-error');
+   var gdStockError = document.getElementById('gdStock-error');
+   var statusError = document.getElementById('status-error');
+
+
+  function validTitle(){
+    
+    var title = document.getElementById('title').value;
+   
+    if(title.length==0){
+        titleError.innerHTML= 'Title is required....';
+        return false;
+    }
+    if(!title.match(/^[A-Za-z ]*$/)){
+        titleError.innerHTML='Invalid format....';
+        return false;
+    }
+    titleError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+ 
+ function validCategory(){
+ 
+  var category = document.getElementById('category').value;
+   if(category == 'Default'){
+        categoryError.innerHTML= 'Please select a category....';
+        return false;
+    }
+    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+ }
+
+  function validDescription(){
+ 
+  var description = document.getElementById('description').value;
+   if(description.length == 0){
+        descriptionError.innerHTML= 'Description is required';
+        return false;
+    }
+    if(description.length > 50){
+        descriptionError.innerHTML= 'Description Should not exceed 50 Charectors..';
+        return false;
+    }
+    descriptionError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+ }
+
+ function validImage(){
+ 
+  var image = document.getElementById('formFile').value;
+  console.log("RRRRRRR"+image)
+   if(image == null){
+        imageError.innerHTML= 'Please select 2 images...';
+        return false;
+    }
+    if(image.length<2){
+        imageError.innerHTML= 'Please select 2 images...';
+        return false;
+    }
+    
+    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+ }
+
+ function validPrice(){
+    
+    var title = document.getElementById('price').value;
+   
+    if(title.length==0){
+        priceError.innerHTML= 'Price is required....';
+        return false;
+    }
+    if(!title.match(/^\d*$/)){
+       priceError.innerHTML='Invalid format....';
+        return false;
+    }
+    priceError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+
+function validSpecification(){
+  var spec = document.getElementById('spec').value;
+   
+    if(spec.length==0){
+        specError.innerHTML= 'Title is required....';
+        return false;
+    }
+    if(!title.match(/^[A-Za-z ]*$/)){
+        specError.innerHTML='Invalid format....';
+        return false;
+    }
+    specError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+
+ function validGdStock(){
+    
+    var gdStock = document.getElementById('gdStock').value;
+   
+    if(gdStock.length==0){
+        gdStockError.innerHTML= 'Stock is required....';
+        return false;
+    }
+    if(!gdStock.match(/^\d*$/)){
+       gdStockError.innerHTML='Invalid format....';
+        return false;
+    }
+    gdStockError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+
+function validStatus(){
+  var sta = document.getElementById('spec').value;
+   
+    if(sta.length==0){
+        statusError.innerHTML= 'Status is required....';
+        return false;
+    }
+    if(!sta.match(/^[A-Za-z ]*$/)){
+        statusError.innerHTML='Invalid format....';
+        return false;
+    }
+    statusError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+
+
+
+ function validForm(){
+   if(!validTitle() || !validCategory() || !validDescription() || !validImage() || validPrice()){
+     
+      return false;
+   }
+   
+ }
+</script>

@@ -1,0 +1,77 @@
+<section>
+    <div class="container">
+      <h3>Edit Product</h3>
+      <div class="row d-flex justify-content-around" >
+        <div class="col-md-8 m-5 d-flex justify-content-around pt-4" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+           <form enctype="multipart/form-data" method="post" action="/admin/edit-products/{{product._id}}" class="col-8 mb-5">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Title</label>
+    <input type="text" class="form-control" name="title" value="{{product.title}}">
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Category</label>
+ <select class="form-select" aria-label="Default select example" name="category" id="category" onselect="validCategory()">
+  <option value="{{product.category}}" selected>{{product.category}}</option>
+  {{#each category}}
+  <option value="{{this.category-name}}">{{this.category-name}}</option>
+  {{/each}}
+  </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Description</label>
+    <input type="text" class="form-control" name="description" value="{{product.description}}">
+  </div>
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Storage Specification</label>
+    <input type="text" class="form-control" name="storagespec" value="{{product.storage-spec}}">
+  </div>
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Price</label>
+    <input type="text" class="form-control" name="price" value="{{product.price}}">
+  </div>
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Stock</label>
+    <input type="text" class="form-control" name="godownstock" value="{{product.godown-stock}}">
+  </div>
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Status</label>
+    <select class="form-select" aria-label="Default select example" name="status" id="category" onselect="validCategory()">
+  <option value="{{product.status}}" selected>{{product.status}}</option>
+  <option value="Available">Available</option>
+  <option value="Out of Stock">Out of Stock</option>
+  </select>
+  </div>
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Deleted</label>
+    <input type="text" class="form-control" name="deleted" value="{{product.deleted}}">
+  </div>
+
+
+
+  <div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label">Image Upload</label>
+
+  <img src="/product-images/{{product.img_path.[0]}}" alt="" style="width: 100px; height: auto;" id="imgView1" class="p-3">
+  <img src="/product-images/{{product.img_path.[1]}}" alt="" style="width: 100px; height: auto;" id="imgView2" class="p-3">
+  <input class="form-control" type="file" id="formFile" name="image"  onchange="viewImage(event)" value="./product-images/{{product.img_path.[0]}}" multiple>
+</div>
+  <a href="/admin/view-products" class="btn btn-primary">Cancel</a>
+  <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure to Submit this')">Submit</button>
+  
+</form>
+      </div>
+    </div>
+</section>
+<script>
+    function viewImage(event){
+        document.getElementById('imgView1').src=URL.createObjectURL(event.target.files[0])
+        document.getElementById('imgView2').src=URL.createObjectURL(event.target.files[1])
+    }
+</script>

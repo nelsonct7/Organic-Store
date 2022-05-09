@@ -1,0 +1,47 @@
+<section>
+    <div class="container">
+      <div class="row"> 
+        <h3 class="mt-3">Edit Category</h3>
+        <div class="col-md-6 m-5 p-3" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+           <form enctype="multipart/form-data" method="post" action="/admin/edit-category/{{categoryData._id}}">
+    <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Category Name</label>
+    <input type="text" class="form-control" name="categoryname" id="title" onkeyup="validCategory()" value="{{categoryData.category-name}}">
+    <span id="category-error" class="text-danger text-center"></span>    
+  </div>
+  
+<div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Category Description</label>
+    <input type="text" class="form-control" name="categorydescription" id="title" onkeyup="" value="{{categoryData.category-description}}">
+    <span id="description-error" class="text-danger text-center"></span>    
+  </div>
+
+  <div class="mb-3">
+  
+  <label for="exampleInputPassword1" class="form-label">Image Upload</label>
+  <td><img src="/category-images/{{categoryData.img_path}}" alt="" style="width: 50px; height: 50px;" id="imgView1">
+  <input class="form-control form-control-file" type="file" id="formFile" name="category_image" onchange="viewImage(event)" value="./category-images/{{categoryData.img_path}}">
+  <span id="image-error" class="text-danger text-center"></span>
+  
+</div>
+  <button type="submit" class="btn btn-primary" onclick="return validCategory()">Submit</button>
+  <button type="reset" class="btn btn-primary">Clear</button>
+{{#if addCategorySucces}}
+  <div class="alert alert-success text-center mt-3">
+   Category Added Succesfully
+  </div>
+  {{/if}}
+  {{#if addCategoryError}}
+  <div class="alert alert-danger text-center mt-3">
+   Failed to add Category
+  </div>
+  {{/if}}
+</form>
+</div>
+</section>
+
+<script>
+    function viewImage(event){
+        document.getElementById('imgView1').src=URL.createObjectURL(event.target.files[0])
+    }
+</script>

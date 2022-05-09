@@ -1,0 +1,55 @@
+<section class="d-flex justify-content-around">
+ 
+    <div class="col-11 p-3 mt-4" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+        <div class="d-flex align-items-end mt-4 mb-3" >
+           <h3 class="me-3">View Product</h3>
+            <a href="/admin/add-products" class="btn btn-success" style="margin-left: auto;">Add products</a>
+        </div>
+
+   <table class="table mt-5" id="prtable" > 
+  <thead>
+    <tr>
+      
+      <th scope="col">Title</th>
+      <th scope="col">Category</th>
+      <th scope="col">Discription</th>
+      <th scope="col">Storage</th>
+      <th scope="col">Date</th>
+      <th scope="col">Price</th>
+      <th scope="col">Stock</th>
+      <th scope="col">Status</th>
+      <th scope="col">Image</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each products}}
+    <tr>
+      
+      <td>{{this.title}}</td>
+      <td>{{this.category}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.storage-spec}}</td>
+      <td>{{this.date}}</td>
+      <td>{{this.price}}</td>
+      <td>{{this.godown-stock}}</td>
+      <td>{{this.status}}</td>
+
+      <td class=""><img src="/product-images/{{this.img_path.[0]}}" alt="" style="width: 50px; height: 50px;">
+      </td>
+      <td>
+        <a href="/admin/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
+        <a href="delete-product?id={{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+    </div>
+</section>
+
+<script>
+$(function () {
+    $('#prtable').DataTable();
+} );
+</script>

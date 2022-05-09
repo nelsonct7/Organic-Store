@@ -1,0 +1,39 @@
+#featured{
+height: 300px; 
+width: 300px;
+object-fit: cover;
+cursor: pointer;
+border: 2px solid black;
+}
+
+.thumbnail{
+    height: 50px;
+    width: 50;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.5;
+    margin: 5px;
+    border: 2px solid black;
+}
+.thumbnail:hover{
+    opacity: 1;
+}
+.active{
+    opacity: 1;
+}
+
+#img-container{
+    z-index: 1;
+width: 300px;
+position: relative;
+}
+#lens{
+    z-index: 2;
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    border: 2px solid black;
+    cursor: none;
+    background-repeat: no-repeat;
+
+}

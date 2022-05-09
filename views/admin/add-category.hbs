@@ -1,0 +1,68 @@
+<section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6"> 
+  <form enctype="multipart/form-data" method="post" action="/admin/add-category" name="category-form" id="category-form">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Category Name</label>
+    <input type="text" class="form-control" name="category-name" id="title" onkeyup="validCategory()">
+    <span id="category-error" class="text-danger text-center"></span>    
+  </div>
+  
+<div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Description</label>
+    <input type="text" class="form-control" name="category-description" id="title" onkeyup="">
+    <span id="description-error" class="text-danger text-center"></span>    
+  </div>
+
+  <div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label">Image Upload</label>
+  <input class="form-control form-control-file" type="file" id="formFile" name="category_image">
+  <span id="image-error" class="text-danger text-center"></span>
+  
+</div>
+  <button type="submit" class="btn btn-primary" onclick="return validCategory()">Submit</button>
+  <button type="reset" class="btn btn-primary">Clear</button>
+{{#if addCategorySucces}}
+  <div class="alert alert-success text-center mt-3">
+   Category Added Succesfully
+  </div>
+  {{/if}}
+  {{#if addCategoryError}}
+  <div class="alert alert-danger text-center mt-3">
+   Failed to add Category
+  </div>
+  {{/if}}
+</form>
+
+
+        </div>
+        <div class="col-md-6"></div>
+      </div>
+   
+    </div>
+</section>
+ 
+  <script>
+   var categoryError = document.getElementById('category-error');
+  
+
+
+  function validCategory(){
+    
+    var title = document.getElementById('category-name').value;
+   
+    if(title.length==0){
+        titleError.innerHTML= 'Category name is required....';
+        return false;
+    }
+    if(!title.match(/^[A-Za-z]*$/)){
+        titleError.innerHTML='Invalid format....';
+        return false;
+    }
+    titleError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+ 
+
+</script>

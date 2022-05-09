@@ -1,0 +1,51 @@
+
+<section class="container mt-5">
+
+    <div class="row" >
+      <h3>Users</h3>
+      <div class="col-11 p-4" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+        <table class="table mt-5 col-11" id="usrtable">
+  <thead>
+    <tr>
+      <th scope="col">Status</th>
+      <th scope="col">User Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Mobile</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {{#each users}}
+    <tr>
+      <td>{{#if this.status}}
+        <div style="height: 50px; width: 50px; background-color: green; border-radius: 20px;"></div>
+        {{else}}
+        <div style="height: 50px; width: 50px; background-color: red; border-radius: 20px;"></div>
+        {{/if}}
+      </td>
+      <td>{{this.user_name}}</td>
+      <td>{{this.user_email}}</td>
+      <td>{{this.user_mobile}}</td>
+      <td>
+        
+        {{#if this.deleted}}
+        <button class="btn btn-primary" disabled>Edit</button>
+        <button class="btn btn-danger" disabled>Delete</button>
+        {{else}}
+        <a href="edit-user/{{this._id}}" class="btn btn-primary">Edit</a>
+        <a href="delete-user/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this user {{this._id}}')">Delete</a>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</div>
+    </div>
+</section>
+<script>
+$(function () {
+    $('#usrtable').DataTable();
+} );
+</script>

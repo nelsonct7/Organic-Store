@@ -1,0 +1,84 @@
+<section class="container-fluid">
+  
+  <div class="row d-flex justify-content-center" style="height: 568px; width: auto; background-image: url(/images/farmbg.jpg); background-repeat: no-repeat; background-size: 250vh;">
+      
+<div class="col-3 d-flex justify-content-center mt-5" style="background-color: rgb(62, 165, 62); height: 400px; opacity: .9; border-radius: 20px;">
+          
+<form action="/login" method="post">
+<span class="label label-success"><h3>Login Form..</h3></span>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="user_email" required onkeyup="validEmail()">
+    <span id="email-error" class="text-danger text-center"></span>
+    
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" name="user_password" required onkeyup="validPsd()">
+    <span id="psd-error" class="text-danger text-center"></span>
+  </div>
+  <button type="submit" class="btn btn-primary" onclick="return formValid()">Submit</button>
+  <button type="reset" class="btn btn-primary">Reset</button>
+  <br><br><a href="/signup">Register..</a>
+  {{#if logerr}}
+  <div class="alert alert-danger text-center m-3">
+   Invalid Username or Password
+  </div>
+  {{/if}}
+  {{#if otpError}}
+  <div class="alert alert-danger text-center m-3">
+   Invalid OTP
+  </div>
+  {{/if}}
+</form>
+        </div>
+    </div>
+</section>
+
+  <script>
+   var psdError = document.getElementById('psd-error');
+   var emailError = document.getElementById('email-error');
+
+  const form=document.getElementById('form');
+
+  function validEmail(){
+    
+    var name = document.getElementById('exampleInputEmail1').value;
+   
+    if(name.length==0){
+        emailError.innerHTML= 'Email is required';
+        return false;
+    }
+    if(!name.match(/^[A-Za-z\._\-[0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+        emailError.innerHTML='Invalid Email Format....';
+        return false;
+    }
+    emailError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+}
+ 
+ function validPsd(){
+ 
+  var psd = document.getElementById('exampleInputPassword1').value;
+   if(psd.length == 0){
+        psdError.innerHTML= 'Password is required';
+        return false;
+    }
+    if(psd.length < 3){
+        psdError.innerHTML= 'Password must be atleast 3 charecters ';
+        return false;
+    }
+    /*if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
+      psdError.innerHTML= 'Password has invalid syntax';
+        return false;
+    }*/
+    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    return true;
+ }
+ function formValid(){
+   if(!validEmail() || !validPsd()){
+      return false;
+   }
+   return true;
+ }
+</script>

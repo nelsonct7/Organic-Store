@@ -1,0 +1,42 @@
+<section>
+    <div class="container">
+      <div class="row">
+        <h3>Edit User</h3>
+        <div class="col-md-6 m-5 mt-3 p-5" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+           <form method="post" action="/admin/edit-users/{{userData._id}}">
+    <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Status</label>
+  <select class="form-select" aria-label="Default select example" name="status" id="category" onselect="validCategory()">
+  <option value={{userData.status}} selected>{{#if userData.status}}Active{{else}}Deactive{{/if}}</option>
+  <option value='true'>Active</option>
+  <option value='false'>Deactive</option>
+  </select>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">User Name</label>
+    <input type="text" class="form-control" name="user_name" value="{{userData.user_name}}" disabled>
+    
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Email</label>
+    <input type="text" class="form-control" name="user_email" value="{{userData.user_email}}" disabled>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Mobile</label>
+    <input type="text" class="form-control" name="user_mobile" value="{{userData.user_mobile}}" disabled>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Deleted</label>
+    <input type="text" class="form-control" name="user_mobile" value="{{userData.deleted}}" disabled>
+  </div>
+<div class="mb-3d-flex justify-content-around ">
+    <button type="reset" class="btn btn-primary">Reset</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+
+  
+  
+</form>
+</div>
+<div class="col-md-6 d-flex justify-content-center"><div style="width: 100px; height: 100px; background-color: aquamarine; margin-top: 200px;"></div> </div>
+</section>

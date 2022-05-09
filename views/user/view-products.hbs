@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="/stylesheets/product_view.css">
+
+<section class="container-fluid">
+<div class="row d-flex justify-content-evenly mt-4">
+    <div class="col-2 p-4" style="height: 500px; background-color: beige;">
+        <div class="row">
+            <div class="col-1">
+            <a href="#" class="btn btn-dark mb-2"><h4>Category</h4></a> 
+            <a href="/user/vegitableView"><h6>Vegitables</h6></a>
+            <a href="/user/fruitsView"><h6>Fruits</h6></a>
+            <a href="/user/saladView"><h6>Salads</h6></a>
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-9" style="height: 500px; background-color: beige;">
+        <div class="row d-flex justify-content-evenly mt-5">
+            <div class="col-6" style="height: 400px; background-color: white;">
+                <div class="row m-2 mt-4 d-flex">
+                    <div class="col-1" style="width: 300px; height: 300px; background-color: white;">
+                        <div id="img-container">
+                            <div id="lens"></div>
+                            <img src="/product-images/{{product.img_path.[0]}}" class="card-img-top" alt="..."  id="featured">
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-1 pt-3" style="width: 500px; height: 90px; background-color: rgb(233, 227, 227);">
+                        <img src="/product-images/{{product.img_path.[0]}}" class="thumbnail active" hidden>
+                        {{#each product.img_path}}
+                        <img src="/product-images/{{this.[]}}" class="thumbnail">
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-4" style="height: 400px; background-color: white;">
+                <div class="m-3 mt-5"><h4>Organic Store</h4></div>
+                <div class="ms-5 "><h6> {{product.title}}</h6><br><h6>Rs : {{product.price}}</h6></div>
+                <div class="ms-5" style="margin-top: 50px;"> <a href="/add-to-cart/{{user._id}}" class="btn btn-success">Add to Cart</a>
+                 <a href="/add-to-cart/{{user._id}}" class="btn btn-warning ms-3">Save</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</section>
+<script>
+    let thumbnail=document.getElementsByClassName('thumbnail')
+    let activeImage=document.getElementsByClassName('active')
+        for(var ind=0; ind<thumbnail.length; ind++)
+        {
+            thumbnail[ind].addEventListener('mouseover',function(){
+                if(activeImage.length>0){
+                    activeImage[0].classList.remove('active')
+                }
+                this.classList.add('active')
+                document.getElementById('featured').src=this.src
+            })
+        }
+</script>
+<script src="/javascripts/image-zoom.js"></script>
