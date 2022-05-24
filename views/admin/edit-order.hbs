@@ -1,0 +1,90 @@
+
+    <section class=" m-4" >
+ 
+    <div class=" p-3 mt-4 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
+        <div class="d-flex align-items-end mt-4 mb-3" >
+           <h3 class="me-3">Edit Order</h3>
+        </div>
+    <form action="/admin/update-order" method="post">
+   <table class="table mt-5" id="prtable" > 
+  <thead>
+    <tr>
+      <th scope="col">Field</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Order Id</td>
+          <td><input type="text" id="" disabled value="{{orderDetail._id}}">
+          <input type="text" name="orderId" id="" hidden value="{{orderDetail._id}}"></td>
+      </tr>
+        <tr>
+          <td>User Id</td>
+          <td><input type="text" name="" id="" disabled value="{{orderDetail.user_data}}"></td>
+      </tr>
+            <tr>
+          <td>User Name</td>
+          <td><input type="text" name="" id="" disabled value="{{orderDetail.address_info.address_collection.first_name}}"></td>
+      </tr>
+            <tr>
+          <td>Date</td>
+          <td><input type="text" name="" id="" disabled value="{{orderDetail.date}}"></td>
+      </tr>
+            <tr>
+          <td>Status</td>
+          <td><input type="text" name="" id="" disabled value="{{orderDetail.status}}"></td>
+      </tr>
+            <tr>
+          <td>Address</td>
+           <td>{{orderDetail.address_info.address_collection.first_name}}
+            {{orderDetail.address_info.address_collection.house_name}}
+            {{orderDetail.address_info.address_collection.street}}
+            {{orderDetail.address_info.address_collection.town}}
+            {{orderDetail.address_info.address_collection.pin}}
+      </td>
+      </tr>
+         <tr>
+          <td>Products</td>
+          <td>{{#each orderDetail.products}}
+              {{this.product_id}}<br>
+              {{/each}}
+          </td>
+      </tr>
+
+            <tr>
+          <td>Deleted</td>
+          <td><input type="text" name="" id="" disabled 
+          value="{{#if orderDetail.deleted}}Order Deleted{{else}}Order Active{{/if}}"></td>
+      </tr>
+            <tr>
+          <td>Dispatched</td>
+          <td>
+            {{#if orderDetail.dispatched}}
+                <input type="text" name="" id="" disabled value="Order out for delivery">
+            {{else}}  
+            <select class="form-select" aria-label="Default select example" name="dispatched">
+                <option value="false" selected>Order under processing</option>
+                <option value="true">Order Out for Delivery</option>
+            {{/if}}
+            </select>
+            <tr>
+                <td><a href="/admin/view-orders" class="btn btn-primary">Cancel</a></td>
+                <td><button type="submit" class="btn btn-primary">Submit</button></td>
+            </tr>
+      </tr>
+   
+  </tbody>
+</table>
+</form>
+    </div>
+</section>
+
+
+
+{{!-- 
+<script>
+$(function () {
+    $('#prtable').DataTable();
+} );
+</script> --}}

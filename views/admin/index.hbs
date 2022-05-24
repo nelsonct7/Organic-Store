@@ -1,16 +1,40 @@
-<div class="row" style="height: 800px;">
-
-  <div class="col-2" style="background-color: rgb(211, 218, 219);">
-    <div class="m-4">
-      <a  href="/admin/view-products"><h6>Product Management</h6></a>
-      <a  href="/admin/view-users"><h6>User Management</h6></a>
-      <a  href="/admin/view-category"><h6>Category Management</h6></a>
-      <a  href="/admin/addfile"><h6>Order Management</h6></a>
-      <a  href="/admin/adminhome"><h6>Banners</h6></a>
-      <a  href="/admin/adminhome"><h6>Reports</h6></a>
-      <a  href="/admin/adminhome"><h6>Messages</h6></a>
-      <a  href="/admin/adminhome"><h6>Feedback</h6></a>
+<script src="https://kit.fontawesome.com/966fe3980d.js" crossorigin="anonymous"></script>
+<section class="m-0">
+    <div class="container-fluid">
+        <div class="row d-flex justify-content-around mt-5">
+            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-align-justify"></i><h6>Total Orders : {{dashData.totalOrder}}</h6></div> 
+            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-truck"></i><br><h6>Total Delivery : {{dashData.totalDelivery}}</h6></div>
+            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-users"></i><br><h6>Total Users : {{dashData.totalUsers}}</h6></div>
+            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-cash-register"></i><h6>Total Revenue : {{dashData.totalRevenue}}</h6></div>
+        </div>
+        <input type="text" name="placed" id="placed" hidden value="{{dashData.placedOrder}}">
+        <input type="text" name="pending" id="pending" hidden value="{{dashData.pendingOrder}}">
+        <input type="text" name="orderpro" id="orderpro" hidden value="{{dashData.orderUnderProcessing}}">
+        <input type="text" name="orderout" id="orderout" hidden value="{{dashData.oderOutDelivery}}">
+        <input type="text" name="ordrdel" id="ordrdel" hidden value="{{dashData.deletedOrder}}">
+        <input type="text" name="paypal" id="paypal" hidden value="{{dashData.paypal}}">
+        <input type="text" name="cod" id="cod" hidden value="{{dashData.cod}}">
+        <input type="text" name="razor" id="razor" hidden value="{{dashData.razor}}">
+    
+        <div class="row d-flex justify-content-around p-3">
+            <div class="col-5 mt-2 me-3 shadow-lg p-3 mb-5 bg-white rounded" style="width: 300; height: 300; border-radius: 5px; background-color: rgb(179, 197, 218);">
+                <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+            <div class="col-5 mt-2 shadow-lg p-3 mb-5 bg-white rounded" style="width: 300; height: 300; border-radius: 5px; background-color: rgb(179, 197, 218);">
+                <canvas id="donChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-around">
+            <div class="col-11 shadow-lg p-3 mb-5 bg-white rounded" style=" height: auto; background-color: rgb(179, 197, 218); ">
+                <canvas id="lineChart" width="400" height="400"></canvas>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-10" style="background-color: azure;"></div>
-</div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+<script src="/javascripts/admin-graph.js"></script>
+<script>
+     salesChart()
+     $(document).ready(function () { 
+     })
+</script>

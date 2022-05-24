@@ -1,4 +1,4 @@
-<section class="container-fluid">
+{{!-- <section class="container-fluid">
   
   <div class="row d-flex justify-content-center" style="height: 568px; width: auto; background-image: url(/images/farmbg.jpg); background-repeat: no-repeat; background-size: 250vh;">
       
@@ -33,14 +33,104 @@
 </form>
         </div>
     </div>
-</section>
+</section> --}}
 
-  <script>
+    <body itemscope itemtype="http://schema.org/WebPage" id="authentication" class="lang-en country-us currency-eur layout-full-width page-authentication tax-display-disabled page-customer-account">
+        <main>
+            <div id="wrapper">
+
+                <div class="container">
+                    <div class="row d-flex justify-content-center">
+                        <div id="content-wrapper" class="col-xs-6 mb-5" style="border: 1px solid black;">
+                            <section id="main">
+                                <header class="page-header mt-3">
+                                    <h1>
+                                        Log in to your account
+                                    </h1>
+                                </header>
+                                <section id="content" class="page-content card card-block shadow-lg p-3 mb-5 bg-body rounded" >
+                                    <section class="login-form">
+                                        <form id="login-form" action="/login" method="post">
+                                            <section>
+                                                <input type="hidden" name="back" value="">
+                                                <div class="form-group row ">
+                                                    <label class="col-md-3 form-control-label required">
+                                                        Email
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input class="form-control border border-secondary" name="user_email" type="email" value="" required id="exampleInputEmail1" onkeyup="validEmail()">
+                                                        <span id="email-error" class="text-danger text-center"></span>
+                                                    </div>
+                                                    <div class="col-md-3 form-control-comment"></div>
+                                                </div>
+                                                <div class="form-group row ">
+                                                    <label class="col-md-3 form-control-label required">
+                                                        Password
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <div class="input-group js-parent-focus">
+                                                            <input class="form-control js-child-focus js-visible-password border border-secondary" name="user_password" type="password" value="" pattern=".{2,}" required onkeyup="validPsd()" id="exampleInputPassword1">
+                                                            <span class="input-group-btn">
+                                                                <button class="btn" type="button" data-action="show-password" data-text-show="Show" data-text-hide="Hide">
+                                                                    Show
+                                                                </button>
+                                                            </span>
+                                                            
+                                                        </div>
+                                                        <br>
+                                                            <span id="psd-error" class="text-danger text-center"></span>
+                                                    </div>
+
+                                                    <div class="col-md-3 form-control-comment"></div>
+                                                </div>
+                                                <div class="forgot-password">
+                                                    <a href="password-recovery.html" rel="nofollow">
+                                                        Forgot your password?
+                                                    </a>
+                                                </div>
+                                            </section>
+                                            <footer class="form-footer text-sm-center clearfix">
+                                                <input type="hidden" name="submitLogin" value="1">
+
+                                                <button id="submit-login" class="btn btn-primary" data-link-action="sign-in" type="submit" class="form-control-submit" onclick="return formValid()">
+                                                    Sign in
+                                                </button>
+                                            </footer>
+                                        </form>
+                                    </section>
+                                    <hr/>
+                                    <div class="no-account">
+                                        <a href="/signup" data-link-action="display-register-form">
+                                            No account? Create one here
+                                        </a>
+                                    </div>
+                                </section>
+
+
+                                <footer
+                                    class="page-footer"><!-- Footer content -->
+
+                                </footer>
+
+
+                            </section>
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </main>
+        <script>
    var psdError = document.getElementById('psd-error');
    var emailError = document.getElementById('email-error');
-
-  const form=document.getElementById('form');
-
   function validEmail(){
     
     var name = document.getElementById('exampleInputEmail1').value;
@@ -53,7 +143,7 @@
         emailError.innerHTML='Invalid Email Format....';
         return false;
     }
-    emailError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    emailError.innerHTML = '';
     return true;
 }
  
@@ -72,7 +162,7 @@
       psdError.innerHTML= 'Password has invalid syntax';
         return false;
     }*/
-    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    psdError.innerHTML = '';
     return true;
  }
  function formValid(){
@@ -82,3 +172,9 @@
    return true;
  }
 </script>
+
+    </body>
+</html>
+
+
+ 

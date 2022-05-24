@@ -28,6 +28,17 @@ const productStorage=multer.diskStorage({
   }
 })
 const productImgStore=multer({storage:productStorage})
+
+
+const bannerStorage=multer.diskStorage({
+  
+  destination: function (req, file, cb) {
+    cb(null, './public/banner-images')},
+  filename:function(req,file,callback){
+    callback(null,'banner_image-'+Date.now()+'.webp')
+  }
+})
+const bannerImgStore=multer({storage:bannerStorage})
 // const upload=multer({
   
 //   dest:'./public/category_images'
@@ -93,13 +104,13 @@ router.post('/login',(req,res)=>{
     res.redirect('/')
   }
   else{
-    console.log("Admin req body : "+req.body);
+    //console.log("Admin req body : "+req.body);
     usrhelper.doAdminLogin(req.body).then((response)=>{
       //console.log("@@@@@@@admin : "+response.status);
       if(response.status){
-        
         req.session.admin=req.body.admin_field
         req.session.adminLoged=true
+
         res.redirect('/admin/adminhome')
       }else{
         req.session.err=true
@@ -116,10 +127,13 @@ router.get('/logout',(req,res)=>{
 })
 
 // Admin home page router
-router.get('/adminhome', function(req, res, next) {
+router.get('/adminhome',async function(req, res, next) {
 
   if(req.session.adminLoged){
-    res.render('admin/index', { title: 'Admin',admin:req.session.admin });
+    let dashData=await prhelper.getTotalDashbord()
+    //console.log("\norder view at admin side : "+JSON.stringify(totalOrder));
+
+    res.render('admin/index', { title: 'Admin',admin:req.session.admin,dashData});
   }
   else{
     res.redirect('/admin')
@@ -199,11 +213,15 @@ router.get('/delete-product/',verifyAdmin,(req,res)=>{
     res.redirect('/admin/view-products')
   })
 });
-
+ 
 router.get('/edit-product/:id',verifyAdmin,async (req,res)=>{
   let product=await prhelper.getProductDetails(req.params.id)
-  let category=prhelper.getAllCategory()
+  prhelper.getAllCategory().then((category)=>{
+    console.log("category details : "+category);
   res.render('admin/edit-product',{product,title: 'Admin',admin:true,category})
+
+  })
+  
 });
 
 
@@ -214,41 +232,15 @@ router.post('/edit-products/:id',verifyAdmin,productImgStore.array('image'),asyn
   await prhelper.updateProduct(prId,req.body).then(()=>{
     
     if(req.files){
-      let img=req.files.image
-      if(img.length>=2){
+      let img=req.files
+      
          
-         //////// console.log(img);
-          
-          let id=prId
-          console.log("Id in Request : "+prId);
-          console.log("Id in Response : "+id);
-
-          for (let index = 0; index < img.length; index++) {
-            //console.log(img[index]);
-            let img_path=id+Date.now()+'.jpg'
-            img[index].mv('./public/product-images/'+img_path,(err,done)=>{   
-              if(!err){
-               
-              }else{
-                console.log(err);
-              }
-            })
-            console.log("Image path in router"+img_path);
-           prhelper.addProductImage(prId,img_path)
+          for (let index = 0; index < img.length; index++) { 
+           prhelper.addProductImage(prId,img[index].filename)
           }
-          addSucces=true
-          res.render('admin/view-products',{ title: 'Admin',admin:req.session.admin,addSucces})
-          
-          
-
-      }else{
-        let add2Error=true
-        res.render('admin/view-products',{ title: 'Admin',admin:req.session.admin,add2Error})
-      }
-      res.redirect('/admin/view-products')
+          res.redirect('/admin/view-products')
     }else{
-      addError=true
-        res.render('admin/view-products',{ title: 'Admin',admin:req.session.admin,addError}) 
+      res.redirect('/admin/view-products')
     }
   
   })  
@@ -323,7 +315,7 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
     addCategoryError=false
     addCategorySucces=false
     //console.log("FFFF"+req.body);
-    console.log("File : "+JSON.stringify(req.file));
+    //console.log("File : "+JSON.stringify(req.file));
     if(req.file){
       //let img=req.files.category_image
         prhelper.addCategory(req.body,(result)=>{ 
@@ -379,6 +371,97 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
       //res.redirect('/admin/view-category')
     })
   })
- 
+
+  router.get('/view-orders',verifyAdmin,async (req,res)=>{
+    let orders=await prhelper.getAllOrders()
+    console.log("\ndata : "+JSON.stringify(orders[0]));
+
+    res.render('admin/view-orders',{title:'Admin',admin:req.session.admin,orders})
+  
+  })
+
+  router.get('/edit-order/:id',verifyAdmin,async (req,res)=>{
+    let orderId=req.params.id
+    let orderDetail=await prhelper.getOrderDetails(orderId)
+    console.log("\nOrder details in helper : "+orderDetail);
+    res.render('admin/edit-order',{title:'Admin',admin:req.session.admin,orderDetail})
+
+  })
+
+  router.post('/update-order',verifyAdmin,async (req,res)=>{
+    console.log("request : "+JSON.stringify(req.body));
+    if(req.body.dispatched){
+      await prhelper.productDispatch(req.body.orderId)
+    }
+    res.redirect('/admin/view-orders')
+  })
+
+  router.get('/delete-order/:id',verifyAdmin,async(req,res)=>{
+    let orderId=req.params.id
+    await usrhelper.removeOrder(orderId)
+    res.redirect('/admin/view-orders')
+  })
+  router.get('/reports',verifyAdmin,(req,res)=>{
+    res.render('admin/reports',{title:'Admin',admin:req.session.admin})
+  })
+
+  router.post('/get-line-data',verifyAdmin,async (req,res)=>{
+    await prhelper.getMonthSales().then((data)=>{
+      console.log("Month data : "+JSON.stringify(data));
+      res.json({data})
+    }) 
+  })
+
+  router.get('/banner',verifyAdmin,async (req,res)=>{
+    await prhelper.getBanner().then((banners)=>{console.log("Banners : "+JSON.stringify(banners));
+    res.render('admin/view-banner',{title:'Admin',admin:req.session.admin,banners})
+  }).catch((err)=>{
+      res.render('errors/error404',{title:'Admin',admin:req.session.admin})
+    })
+    
+
+    
+  })
+
+  router.get('/add-banner',verifyAdmin,(req,res)=>{
+    res.render('admin/add-banner',{title:'Admin',admin:req.session.admin})
+
+  })
+
+  router.post('/add-banner',verifyAdmin,bannerImgStore.single('banner_image'),verifyAdmin,async(req,res)=>{
+      // await prhelper.addBanner(re)
+      console.log('Admin side banner : '+JSON.stringify(req.file));
+      await prhelper.addBanner(req.file.filename).then((data)=>{
+        res.redirect('/admin/banner')
+      }).catch((err)=>{
+        res.send(
+          Swal.fire({
+            title: 'Failed',
+            text: "Image Error",
+            icon: 'alert',
+            showCancelButton: false,
+            confirmButtonColor: '#11B619',
+            cancelButtonColor: '#A19391',
+            confirmButtonText: 'Ok'
+            }).then((result) => {
+                 if (result.isConfirmed) {
+                                        window.location.href='/admin/banner';
+                                        }
+            })
+        )
+      })
+
+  })
+
+  router.get('/delete-banner/:id',verifyAdmin,async (req,res)=>{
+    
+    let bannerId=req.params.id
+    console.log("hjhjhjhjhjh : "+bannerId);
+    await prhelper.deleteBanner(bannerId).then((reso)=>{
+        res.send({status:true})
+    }).catch(()=>{
+      res.render('errors/error404')
+    })
+  })
 
 module.exports = router;

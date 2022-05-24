@@ -1,0 +1,6 @@
+.animation1 {
+    -webkit-transition-duration: 500ms !important;
+    -moz-transition-duration: 500ms !important;
+    -o-transition-duration: 500ms !important;
+    transition-duration: 500ms !important;
+}

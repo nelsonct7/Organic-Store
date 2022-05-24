@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="/stylesheets/cart.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Items in your cart</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table shoping-cart-table">
+                            <tbody>
+                            {{#each products}}
+                            <tr class="mt-3">
+                                <td width="200">
+                                    <div class="">
+                                        <img class="img-fluid" src="/product-images/{{this.product.img_path.[0]}}" alt="">
+                                    </div>
+                                </td>
+                                <td class="desc" style="width: 200px;">
+                                    <h3>
+                                    <a href="/view-product/{{this.product._id}}" class="text-navy">
+                                        {{this.product.title}}
+                                    </a>
+                                    </h3>
+                                    {{!-- <p class="small">
+                                        {{this.product.description}}
+                                       
+                                    </p> --}}
+                                    {{!-- <dl class="small m-b-none">
+                                        <dt>Description lists</dt>
+                                        <dd>A description list is perfect for defining terms.</dd>
+                                    </dl> --}}
+
+                                    <div class="m-t-sm" style="margin-top: 100px;">
+                                        {{!-- <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a> --}}
+                                        |
+                                        <a href="/remove-item-from-cart/{{this.product._id}}" class="text-muted" onclick="alert('Are you sure to remove this item')"><i class="fa fa-trash"></i> Remove item</a>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{this.product.price}}<br>
+                                    {{!-- <s class="small text-muted">230,00</s> --}}
+                                </td>
+                                
+                                <td  width="65" height="50" class="d-flex justify-content-between">
+                                        
+                                        <button class="btn btn-secondary btn-sm me-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.product.title}}','{{../user._id}}')"    id="{{this.product._id}}+'demo'" style="padding-bottom: 30px;">-</button>
+                                        
+                                        {{!-- <input type="text" class="form-control form-control-sm" style="width: 50px;" value="{{this.quantity}}" id="{{this.product._id}}"> --}}
+                                        <span id="{{this.product._id}}" style="padding-top: 10px;">{{this.quantity}}</span>
+                                        <button class="btn btn-secondary btn-sm ms-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.product.title}}','{{../user._id}}')" style="padding-bottom: 30px;">+</button>
+                                    
+                                    
+                                </td>
+                                
+                                <td>
+                                    <h4>
+                                        {{this.product.price}}{{products.quantity}}
+                                    </h4>
+                                </td>
+                                
+                            </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                
+                <div class="ibox-content">
+                    {{!-- <a href="/check-out" class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i>Checkout</a> --}}
+                    {{!-- <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button> --}}
+                    <a href="/"><button class="btn btn-white" ><i class="fa fa-arrow-left"></i> Continue shopping</button></a>
+                    
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Cart Summary</h5>
+                </div>
+                <div class="ibox-content">
+                    <span>
+                        Total
+                    </span>
+                    <h2 class="font-bold">
+                        Rs : <span id="prSum">{{total}}</span>
+                    </h2>
+
+                    <hr>
+                    
+                    <div class="m-t-sm ms-4">
+                        <div class="btn-group">
+                        <a href="/find-total/{{user._id}}" class="btn btn-success btn-sm"><i class="fa fa-shopping-cart"></i> Checkout</a>
+                        <a href="/" class="btn btn-warning btn-sm ms-4"> Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+    function changeQuantity(cartId,prodId,count,title,userId){
+        
+        count1=parseInt(count)
+        let quantity1=parseInt(document.getElementById(prodId).innerHTML)
+        $.ajax({
+            url:'/cart-Product-Inc-Dec',
+            data:{
+                cart:cartId,
+                product:prodId,
+                count:count1,
+                quantity:quantity1,
+                userId:userId
+            },
+            method:'post',
+            success:(response)=>{
+                if(response.itemRemoved){
+                Swal.fire({
+                title: 'Success',
+                text: title+' Item Removed',
+                icon: 'succes',
+                showCancelButton: false,
+                confirmButtonColor: '#11B619',
+                cancelButtonColor: '#A19391',
+                confirmButtonText: 'Ok'
+                }).then((result) => {
+                     if (result.isConfirmed) {
+                                            location.reload()
+                                            }
+                })
+                    
+                    
+                }
+                else{
+                    console.log('quantity : '+quantity1)
+                    console.log('quantity : '+count1)
+                    document.getElementById(prodId).innerHTML=quantity1+count
+                    document.getElementById('prSum').innerHTML=response.total
+                }
+                
+            }
+        })
+    }
+</script>

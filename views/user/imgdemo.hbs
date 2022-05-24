@@ -1,0 +1,15 @@
+<script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+<div id="opd">
+    <img src="/images/farmbg.jpg" alt="">
+</div>
+<script>
+    $(document).ready(function () {
+    var options = {
+    width: 400,
+    zoomWidth: 500,
+    offset: {vertical: 0, horizontal: 10},
+    scale:1.5
+};
+new ImageZoom(document.getElementById("opd"), options);
+    })
+</script>

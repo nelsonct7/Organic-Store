@@ -1,0 +1,51 @@
+<section>
+    <div class="row d-flex justify-content-evenly m-0" >
+        <div class="col-6">
+            <table class="table">
+                <thead class="table-dark"><h1>Order Placed Success fully....</h1></thead>
+                <tbody>
+                    <tr>
+                        <td>Order Id</td>
+                        <td>{{orderId}}</td>
+                    </tr>
+                    <tr>
+                        <td>Product List</td>
+                        <td>{{#each prList}}
+                            {{this.product_id}}<br>
+                            {{/each}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{total}}</td>
+                    </tr>
+                    <tr><td>
+                        <a href="/" class="btn btn-primary">Continue Shopping...</a>
+                    </td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script>
+    window.onload = function() {
+  //yourFunction();
+};
+function yourFunction(){
+                Swal.fire({
+                title: 'Success',
+                text: "Payment Success",
+                icon: 'succes',
+                showCancelButton: false,
+                confirmButtonColor: '#11B619',
+                cancelButtonColor: '#A19391',
+                confirmButtonText: 'Ok'
+                }).then((result) => {
+                     if (result.isConfirmed) {
+                                            window.location.href='/';
+                                            }
+                })
+    };
+</script>
+
+            

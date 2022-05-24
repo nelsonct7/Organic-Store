@@ -1,0 +1,95 @@
+<link rel="stylesheet" href="/stylesheets/cart.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="/javascripts/handlebarTime.js"></script>
+<div class="container">
+<div class="">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Your Orders</h5>
+                    <p style=" text-align: right;"><a href="/view-order-history" class="btn btn-secondary rounded">View Order History</a></p>
+                </div>
+                <div >
+                    
+                </div>
+                <div class="ibox-content m-4" style="border: 1px solid gray; box-shadow: 1px;">
+                    <div class="table-responsive">
+                        <table class="table shoping-cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Address</th>
+                                    <th>Mobile</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Dispatch</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {{#each orders}}
+                            <tr class="mt-3">
+                                <td>
+                                    {{this.stringDate}}
+                            
+                                </td>
+                                
+                                <td>
+                                    {{this.address.address_collection.first_name}}<br>{{this.address.address_collection.house_name}}<br>{{this.address.address_collection.street}}
+                                    {{this.address.address_collection.town}}{{this.address.address_collection.pin}}<br>{{this.address.address_collection.state}}
+                                    {{this.address.address_collection.country}}
+                                   
+                                </td>
+                                <td>
+                                    {{this.userinfo.user_mobile}}
+                                </td>
+                                <td>
+                                    {{this.total_amount}}
+                                </td>
+                                <td>
+                                    {{this.payment_option}}
+                                </td>
+                                <td>
+                                    {{this.status}}
+                                </td>
+                                <td>
+                                    {{#if this.dispatched}}
+                                    Order Out for Delivery
+                                    {{else}}
+                                    Order On Process
+                                    {{/if}}
+                                </td>
+                                <td>
+                                   
+                                        <a href="/view-order-products/{{this._id}}/{{this.total_amount}}" class="btn btn-warning btn-sm">View Products</a>
+                                        {{#if this.dispatched}}
+                                        Order Processed
+                                        {{else}}
+                                        <a href="/remove-order/{{this._id}}" class="text-muted" onclick="alert('Are you sure to remove this Order')"><i class="fa fa-trash"></i> Remove order</a>
+                                        {{/if}}
+                                </td>
+
+                            </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                
+                <div class="ibox-content">
+                    {{!-- <a href="/check-out" class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i>Checkout</a> --}}
+                    {{!-- <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button> --}}
+                    <a href="/"><button class="btn btn-white" ><i class="fa fa-arrow-left"></i> Continue shopping</button></a>
+                    
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</div>

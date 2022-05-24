@@ -2,5 +2,9 @@ module.exports={
     USER_COLLECTION:'og_users',
     ADMIN_COLLECTION:'og_admin',
     CATEGORY_COLLECTION:'og_category',
-    PRODUCT_COLLECTION:'og_product'
+    PRODUCT_COLLECTION:'og_product',
+    CART_COLLECTION:'og_cart',
+    ADDRESS_COLLECTION:'og_user_address',
+    ORDER_COLLECTION:'og_orders',
+    BANNER_COLLECTION:'og_banners'
 }

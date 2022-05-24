@@ -1,0 +1,30 @@
+
+<section >
+    <img src="/banner/img-banner-offer.webp" alt="">
+</section>
+<section>
+    <div class="row m-5">
+    <div><h2>Order Id : {{orderId}}</h2></div>
+    <div><h5>Total Amount : Rs {{total}}</h5></div>
+    </div>
+</section>
+<section class="mt-5">
+  <div class="container d-flex justify-content-evenly">
+    <div class="row">
+      {{#each products}}
+      <div class="col-md-4 ">
+      <div class="card m-3" style="width: 18rem;">
+      <a href="/view-product/{{this._id}}"><img src="/product-images/{{this.product.img_path.[0]}}" class="card-img-top" alt="..." style="height: 300px; width: 200;"></a>
+  <div class="card-body">
+    <h5 class="card-title">{{this.product.title}}</h5>
+    <p class="card-text">{{this.product.category}}</p>
+    <p class="card-text">{{this.product.description}}</p>
+    <p class="card-text">{{this.product.price}}</p>
+  </div>
+</div>
+</div>
+    {{/each}}
+    </div> 
+  </div>
+</div>
+</section>

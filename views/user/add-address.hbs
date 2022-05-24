@@ -1,0 +1,180 @@
+<section style="margin: 0px;">
+    <div class="row m-0">
+        <div class="container-fluid col-1 d-flex justify-content-center mt-4" style="width: 100%;"> 
+        <img src="/banner/img-banner-offer.webp" alt="" class="img-fluid" style="max-width: 100%; height: auto;">
+        </div>
+    </div>
+</section>
+<section style=" margin-top: 50px;">
+    <div class="row m-0 ">
+        <form action="/proceed-to-payment" method="post" class="form-control d-flex justify-content-around">
+            <div class="col-7" style="border-radius: 20px; padding: 50px; border: 1px solid gray;">
+                <table>
+                    <tr class="mt-3">
+                            <td> First Name </td>
+                            <td><input type="text" name="first_name" id="fname" onkeyup="validFname()" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                                <span id="fname-error" class="text-danger text-center"> </span>
+                            </td>
+                            <td class="ms-4">Second Name</td>
+                            <td>
+                            <input type="text" name="second_name" id="sname" onkeyup="validSname()" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                            <span id="sname-error" class="text-danger text-center"></span>
+                            </td>
+                     </tr>
+                      <tr class="mt-3">
+                           <td> House Name </td>
+                           <td><input type="text" name="house_name" id="hname" onkeyup="validHname()" class="form-control border border-dark rounded-lg" style="border-radius: 10px;"> 
+                           <span id="hname-error" class="text-danger text-center"></span>
+                           </td>
+                            <td class="ms-4">Street</td>
+                            <td>
+                            <input type="text" name="street" id="street" onkeyup="validStreet()" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                            <span id="street-error" class="text-danger text-center"></span>
+                            </td>
+                    </tr>
+                     <tr class="m-3">
+                            <td> Town </td>
+                            <td><input type="text" name="town" id="town" class="form-control border border-dark rounded-lg" style="border-radius: 10px;"> 
+                            <span id="town-error" class="text-danger text-center"  ></span>
+                            </td>
+                            <td class="ms-4">PIN</td>
+                            <td>
+                            <input type="text" name="pin" id="pin" onkeyup="validPin()" class="form-control border border-dark rounded-lg" style="border-radius: 10px;"> 
+                            <span id="pin-error" class="text-danger text-center"></span>
+                            </td>
+                    </tr>
+                    <tr class="m-3">
+                            <td> State </td>
+                            <td><input type="text" name="state" id="state" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                                <span id="state-error" class="text-danger text-center"></span>
+                            </td>
+                            <td class="ms-4"> Country</td>
+                            <td><input type="text" name="country" id="country" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                            <span id="country-error" class="text-danger text-center"></span>
+                            </td>
+                    </tr>
+                    <tr class="m-3">
+                            <td>Mobile</td>
+                            <td>
+                            <input type="text" name="mobile" id="mobile" disabled value="{{user.user_mobile}}" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                             <span id="mobile-error" class="text-danger text-center"></span>
+                            </td>
+                            <td class="ms-4"> Email </td>
+                            <td><input type="text" name="email" id="email" disabled value="{{user.user_email}}" class="form-control border border-dark rounded-lg" style="border-radius: 10px;">
+                            <span id="email-error" class="text-danger text-center"></span>
+                            </td>
+                     </tr>
+                    <tr class="m-3">
+                            <td><input type="text" name="userId" hidden value="{{user._id}}"></td>
+                            <td>
+                                <input type="text" name="total-amount" hidden value="{{total}}">
+                            </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-4" style=" border-radius: 20px; padding-top: 50px; padding-bottom: 50px; border: 1px solid gray;">
+                <table>
+                    <tr class="d-flex align-items-cente">
+                        <h5 style="margin-left: 90px;"> Enter your coupon code if any </h5><br>
+                        <input type="text" name="coupon" id="coupon" class="" style="margin-left: 130px;" class="form-control border border-dark rounded-lg"  >
+                    </tr>
+                    <tr class="mt-3">
+                         <td>
+                            <h6 style="margin-left: 150px;"> Total MRP : </h6>
+                        </td>
+                        <td>
+                            <h5 style="margin-left: ;100px">{{total}}</h5>
+                        </td>
+                    </tr>
+                     <hr>
+                    <tr class="mt-3">
+                        <td><a href="/" class=" btn btn-warning ms-3" style="">Continue purchase</a>
+                        <td> <button class="btn btn-success" type="submit" onclick="return validForm()"> Proceed to Payment </button></a>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</section>
+            <script>var fnameError = document.getElementById('fname-error'); var snameError = document.getElementById('sname-error'); var hnameError = document.getElementById('hname-error'); var streetError = document.getElementById('street-error'); var pinError = document.getElementById('pin-error'); function validFname() {
+
+                    var title = document.getElementById('fname').value;
+
+                    if (title.length == 0) {
+                        fnameError.innerHTML = 'First name is required....';
+                        return false;
+                    }
+                    if (!title.match(/^[A-Za-z ]*$/)) {
+                        fnameError.innerHTML = 'Invalid format....';
+                        return false;
+                    }
+                    fnameError.innerHTML = ' ';
+                    return true;
+                }; function validSname() {
+
+                    var title = document.getElementById('sname').value;
+
+                    if (title.length == 0) {
+                        snameError.innerHTML = 'Second name is required....';
+                        return false;
+                    }
+                    if (!title.match(/^[A-Za-z ]*$/)) {
+                        snameError.innerHTML = 'Invalid format....';
+                        return false;
+                    }
+                    snameError.innerHTML = ' ';
+                    return true;
+                }; function validHname() {
+
+                    var title = document.getElementById('hname').value;
+
+                    if (title.length == 0) {
+                        hnameError.innerHTML = 'House Name is required....';
+                        return false;
+                    }
+                    if (!title.match(/^[A-Za-z ]*$/)) {
+                        hnameError.innerHTML = 'Invalid format....';
+                        return false;
+                    }
+                    hnameError.innerHTML = ' ';
+                    return true;
+                }; function validStreet() {
+
+                    var title = document.getElementById('street').value;
+
+                    if (title.length == 0) {
+                        streetError.innerHTML = 'Street is required....';
+                        return false;
+                    }
+                    if (!title.match(/^[A-Za-z ]*$/)) {
+                        streetError.innerHTML = 'Invalid format....';
+                        return false;
+                    }
+                    streetError.innerHTML = ' ';
+                    return true;
+                }; function validPin() {
+
+                    var title = document.getElementById('pin').value;
+
+                    if (title.length == 0) {
+                        pinError.innerHTML = 'PIN is required....';
+                        return false;
+                    }
+                    if (title.length !== 6) {
+                        pinError.innerHTML = 'Invalid PIN....';
+                        return false;
+                    }
+                    if (!title.match(/^\d*$/)) {
+                        pinError.innerHTML = 'Invalid format....';
+                        return false;
+                    }
+                    pinError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                    return true;
+                }; function validForm() {
+                    if (!validFname() || !validSname() || !validHname() || !validStreet() || !validPin()) {
+
+                        return false;
+                    }
+                    alert("ARRR")
+                    return true;
+                };</script>

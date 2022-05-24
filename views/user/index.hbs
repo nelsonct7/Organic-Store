@@ -1,36 +1,279 @@
+<head>
+    <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+            <title>Organic Store</title>
 
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="/banner/img-banner-basket.webp" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="/banner/img-banner-cucumber.webp" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="/banner/img-banner-jackfruits.webp" class="d-block w-100" alt="...">
-    </div>
-  </div>
-</div>
-<div>
-<section class="mt-5">
-  <div class="container d-flex justify-content-evenly">
-    <div class="row">
-      {{#each products}}
-      <div class="col-md-4 ">
-      <div class="card m-3" style="width: 18rem;">
-      <a href="/view-product/{{this._id}}"><img src="/product-images/{{this.img_path.[0]}}" class="card-img-top" alt="..." style="height: 300px; width: 200;"></a>
-  <div class="card-body">
-    <h5 class="card-title">{{this.title}}</h5>
-    <p class="card-text">{{this.category}}</p>
-    <p class="card-text">{{this.description}}</p>
-    <p class="card-text">{{this.price}}</p>
-    <a href="/add-to-cart/{{this._id}}" class="btn btn-warning">Buy now</a>
-    <a href="/add-to-cart/{{this._id}}" class="btn btn-success">Add to Cart</a>
-  </div>
-</div>
-</div>
-    {{/each}}
-    </div> 
-  </div>
-</div>
+            <meta name="keywords" content="">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                </head>
+                <body id="index">
+                    <main>
+                        <div class=" pos_bannerslide">
+                            <div class="slideshow_container" data-speed="600" data-time="6000" data-nav="false" data-pag="true" data-pausehover="hover">
+                                <div class="pos-slideshow">
+                                    <div class="flexslider ma-nivoslider">
+
+                                        <div id="pos-slideshow-home" class="slides">
+                                            {{#each banner}}
+                                            <a href="" title="slide show1"><img style="display:none" src="/banner-images/{{this.img_path}}" alt="" title="#htmlcaption1"/>
+                                            </a>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="breadcrumb_container " data-depth="1">
+                            <div class="container">
+                                <nav data-depth="1" class="breadcrumb">
+                                    <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+                                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                                            <a itemprop="item" href="index.html">
+                                                <span itemprop="name">Home</span>
+                                            </a>
+                                            <meta itemprop="position" content="1"></li>
+
+
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div id="wrapper">
+                                <div class="container">
+                                    <div class="row">
+                                        <div id="content-wrapper" class="col-xs-12">
+                                            <section id="main">
+                                                <section id="content" class="page-home">
+
+
+                                                    <div class="static_cms">
+                                                        <div class="row">
+                                                            <div class="col-cms col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                                                                <div class="box_cms"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/icon_cms1.png" alt="" class="img-responsive"/>
+                                                                    <div class="txt_cms">
+                                                                        <h2>Free Shipping</h2>
+                                                                        <p>On all orders over $75.00</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-cms col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                                                                <div class="box_cms"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/icon_cms2.png" alt="" class="img-responsive"/>
+                                                                    <div class="txt_cms">
+                                                                        <h2>Free Returns</h2>
+                                                                        <p>Returns are free within 9 days</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-cms col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                                                                <div class="box_cms"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/icon_cms3.png" alt="" class="img-responsive"/>
+                                                                    <div class="txt_cms">
+                                                                        <h2>100% Payment Secure</h2>
+                                                                        <p>Your payment are safe with us.</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-cms col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                                                                <div class="box_cms"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/icon_cms4.png" alt="" class="img-responsive"/>
+                                                                    <div class="txt_cms">
+                                                                        <h2>Support 24/7</h2>
+                                                                        <p>Contact us 24 hours a day</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pos_bestsellers_product  product_block_container" data-items="5" data-speed="1000" data-autoplay="0" data-time="3000" data-arrow="1" data-pagination="0" data-move="1" data-pausehover="0" data-lg="4" data-md="3" data-sm="2" data-xs="2" data-xxs="1">
+                                                        <div class="pos_title">
+                                                            <h2>
+                                                                Best Sellers
+                                                            </h2>
+                                                            <div class="desc_title">
+                                                                Add bestselling products to weekly line up
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row pos_content">
+                                                            <div class="bestsellerSlide owl-carousel ">
+                                                                {{#each products}}
+                                                                    <div
+                                                                        class="item-product">
+
+                                                                        <!-- style products default -->
+
+                                                                        <article class="style_product_default product-miniature js-product-miniature item_in" data-id-product="15" data-id-product-attribute="95" itemscope itemtype="http://schema.org/Product">
+                                                                            <div class="img_block">
+
+                                                                                <a href="/view-product/{{ this._id }}" class="thumbnail product-thumbnail">
+                                                                                    <img class="first-image " src="/product-images/{{ this.img_path.[0] }}" alt="Brixton Patrol All Terrain..."></a>
+                                                                                    <ul class="product-flag">
+                                                                                        <li class="new">
+                                                                                            <span>New</span>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                                <div class="product_desc">
+                                                                                    <div class="inner_desc">
+                                                                                        <h3 itemprop="name">
+                                                                                            <a href="/view-product/{{ this._id }}" class="product_name one_line" title="Brixton Patrol All Terrain Anorak Jacket 2">{{ this.title }}</a>
+                                                                                        </h3>
+                                                                                        {{!-- {{ !-- <div class="hook-reviews">
+                                                                        <div class="comments_note" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                                                                            <div class="star_content clearfix">
+                                                                                <div class="star star_on"></div>
+                                                                                <div class="star star_on"></div>
+                                                                                <div class="star star_on"></div>
+                                                                                <div class="star star_on"></div>
+                                                                                <div class="star star_on"></div>
+                                                                                <meta itemprop="worstRating" content="0"/>
+                                                                                <meta itemprop="ratingValue" content="5"/>
+                                                                                <meta itemprop="bestRating" content="5"/>
+                                                                            </div>
+                                                                            <span class="nb-comments">
+                                                                                <span itemprop="reviewCount">1</span>
+                                                                                Review(s)</span>
+                                                                        </div>
+
+                                                                    </div> -- }} --}}
+                                                                                        <div class="product-price-and-shipping">
+                                                                                            <span class="sr-only">Price</span>
+                                                                                            <span itemprop="price" class="price ">
+                                                                                                <i class="fa fa-indian-rupee-sign"></i>,
+                                                                                                {{ this.price }}</span>
+                                                                                        </div>
+                                                                                        <ul class="add-to-links">
+                                                                                            <li class="cart">
+                                                                                                <div class="product-add-to-cart">
+                                                                                                    <button class="button ajax_add_to_cart_button add-to-cart btn-default" onclick="addToCart('{{ this._id }}')" type="submit">
+                                                                                                        <i class="fa fa-shopping-cart"></i>
+                                                                                                        Add to cart
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                <a class="addToWishlist wishlistProd_15" title="Add to wishlist" href="#" data-rel="15" onclick="WishlistCart('wishlist_block_list', 'add', '15', false, 1); return false;">
+                                                                                                    Add to wishlist
+                                                                                                </a>
+                                                                                            </li>
+                                                                                            <li class="compare">
+                                                                                                <a href="#" class="poscompare-add compare-button js-poscompare-add" data-id_product="15" onclick="posCompare.addCompare($(this),15); return false;" title="Add to compare">
+                                                                                                    <span>Add to compare</span>
+                                                                                                </a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                    <div class="variant-links"></div>
+                                                                                </div>
+                                                                            </article>
+                                                                        </div>
+                                                                    {{/each}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="home-banner">
+                                        <div class="col col-md-3 col-xs-12">
+                                            <div class="banner-box">
+                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/1_1.jpg" alt=""/></a>
+                                            </div>
+                                        </div>
+                                        <div class="col col-md-6 col-xs-12">
+                                            <div class="banner-box">
+                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/2_1.jpg" alt=""/></a>
+                                            </div>
+                                        </div>
+                                        <div class="col col-md-3 col-xs-12">
+                                            <div class="banner-box">
+                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/3_1.jpg" alt=""/></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </body>
+
+
+                    </main>
+                    <div class="back-top">
+                        <a href="#" class="back-top-button"></a>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            var poslistcategories = $(".poslistcategories .block_content");
+                            poslistcategories.owlCarousel({
+                                autoplay: false,
+                                smartSpeed: 1000,
+                                nav: true,
+                                dots: false,
+                                responsive: {
+                                    0: {
+                                        items: 1
+                                    },
+                                    360: {
+                                        items: 1
+                                    },
+                                    576: {
+                                        items: 2
+
+                                    },
+                                    768: {
+                                        items: 2
+                                    },
+                                    992: {
+                                        items: 3
+                                    },
+                                    1200: {
+                                        items: 3
+                                    }
+                                }
+                            });
+                            checkClasses();
+                            poslistcategories.on('translated.owl.carousel', function (event) {
+                                checkClasses();
+                            });
+
+                            function checkClasses() {
+                                var total = $('.poslistcategories .item-listcategories .owl-stage .owl-item.active').length;
+                                $('.poslistcategories ').each(function () {
+                                    $(this).find('.owl-item').removeClass('firstActiveItem');
+                                    $(this).find('.owl-item').removeClass('lastActiveItem');
+                                    $(this).find('.owl-item.active').each(function (index) {
+                                        if (index === 0) {
+                                            $(this).addClass('firstActiveItem');
+                                        }
+                                        if (index === total - 1 && total > 1) {
+                                            $(this).addClass('lastActiveItem');
+                                        }
+                                    })
+                                });
+                            }
+                        });
+                    </script>
+
+                    <script>
+                        function addToCart(prdId) {
+                            $.ajax({
+                                url: '/add-to-cart/' + prdId,
+                                method: 'get',
+                                success: (response) => {
+                                    if (response.status) {
+                                        let count = $('#cartCount').html()
+                                        count = parseInt(count) + 1
+                                        $('#cartCount').html(count)
+
+                                    }
+                                }
+                            })
+                        };
+                    </script>
+                </body>

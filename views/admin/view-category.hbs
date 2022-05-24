@@ -1,25 +1,24 @@
-<section >
-    <div class="container">
+
+    <section class="m-0">
+    <div class="row container-fluid" style="width: 100%;">
       <h3>Categories</h3>
         <div class="mt-4 mb-3">    
             <a href="/admin/add-category" class="btn btn-success ms-3" style="margin-left: auto;">Add Category</a>
         </div>
-    <div class="col-11 p-4" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
-   <table class="table mt-5" id="categorytable"> 
+    <div class="col-md-12 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
+   <table class="table mt-5 " id="categorytable" > 
   <thead>
     <tr>
-      
       <th scope="col">Image</th>
       <th scope="col">Category ID</th>
       <th scope="col">Category</th>
-      <th scope="col">Description</th>
+      <th scope="col" style="width: 100px;">Description</th>
       <th scope="col">Options</th>
     </tr>
   </thead>
   <tbody>
     {{#each categories}}
     <tr>
-      
       <td><img src="/category-images/{{this.img_path}}" alt="" style="width: 50px; height: 50px;"></td>
       <td>{{this._id}}</td>
       <td>{{this.category-name}}</td>
@@ -35,6 +34,8 @@
 </div>
     </div>
 </section>
+
+
 
 <script>
 $(function () {

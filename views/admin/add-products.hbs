@@ -1,8 +1,9 @@
-<section>
-    <div class="container">
+{{!-- <script defer src="https://cdn.crop.guide/loader/l.js?c=FQNHBG"></script> --}}
+    <section class="m-0">
+    <div class="container-fluid ">
       <h3>Add Product</h3>
-      <div class="row  d-flex justify-content-center m-5" >
-        <div class="col-md-6 d-flex justify-content-center pb-4" style="background-color: rgb(187, 195, 202); border-radius: 10px;">
+      <div class="row  m-5" >
+        <div class="col-md-10  pb-4 pt-4 shadow-lg p-3 mb-5 bg-body rounded border border-dark" >
            <form enctype="multipart/form-data" method="post" action="add-products">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Title</label>
@@ -76,6 +77,9 @@
    
     </div>
 </section>
+
+
+
  
   <script>
    var titleError = document.getElementById('title-error');
@@ -122,7 +126,7 @@
         descriptionError.innerHTML= 'Description is required';
         return false;
     }
-    if(description.length > 50){
+    if(description.length > 500){
         descriptionError.innerHTML= 'Description Should not exceed 50 Charectors..';
         return false;
     }

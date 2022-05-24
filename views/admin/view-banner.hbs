@@ -1,0 +1,71 @@
+
+    <section class="m-0">
+    <div class="container-fluid">
+      <h3>Banners</h3>
+        <div class="mt-4 mb-3">    
+            <a href="/admin/add-banner" class="btn btn-success ms-3" style="margin-left: auto;">Add Banner</a>
+        </div>
+    <div class="col-11 p-4 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
+   <table class="table mt-5" id="categorytable"> 
+  <thead>
+    <tr>
+      
+      <th scope="col">Image</th>
+      
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each banners}}
+    <tr>
+      
+      <td><img src="/banner-images/{{this.img_path}}" alt="" style="width: 500px; height: 200px;"></td>
+     
+
+      <td>
+        <button class="btn btn-danger" style="margin-top: 80px;" onclick="deletbann('{{this._id}}')">Delete</button>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</div>
+    </div>
+</section>
+
+
+
+<script>
+{{!-- $(function () {
+    $('#categorytable').DataTable();
+} );
+</script> --}}
+<script>
+function deletbann(banId){  
+  $.ajax({
+    url:'/admin/delete-banner/'+banId,
+    method:'get',
+    success:(response)=>{
+      if(response.status){
+          Swal.fire({
+          title: 'Deleted',
+          text: "Banner Delete Success fully",
+          icon: 'info',
+          showCancelButton: false,
+          confirmButtonColor: '#11B619',
+          cancelButtonColor: '#A19391',
+          confirmButtonText: 'Ok'
+          }).then((result) => {
+               if (result.isConfirmed) {
+                                      location.href='/admin/banner'
+                                      }
+          })
+
+      }
+
+    }
+  })  
+
+      
+  }
+</script>

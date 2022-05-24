@@ -1,0 +1,123 @@
+<section style="margin: 0px;">
+    <div class="row m-0">
+        <div class="container-fluid col-1 d-flex justify-content-center mt-4" style="width: 100%;">
+            <img src="/banner/img-banner-offer.webp" alt="" class="img-fluid" style="max-width: 100%; height: auto;">
+            </div></div>
+        </section>
+        <section>
+            <div class="row m-5 d-flex justify-content-evenly">
+               
+                    <div class="col-6" style="border: 1px solid black; border-radius: 20px; padding: 50px;">
+                        <table>
+                            <tr class="mt-3">
+                                <td>
+                                    <h5>
+                                        Address :
+                                    </h5>
+                                    </td>
+                                        <td>{{details.address_collection.first_name}}
+                                            {{details.address_collection.last_name}},<br>
+                                            {{details.address_collection.house_name}},
+                                            {{details.address_collection.street}},
+                                            <br>{{details.address_collection.town}},
+                                            {{details.address_collection.pin}},
+                                            {{details.address_collection.state}},
+                                            {{details.address_collection.country}},<br>
+                                            {{details.address_collection.mobile}},
+                                            {{details.address_collection.email}}</td>
+                                </tr>
+                                <hr>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    <h5>
+                                        Total Amount  :</h5></td>
+                                </td>
+                                <td>
+                                    <h4>
+                                        {{total}}
+                                        </h4></td>
+                                        {{!-- <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+                                        <input type="text" name="addressId" id="" value="{{details._id}}" hidden> --}}
+                                        
+                                    </tr>
+                                </td>
+                            </tr>
+                            </table></div>
+                            <div class="col-4" style="border: 1px solid black; border-radius: 20px; padding-top: 50px; padding-bottom: 50px;">
+                                <table>
+                                    <tr class="d-flex align-items-cente">
+                                        <h5 style="margin-left: 90px;">
+                                            Payment Method </h5><br>
+                                            <div class="form-check ms-5">
+                                                <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="cod" onclick="addPayment('cod')">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Cash On Delivery
+                                                </label>
+                                            </div>
+                                            <div class="form-check ms-5">
+                                                <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="razor" onclick="addPayment('razor')">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Razor Pay</label>
+                                                </div>
+                                                <div class="form-check ms-5">
+                                                <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="paypal" onclick="addPayment('paypal')">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Paypal</label>
+                                                </div>
+                                            </tr>
+                                            <hr>
+                                            <tr class="mt-3">
+                                                <td>
+                                                    <a href="/" class="btn btn-warning" style="margin-left: 30px; border-radius: 5px;">Cancel</a>
+                                                        <td>
+                                                            <button class="btn btn-success ms-3" onclick="validatePayment('{{details._id}}')" style="border-radius: 5px;">Place Order</button>
+                                                        </td>
+                                                    </a>
+                                                </td>
+                                                </tr></table>
+                                            </tr>
+                                        </div>
+                                    </tr>
+                                    </div>
+                                </section>
+<script src="/javascripts/ajax-script.js"></script>
+    {{!-- <script>
+    $('payment-form').submit((e)=>{
+        
+        e.preventDefault()
+        $.ajax((
+            url:'/place-order',
+            method:'post',
+            data:$('#payment-form').serialize(),
+            success:(response)=>{
+                alert('Success full')
+            }
+        ))
+
+    })
+</script>
+                                <script>
+                                    function validateForm() {
+
+                                        var radios = document.getElementsByName("paymentOptions");
+                                        var formValid = false;
+
+                                        var i = 0;
+                                        while (! formValid && (i < radios.length)) {
+                                            if (radios[i].checked) 
+                                                formValid = true;
+                                            
+
+                                            i++;
+                                        }
+
+                                        if (! formValid) 
+                                            alert("Must check some option!");
+                                        
+
+                                        return formValid;
+                                    };;
+                                </script> --}}
+

@@ -1,6 +1,8 @@
+
+<body itemscope itemtype="http://schema.org/WebPage" id="authentication" class="lang-en country-us currency-eur layout-full-width page-authentication tax-display-disabled page-customer-account">
 <section class="container-fluid">
-<div class="row d-flex justify-content-center" style="height: 568px; width: auto; background-image: url(/images/farmbg.jpg); background-repeat: no-repeat; background-size: 250vh;">
-    <div class="col-md-8 mt-5 " style="background-color: rgb(62, 165, 62); height: 450px; opacity: .9; border-radius: 20px; width: auto;">
+<div class="row d-flex justify-content-center" >
+    <div class="col-md-8 mt-5 mb-5" style="border: 2px solid black;">
       <h2 class="m-3">User Signup..</h2>
       
       <form action="/signup" method="post" class="m-5">
@@ -49,7 +51,7 @@
     </div>
 </div>
 </section>
-
+</body>
 
   <script>
    var psdError = document.getElementById('upsd-error');
@@ -103,10 +105,10 @@ function validEmail(){
         psdError.innerHTML= 'Password must be atleast 3 charecters ';
         return false;
     }
-    if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
-      psdError.innerHTML= 'Password has invalid syntax';
-        return false;
-    }
+    //if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
+    //  psdError.innerHTML= 'Password has invalid syntax';
+    //    return false;
+    //}
   
     psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
     return true;

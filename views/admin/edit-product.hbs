@@ -1,8 +1,9 @@
-<section>
-    <div class="container">
+
+    <section class="m-0">
+    <div class="container-fluid">
       <h3>Edit Product</h3>
-      <div class="row d-flex justify-content-around" >
-        <div class="col-md-8 m-5 d-flex justify-content-around pt-4" style="background-color: rgb(160, 216, 233); border-radius: 10px;">
+      <div class="row" >
+        <div class="col-md-10 mt-3 shadow-lg p-5 mb-5 bg-body rounded border border-dark" >
            <form enctype="multipart/form-data" method="post" action="/admin/edit-products/{{product._id}}" class="col-8 mb-5">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Title</label>
@@ -60,7 +61,7 @@
 
   <img src="/product-images/{{product.img_path.[0]}}" alt="" style="width: 100px; height: auto;" id="imgView1" class="p-3">
   <img src="/product-images/{{product.img_path.[1]}}" alt="" style="width: 100px; height: auto;" id="imgView2" class="p-3">
-  <input class="form-control" type="file" id="formFile" name="image"  onchange="viewImage(event)" value="./product-images/{{product.img_path.[0]}}" multiple>
+  <input class="form-control" type="file" id="formFile" name="image"  onchange="viewImage(event)" value="./product-images/{{product.img_path.[]}}" multiple>
 </div>
   <a href="/admin/view-products" class="btn btn-primary">Cancel</a>
   <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure to Submit this')">Submit</button>
@@ -69,6 +70,8 @@
       </div>
     </div>
 </section>
+
+
 <script>
     function viewImage(event){
         document.getElementById('imgView1').src=URL.createObjectURL(event.target.files[0])

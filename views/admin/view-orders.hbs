@@ -1,101 +1,92 @@
-<section class="container">
-<div class="row d-flex justify-content-center">
-    <div class="col-md-6">
-        <form action="/admin/add-users" method="post">
-     <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Username</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputEmail33" name="uname" onkeyup="validName()">
-      <span id="name-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-    <div class="col-sm-10">
-      <input type="email" class="form-control" id="inputEmail3" name="uemail" onkeyup="validEmail()">
-      <span id="uemail-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-    <div class="col-sm-10">
-      <input type="password" class="form-control" id="inputPassword3" name="Password" onkeyup="validPsd()">
-      <span id="upsd-error" class="text-danger text-center"></span>
-    </div>
-  </div>
+
+    <section class="d-flex justify-content-around ms-5" >
  
-  <button type="submit" class="btn btn-primary" onclick="return formValid()">Add User</button>
-  <button type="reset" class="btn btn-primary">Reset</button>
-</form>
+    <div class=" p-3 mt-4 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
+        <div class="d-flex align-items-end mb-3" >
+           <h3 class="me-3">View Orders</h3>
+            
+        </div>
+
+   <table class="table mt-3" id="prtable" > 
+  <thead>
+    <tr>
+      
+      
+      <th scope="col">Date</th>
+      <th scope="col">Address</th>
+      <th scope="col">Mobile</th>
+      <th scope="col">Products</th>
+      <th scope="col">Payment</th>
+      <th scope="col">Status</th>
+      <th scope="col">Deleted</th>
+      <th scope="col">Dispatched</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each orders}}
+    <tr>
+      
+     
+      <td>{{this.stringDate}}</td>
+      <td>                          
+                                    {{this.address.address_collection.first_name}}<br>{{this.address.address_collection.house_name}}<br>{{this.address.address_collection.street}}
+                                    {{this.address.address_collection.town}}{{this.address.address_collection.pin}}<br>{{this.address.address_collection.state}}
+                                    {{this.address.address_collection.country}}
+                                   
+
+      </td>
+    
+      <td>{{this.user_info.user_mobile}}</td>
+      <td>
+          {{#each this.products}}
+          {{this.product_id}}
+          {{/each}}
+      </td>
+      <td>{{this.payment_option}}</td>
+      <td>{{this.status}}</td>
+
+      <td>{{this.deleted}}</td>
+      <td>{{#if this.dispatched}}
+        Order Out for Delivery
+        {{else}}
+        {{#if this.deleted}}
+        Order Deleted
+        {{else}}
+        Order under Processing
+        {{/if}}
+        {{/if}}
+      </td>
+      {{#if this.deleted}}
+        <td>
+        <button class="btn btn-primary" disabled>Edit</button>
+        <button class="btn btn-danger" disabled>Delete</button>
+      </td>
+      {{else}}
+      {{#if this.dispatched}}
+      <td>
+        <button class="btn btn-primary" disabled>Edit</button>
+        <button class="btn btn-danger" disabled>Delete</button>
+      </td>
+      {{else}}
+      <td>
+        <a href="/admin/edit-order/{{this._id}}" class="btn btn-primary">Edit</a>
+        <a href="/admin/delete-order/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a>
+      </td>
+      {{/if}}
+      {{/if}}
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
     </div>
-</div>
 </section>
 
 
-  <script>
-   var psdError = document.getElementById('upsd-error');
-   var emailError = document.getElementById('uemail-error');
-   var nameError = document.getElementById('name-error');
 
-  const form=document.getElementById('form');
-
-  function validName(){
-    
-    var name = document.getElementById('inputEmail33').value;
-   
-    if(name.length==0){
-        nameError.innerHTML= 'Name is required';
-        return false;
-    }
-    if(!name.match(/^[A-Za-z]*$/)){
-        nameError.innerHTML='Numbers and Special Charectors not allowd';
-        return false;
-    }
-    nameError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
-}
-
-function validEmail(){
-    
-    var email = document.getElementById('inputEmail3').value;
-   
-    if(email.length==0){
-        emailError.innerHTML= 'Email is required....';
-        return false;
-    }
-    if(!email.match(/^[A-Za-z\._\-[0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
-        emailError.innerHTML='Invalid Email Format....';
-        return false;
-    }
-    emailError.innerHTML = "";
-    return true;
-}
- 
- function validPsd(){
- 
-  var psd = document.getElementById('inputPassword3').value;
-   if(psd.length == 0){
-        psdError.innerHTML= 'Password is required';
-        return false;
-    }
-    if(psd.length < 3){
-        psdError.innerHTML= 'Password must be atleast 3 charecters ';
-        return false;
-    }
-    if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
-      psdError.innerHTML= 'Password has invalid syntax';
-        return false;
-    }
-  
-    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
- }
- function formValid(){
-   if(!validName() || !validPsd() || !validEmail()){
-      return false;
-   }
-   return true;
- }
-</script>
-
-
+{{!-- 
+<script>
+$(function () {
+    $('#prtable').DataTable();
+} );
+</script> --}}
