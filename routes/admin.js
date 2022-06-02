@@ -1,10 +1,10 @@
-var express = require('express');
+const express = require('express');
 const async = require('hbs/lib/async');
 const { Db } = require('mongodb');
-var prhelper=require('../helper/product-helper')
-var usrhelper=require('../helper/user-helpers')
+const prhelper=require('../helper/product-helper')
+const usrhelper=require('../helper/user-helpers')
 //var store=require('../config/multer_loader')
-var router = express.Router();
+const router = express.Router();
 const path=require('path')
 const multer=require('multer')
 
@@ -131,9 +131,10 @@ router.get('/adminhome',async function(req, res, next) {
 
   if(req.session.adminLoged){
     let dashData=await prhelper.getTotalDashbord()
+    let mostSelling=await prhelper.getMostSellin()
     //console.log("\norder view at admin side : "+JSON.stringify(totalOrder));
 
-    res.render('admin/index', { title: 'Admin',admin:req.session.admin,dashData});
+    res.render('admin/index', { title: 'Admin',admin:req.session.admin,dashData,mostSelling});
   }
   else{
     res.redirect('/admin')
@@ -207,17 +208,20 @@ router.post('/add-products',productImgStore.array('image'),verifyAdmin,function(
   }
 });
 
-router.get('/delete-product/',verifyAdmin,(req,res)=>{
-  let proId=req.query.id
+router.get('/delete-product/:id',verifyAdmin,(req,res)=>{
+  let proId=req.params.id
   prhelper.deleteProduct(proId).then((response)=>{
-    res.redirect('/admin/view-products')
+    //res.redirect('/admin/view-products')
+    res.json({success:true})
   })
+  //console.log("\nparams ID "+proId);
+  
 });
  
 router.get('/edit-product/:id',verifyAdmin,async (req,res)=>{
   let product=await prhelper.getProductDetails(req.params.id)
   prhelper.getAllCategory().then((category)=>{
-    console.log("category details : "+category);
+    ///console.log("category details : "+category);
   res.render('admin/edit-product',{product,title: 'Admin',admin:true,category})
 
   })
@@ -336,10 +340,12 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
 
   router.get('/delete-category/',(req,res)=>{
     let caegoryId=req.query.id
-    console.log("$$$$$$$&&&&&&*******");
+    //console.log("$$$$$$$&&&&&&******* : "+caegoryId);
     prhelper.deleteCategory(caegoryId).then((response)=>{
-      res.redirect('/admin/view-category')
+      //res.redirect('/admin/view-category')
+      res.json({success:true})
     })
+    
   
   })
 
@@ -372,6 +378,66 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
     })
   })
 
+  router.get('/view-category-offer',verifyAdmin,async (req,res)=>{
+    let category= await prhelper.getAllCategory()
+    res.render('admin/view-category-offer',{title:'Admin',admin:req.session.admin,category})
+  })
+
+  router.get('/add-cat-offer/:id',verifyAdmin,async (req,res)=>{
+    await prhelper.getCategoryByID(req.params.id).then((categ)=>{
+      res.render('admin/add-cat-offer',{title:'Admin',admin:req.session.admin,categ})
+    })
+  })
+
+  router.post('/add-cat-offer',verifyAdmin,async (req,res)=>{
+
+    await prhelper.addCatOffer(req.body).then(()=>{
+      res.redirect('/admin/view-category-offer')
+    })
+  })
+
+
+  router.post('/remove-cat-offer/:id',verifyAdmin,async (req,res)=>{
+    prhelper.removeCatOffer(req.params.id).then(()=>{
+      res.json({status:true})
+    }).catch(()=>{
+      res.json({status:false})
+    })
+  })
+
+
+router.get('/coupons',verifyAdmin,async (req,res)=>{
+  let coup=await prhelper.getCoupons()
+  console.log("Coupon Data : "+JSON.stringify(coup));
+    if(coup){
+      res.render('admin/view-coupon',{title:'Admin',admin:req.session.admin,coup})
+    }else{
+      res.render('admin/view-coupon',{title:'Admin',admin:req.session.admin})
+    }
+})
+
+router.get('/add-coupons',verifyAdmin,(req,res)=>{
+ 
+  res.render('admin/add-coupons',{title:"Admin",admin:req.session.admin})
+})
+
+router.post('/add-coupons',verifyAdmin,(req,res)=>{
+ 
+  console.log('Coupon Data : '+JSON.stringify(req.body));
+  prhelper.addCoupon(req.body)
+  res.redirect('/admin/coupons')
+})
+
+router.post('/remove-coupons/:id',verifyAdmin,(req,res)=>{
+  console.log("DDFDFDFSDSFDFsd");
+  prhelper.removeCoupon(req.params.id).then(()=>{
+    res.json({status:true})
+  })
+  
+})
+
+
+
   router.get('/view-orders',verifyAdmin,async (req,res)=>{
     let orders=await prhelper.getAllOrders()
     console.log("\ndata : "+JSON.stringify(orders[0]));
@@ -386,7 +452,7 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
     console.log("\nOrder details in helper : "+orderDetail);
     res.render('admin/edit-order',{title:'Admin',admin:req.session.admin,orderDetail})
 
-  })
+  }) 
 
   router.post('/update-order',verifyAdmin,async (req,res)=>{
     console.log("request : "+JSON.stringify(req.body));
@@ -398,8 +464,9 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
 
   router.get('/delete-order/:id',verifyAdmin,async(req,res)=>{
     let orderId=req.params.id
+    // console.log('Data : '+orderId);
     await usrhelper.removeOrder(orderId)
-    res.redirect('/admin/view-orders')
+    res.json({success:true})
   })
   router.get('/reports',verifyAdmin,(req,res)=>{
     res.render('admin/reports',{title:'Admin',admin:req.session.admin})
@@ -463,5 +530,53 @@ router.get('/view-category',verifyAdmin,(req,res)=>{
       res.render('errors/error404')
     })
   })
+
+  router.get('/view-offers',verifyAdmin,(req,res)=>{
+    res.render('admin/offer-control',{title:'Admin',admin:req.session.admin})
+  })
+
+  router.get('/product-offers',verifyAdmin,async(req,res)=>{
+    await prhelper.getProductInfoOffer().then((products)=>{
+       console.log(products);
+      res.render('admin/view-product-offers',{title:'Admin',admin:req.session.admin,products})
+    }).catch((err)=>{
+      res.render('errors/error404',{title:'Data Error',admin:req.session.admin})
+    })
+  })
+
+  router.get('/add-offer/:id',verifyAdmin,async (req,res)=>{
+    let pr_id=req.params.id
+    let product=await prhelper.getProductDetails(pr_id)
+    res.render('admin/add-offer',{title:"Admin",admin:req.session.admin,product})
+  })
+
+  router.post('/add-offer',verifyAdmin,async (req,res)=>{
+    console.log("Offer data at form "+JSON.stringify(req.body)); 
+    await prhelper.addoffer(req.body).then((data)=>{
+      res.redirect('/admin/product-offers')
+    })
+  })
+
+  router.get('/remove-offer/:id',verifyAdmin,async(req,res)=>{
+    await prhelper.removeOffer(req.params.id).then(()=>{
+      res.redirect('/admin/product-offers')
+    })
+  })
+
+  router.get('/admin-feedback',verifyAdmin,async (req,res)=>{
+    //console.log('kjkjkjkjkjkjkj');
+    await prhelper.getFeedback().then((data)=>{
+
+      res.render('admin/view-feedback',{data,admin:req.session.admin})
+    })
+  })
+
+router.get('/view-message',verifyAdmin,async (req,res)=>{
+  await prhelper.getMessage().then((data)=>{
+    console.log('\n Feed back data ');
+    console.log(data);
+    res.render('admin/view-message',{title:'Admin',admin:req.session.admin,data})
+  })
+})
 
 module.exports = router;

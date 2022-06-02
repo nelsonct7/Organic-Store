@@ -26,17 +26,30 @@
                                             {{details.address_collection.mobile}},
                                             {{details.address_collection.email}}</td>
                                 </tr>
-                                <hr>
+                                <hr> 
                             </tr>
                             
                             <tr>
                                 <td>
                                     <h5>
-                                        Total Amount  :</h5></td>
+                                        Total Amount  :</h5>
                                 </td>
                                 <td>
                                     <h4>
                                         {{total}}
+                                        </h4></td>
+                                        {{!-- <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+                                        <input type="text" name="addressId" id="" value="{{details._id}}" hidden> --}}
+                                        
+                                    </tr>
+                                                                <tr>
+                                <td>
+                                    <h5>
+                                        Amount Payable  :</h5>
+                                </td>
+                                <td>
+                                    <h4>
+                                        {{amountPay}}
                                         </h4></td>
                                         {{!-- <input type="text" name="userId" id="" value="{{user._id}}" hidden>
                                         <input type="text" name="addressId" id="" value="{{details._id}}" hidden> --}}
@@ -50,6 +63,14 @@
                                     <tr class="d-flex align-items-cente">
                                         <h5 style="margin-left: 90px;">
                                             Payment Method </h5><br>
+                                            {{#if paymentByWallet}}
+                                            <div class="form-check ms-5">
+                                                <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="wallet" onclick="addPayment('wallet')">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    Payment By Wallet
+                                                </label>
+                                            </div>
+                                            {{else}}
                                             <div class="form-check ms-5">
                                                 <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="cod" onclick="addPayment('cod')">
                                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -61,16 +82,17 @@
                                                 <label class="form-check-label" for="flexRadioDefault1">
                                                     Razor Pay</label>
                                                 </div>
-                                                <div class="form-check ms-5">
+                                            <div class="form-check ms-5">
                                                 <input class="form-check-input" type="radio" name="paymentOptions" id="flexRadioDefault1" value="paypal" onclick="addPayment('paypal')">
                                                 <label class="form-check-label" for="flexRadioDefault1">
                                                     Paypal</label>
-                                                </div>
+                                            </div>
+                                            {{/if}}
                                             </tr>
                                             <hr>
                                             <tr class="mt-3">
                                                 <td>
-                                                    <a href="/" class="btn btn-warning" style="margin-left: 30px; border-radius: 5px;">Cancel</a>
+                                                    {{!-- <a href="/" class="btn btn-warning" style="margin-left: 30px; border-radius: 5px;">Cancel</a> --}}
                                                         <td>
                                                             <button class="btn btn-success ms-3" onclick="validatePayment('{{details._id}}')" style="border-radius: 5px;">Place Order</button>
                                                         </td>

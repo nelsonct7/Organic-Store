@@ -6,5 +6,9 @@ module.exports={
     CART_COLLECTION:'og_cart',
     ADDRESS_COLLECTION:'og_user_address',
     ORDER_COLLECTION:'og_orders',
-    BANNER_COLLECTION:'og_banners'
+    BANNER_COLLECTION:'og_banners',
+    COUPON_COLLECTION:'og_coupons',
+    MESSAGE_COLLECTION:'og_messages',
+    WALLET_COLLECTION:'og_wallet',
+    FEEDBACK_COLLECTION:'og_feedback',
 }

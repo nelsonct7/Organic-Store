@@ -1,0 +1,43 @@
+<section>
+<div class="row ms-5 mt-5">
+    <div class="col-md-8 shadow-lg p-3 mb-5 bg-body rounded">
+         <a href="/admin/add-coupons" class="btn btn-primary">Add Coupon</a>
+<table class="table mt-5" id="prtable">
+<thead>
+    <tr>
+        <th>Coupon Code</th>
+        <th>Offer</th>
+        <th>End Date</th>
+        <th>Options</th>
+    </tr>
+</thead>
+<tbody>
+    {{#each coup}}
+    <tr>
+        <td>{{this.coupon_code}}</td>
+        <td>{{this.offer}}</td>
+        <td>{{this.end_date}}</td>
+        <td>
+            <button class="btn btn-danger" onclick="removeCoup('{{this._id}}')">Remove Coupon</button> 
+        </td>
+    </tr>
+    {{/each}}
+</tbody>
+        </table>
+    </div>
+</div>
+</section>
+
+<script>
+    function removeCoup(coupId){
+        $.ajax({
+                url: '/admin/remove-coupons/' + coupId,
+                                method: 'post',
+                                success: (response) => {
+                                    if (response.status) {
+                                        window.location.href='/admin/coupons'
+                                    }
+                                }
+        })
+    }
+</script>

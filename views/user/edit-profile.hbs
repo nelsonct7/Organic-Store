@@ -1,11 +1,14 @@
-<section class="container-fluid">
+<section class="container-fluid" style="background-color: rgb(139, 139, 226);">
 <div class="row d-flex justify-content-center" >
-    <div class="col-md-8 mt-5 mb-5" style="border: 2px solid black;">
-      <div class="row d-flex justify-content-around">
-        <div class="col-6"><h2 class="m-3">Update Profile</h2></div>
-        <div class="col-6 d-flex justify-content-end" style=""><a href="/change-password" class="btn btn-secondary" style="margin-top: 50px; border-radius: 10px; height: 40px;">Change password</a></div>
-      </div>
-      
+    <div class="col-md-8 mt-5 mb-5" id="transparenter">
+      <div class="row">
+        <div class="col-6">     
+        <h2 class="m-3">Update Profile</h2>
+        </div>
+        <div class="col-6 d-flex justify-content-end" >
+          <a href="/change-password" class="btn btn-secondary m-3" >Change password</a>
+        </div>
+        </div>
       
       <form action="/edit-profile" method="post" class="m-5">
      <div class="row mb-3">
@@ -22,20 +25,6 @@
       <span id="uemail-error" class="text-danger text-center"></span>
     </div>
   </div>
-  {{!-- <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-4 col-form-label">Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" id="inputPassword3" name="user_password" onkeyup="validPsd()">
-      <span id="upsd-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-4 col-form-label">Confirm Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" id="inputPassword4" name="password_confirm" onkeyup="validConPsd()">
-      <span id="uconpsd-error" class="text-danger text-center"></span>
-    </div>
-  </div> --}}
   <div class="row mb-3">
     <label for="inputPassword3" class="col-sm-4 col-form-label">Mobile</label>
     <div class="col-sm-8">
@@ -49,11 +38,19 @@
 
 </form>
     </div>
-    
+  </div>  
 </div>
 </section>
-</body>
-
+        <style>
+            #transparenter{
+                background: rgba( 255, 255, 255, 0.25 );
+                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+                backdrop-filter: blur( 4px );
+                -webkit-backdrop-filter: blur( 4px );
+                border-radius: 10px;
+                border: 1px solid rgba( 255, 255, 255, 0.18 );
+            }
+        </style>
   <script>
    var psdError = document.getElementById('upsd-error');
    var emailError = document.getElementById('uemail-error');

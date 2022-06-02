@@ -37,7 +37,12 @@ const myChart = new Chart(ctx, {
     options: {
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                  color: 'blue',
+                  display: true,
+                  text: 'Number of orders'
+                }
             }
         }
     }
@@ -64,6 +69,7 @@ const data = {
 const config = {
   type: 'doughnut',
   data: data,
+
 };
 
 
@@ -80,11 +86,11 @@ let monthData=[0,0,0,0,0,0,0,0,0,0,0,0]
     method:'post',
     success:(response)=>{
      
-      console.log("Data length : "+response.data.length);
+      
       for(i=0;i<12;i++){
         for(j=0;j<response.data.length;j++){
           if(i===parseInt(response.data[j]._id)-1){
-            monthData[i]=response.data[j].totalAmount
+            monthData[i]=(response.data[j].totalAmount)/100
           }
         }
         }
@@ -105,6 +111,24 @@ let monthData=[0,0,0,0,0,0,0,0,0,0,0,0]
   const config1 = {
     type: 'line',
     data: data1,
+    options: {
+      scales: {
+        x: {
+          title: {
+            color: 'white',
+            display: true,
+            text: 'Month'
+          }
+        },
+        y: {
+          title: {
+            color: 'white',
+            display: true,
+            text: 'Percentage'
+          }
+        }
+      }
+    }
   };
 const ctxline = document.getElementById('lineChart');
 const lineChart = new Chart(ctxline, config1)

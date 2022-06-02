@@ -1,8 +1,7 @@
-<head>
+<head> 
     <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
             <title>Organic Store</title>
-
             <meta name="keywords" content="">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 </head>
@@ -32,8 +31,6 @@
                                                 <span itemprop="name">Home</span>
                                             </a>
                                             <meta itemprop="position" content="1"></li>
-
-
                                         </ol>
                                     </nav>
                                 </div>
@@ -44,15 +41,13 @@
                                         <div id="content-wrapper" class="col-xs-12">
                                             <section id="main">
                                                 <section id="content" class="page-home">
-
-
                                                     <div class="static_cms">
                                                         <div class="row">
                                                             <div class="col-cms col-xs-12 col-sm-6 col-md-6 col-lg-3">
                                                                 <div class="box_cms"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/icon_cms1.png" alt="" class="img-responsive"/>
                                                                     <div class="txt_cms">
                                                                         <h2>Free Shipping</h2>
-                                                                        <p>On all orders over $75.00</p>
+                                                                        <p>On all orders with in 2km</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -117,7 +112,7 @@
                                                                                         <h3 itemprop="name">
                                                                                             <a href="/view-product/{{ this._id }}" class="product_name one_line" title="Brixton Patrol All Terrain Anorak Jacket 2">{{ this.title }}</a>
                                                                                         </h3>
-                                                                                        {{!-- {{ !-- <div class="hook-reviews">
+                                                                            {{!-- {{ !-- <div class="hook-reviews">
                                                                         <div class="comments_note" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
                                                                             <div class="star_content clearfix">
                                                                                 <div class="star star_on"></div>
@@ -133,13 +128,18 @@
                                                                                 <span itemprop="reviewCount">1</span>
                                                                                 Review(s)</span>
                                                                         </div>
-
                                                                     </div> -- }} --}}
+                                                                                                                                                            <div class="product-price-and-shipping">
+                                                                                            <span class="sr-only">Price</span>
+                                                                                            <span itemprop="price" class="price " style="text-decoration: line-through;">
+                                                                                                <i class="fa fa-indian-rupee-sign"></i>,
+                                                                                                {{ this.price }}</span>
+                                                                                        </div>
                                                                                         <div class="product-price-and-shipping">
                                                                                             <span class="sr-only">Price</span>
                                                                                             <span itemprop="price" class="price ">
                                                                                                 <i class="fa fa-indian-rupee-sign"></i>,
-                                                                                                {{ this.price }}</span>
+                                                                                                {{ this.actualprice }}</span>
                                                                                         </div>
                                                                                         <ul class="add-to-links">
                                                                                             <li class="cart">
@@ -150,7 +150,7 @@
                                                                                                     </button>
                                                                                                 </div>
                                                                                             </li>
-                                                                                            <li>
+                                                                                            {{!-- <li>
                                                                                                 <a class="addToWishlist wishlistProd_15" title="Add to wishlist" href="#" data-rel="15" onclick="WishlistCart('wishlist_block_list', 'add', '15', false, 1); return false;">
                                                                                                     Add to wishlist
                                                                                                 </a>
@@ -159,7 +159,7 @@
                                                                                                 <a href="#" class="poscompare-add compare-button js-poscompare-add" data-id_product="15" onclick="posCompare.addCompare($(this),15); return false;" title="Add to compare">
                                                                                                     <span>Add to compare</span>
                                                                                                 </a>
-                                                                                            </li>
+                                                                                            </li> --}}
                                                                                         </ul>
                                                                                     </div>
                                                                                     <div class="variant-links"></div>
@@ -176,33 +176,28 @@
                                             </div>
                                         </div>
                                     </div>
-
-
+                                    <input type="hidden" name="" id="orderId" value="{{deliveryStatus}}" hidden>
+                                    <input type="text" name="" id="deliveryStatus" value="{{delivery}}" hidden>
                                     <div class="home-banner">
                                         <div class="col col-md-3 col-xs-12">
                                             <div class="banner-box">
-                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/1_1.jpg" alt=""/></a>
+                                                <a href="#"><img src="/banner/chips.jpg" alt=""/></a>
                                             </div>
                                         </div>
                                         <div class="col col-md-6 col-xs-12">
                                             <div class="banner-box">
-                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/2_1.jpg" alt=""/></a>
+                                                <a href="#"><img src="/banner/icecream.jpg" alt=""/></a>
                                             </div>
                                         </div>
                                         <div class="col col-md-3 col-xs-12">
                                             <div class="banner-box">
-                                                <a href="#"><img src="http://demo.posthemes.com/pos_ecolife/img/cms/3_1.jpg" alt=""/></a>
+                                                <a href="#"><img src="/banner/almonds.jpg" alt=""/></a>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </body>
-
-
                     </main>
                     <div class="back-top">
                         <a href="#" class="back-top-button"></a>
@@ -275,5 +270,53 @@
                                 }
                             })
                         };
+                    </script>
+                    <script>
+                         $(document).ready(async function () {
+                             
+                             let delivery=document.getElementById('deliveryStatus').value
+                            //let deliveryStatus=document.getElementById('orderId').value
+                            //alert('Data in text '+JSON.stringify(deliveryStatus))
+                             if(delivery==='true'){
+                                    const { value: text } = await Swal.fire({
+                                    input: 'textarea',
+                                    inputLabel: 'Hope you are happy with our product...',
+                                    inputPlaceholder: 'Type your feedback here...',
+                                    inputAttributes: {
+                                        'aria-label': 'Type your message here'
+                                    },
+                                    showCancelButton: false
+                                    })
+
+                                    if (text) {
+                                    $.ajax({
+                                        url:'/save-textfeedback',
+                                        method:'post',
+                                        data:{
+                                            feedback:text
+                                        },
+                                        success:(responce)=>{
+                                            if(responce.feedbackSatatus){
+                                                Swal.fire('Thank you for your valuable feedback...')
+                                            }
+                                        }
+                                    })
+                                    }else{
+                                        $.ajax({
+                                        url:'/save-textfeedback',
+                                        method:'post',
+                                        data:{
+                                            feedback:'No Feed back'
+                                           
+                                        },
+                                        success:(responce)=>{
+                                            if(responce.feedbackSatatus){
+                                                Swal.fire('Thank you for your valuable feedback...')
+                                            }
+                                        }
+                                    })
+                                    }
+                             }
+                         })
                     </script>
                 </body>

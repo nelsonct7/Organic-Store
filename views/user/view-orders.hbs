@@ -24,7 +24,6 @@
                                     <th>Amount</th>
                                     <th>Payment</th>
                                     <th>Status</th>
-                                    <th>Dispatch</th>
                                     <th>Options</th>
                                 </tr>
                             </thead>
@@ -53,22 +52,21 @@
                                 </td>
                                 <td>
                                     {{this.status}}
-                                </td>
-                                <td>
-                                    {{#if this.dispatched}}
+                                    {{!-- {{#if this.dispatched}}
                                     Order Out for Delivery
                                     {{else}}
                                     Order On Process
-                                    {{/if}}
+                                    {{/if}} --}}
                                 </td>
-                                <td>
+                                <td class="">
                                    
-                                        <a href="/view-order-products/{{this._id}}/{{this.total_amount}}" class="btn btn-warning btn-sm">View Products</a>
-                                        {{#if this.dispatched}}
-                                        Order Processed
-                                        {{else}}
-                                        <a href="/remove-order/{{this._id}}" class="text-muted" onclick="alert('Are you sure to remove this Order')"><i class="fa fa-trash"></i> Remove order</a>
-                                        {{/if}}
+                                        <a href="/view-order-products/{{this._id}}/{{this.total_amount}}" class="btn btn-success btn-sm mb-1"><i class="fa-brands fa-product-hunt"></i> View Products</a>
+
+                                         {{#if this.canceled}}
+                                         <a href="/remove-order/{{this._id}}" class="btn btn-warning btn-sm mb-1" onclick=""><i class="fa fa-trash"></i> Remove order</a>
+                                         {{else}}
+                                            <button type="button" class="btn btn-danger btn-sm mb-1" onclick="cancelOrder('{{this._id}}')"><i class="fa-solid fa-ban"></i> Cancel order</button>
+                                         {{/if}}
                                 </td>
 
                             </tr>
@@ -93,3 +91,74 @@
     </div>
 </div>
 </div>
+<script>
+    function cancelOrder(ordId){
+        $.ajax({
+            url:'/cancel-order/'+ordId,
+            method:'post',
+            success:(responce)=>{
+                if(responce.dateError){
+                        Swal.fire({
+                        title: 'Sorry',
+                        text: "Return date exceeded....",
+                        icon: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#11B619',
+                        cancelButtonColor: '#A19391',
+                        confirmButtonText: 'Ok'
+                        }).then((result) => {
+                             if (result.isConfirmed) {
+                                                    $('#wallet').html(count)=parseInt(responce.walletBal)
+                                                    //document.getElementById('wallet').innerHTML=responce.walletBal
+                                                    location.reload()
+                                                    }
+                        })
+                }else if(responce.pendingError){
+                    Swal.fire({
+                        title: 'Sorry',
+                        text: "Order is pending....",
+                        icon: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#11B619',
+                        cancelButtonColor: '#A19391',
+                        confirmButtonText: 'Ok'
+                        }).then((result) => {
+                             if (result.isConfirmed) {
+                                                    $('#wallet').html(count)=parseInt(responce.walletBal)
+                                                    location.reload()
+                                                    }
+                        })
+                }else if(responce.orderDeleted){
+                        Swal.fire({
+                        title: 'Success',
+                        text: "Order Canceled Successfully",
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonColor: '#11B619',
+                        cancelButtonColor: '#A19391',
+                        confirmButtonText: 'Ok'
+                        }).then((result) => {
+                             if (result.isConfirmed) {
+                                                    //document.getElementById('wallet').innerHTML=responce.walletBal
+                                                    location.reload()
+                                                    }
+                        })
+                }else{
+                        Swal.fire({
+                        title: 'Error',
+                        text: "Server Error",
+                        icon: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#11B619',
+                        cancelButtonColor: '#A19391',
+                        confirmButtonText: 'Ok'
+                        }).then((result) => {
+                             if (result.isConfirmed) {
+                                                    location.href='/'
+                                                    }
+                        })
+                }
+            }
+        })
+    }
+</script>

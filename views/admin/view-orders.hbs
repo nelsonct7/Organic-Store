@@ -1,25 +1,24 @@
 
-    <section class="d-flex justify-content-around ms-5" >
- 
-    <div class=" p-3 mt-4 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
-        <div class="d-flex align-items-end mb-3" >
-           <h3 class="me-3">View Orders</h3>
-            
-        </div>
+    <section class=" mt-5 ms-5" >
 
-   <table class="table mt-3" id="prtable" > 
+      <div class="row">
+        <div class="col-10 shadow-lg mb-5 bg-body rounded border border-dark container">
+          <div class="row">
+            <div class="col-12 p-3" style="background-color: rgb(119, 73, 172);">
+              <h3 style="color: white;">View Orders</h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+                 <table class="table mt-3" id="prtable" > 
   <thead>
     <tr>
-      
-      
       <th scope="col">Date</th>
       <th scope="col">Address</th>
       <th scope="col">Mobile</th>
       <th scope="col">Products</th>
       <th scope="col">Payment</th>
       <th scope="col">Status</th>
-      <th scope="col">Deleted</th>
-      <th scope="col">Dispatched</th>
       <th scope="col">Options</th>
     </tr>
   </thead>
@@ -39,14 +38,14 @@
     
       <td>{{this.user_info.user_mobile}}</td>
       <td>
-          {{#each this.products}}
-          {{this.product_id}}
+          {{#each this.product_info}}
+          {{this.title}}<br>
           {{/each}}
       </td>
       <td>{{this.payment_option}}</td>
       <td>{{this.status}}</td>
 
-      <td>{{this.deleted}}</td>
+      {{!-- <td>{{this.deleted}}</td>
       <td>{{#if this.dispatched}}
         Order Out for Delivery
         {{else}}
@@ -56,7 +55,7 @@
         Order under Processing
         {{/if}}
         {{/if}}
-      </td>
+      </td> --}}
       {{#if this.deleted}}
         <td>
         <button class="btn btn-primary" disabled>Edit</button>
@@ -69,24 +68,62 @@
         <button class="btn btn-danger" disabled>Delete</button>
       </td>
       {{else}}
+      {{#if this.canceled}}
+      <td>
+        <button class="btn btn-primary" disabled>Edit</button>
+        <button class="btn btn-danger" disabled>Delete</button>
+      </td>
+      {{else}}
       <td>
         <a href="/admin/edit-order/{{this._id}}" class="btn btn-primary">Edit</a>
-        <a href="/admin/delete-order/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a>
+        <button class="btn btn-danger" onclick="deleteData('{{this._id}}')">Delete</button>
+        {{!-- <a href="/admin/delete-order/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a> --}}
       </td>
+      {{/if}}
       {{/if}}
       {{/if}}
     </tr>
     {{/each}}
   </tbody>
 </table>
-    </div>
+            </div>
+          </div>
+        </div>
+      </div>
 </section>
 
 
 
-{{!-- 
-<script>
+
+{{!-- <script>
 $(function () {
     $('#prtable').DataTable();
 } );
 </script> --}}
+<script>
+function deleteData(id){ 
+        Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+          if (result.isConfirmed) {
+              $.ajax({
+              url:"/admin/delete-order/"+id,
+              method:'get',
+              success:(responce)=>{
+              if(responce.success){
+                  location.reload()
+               }
+            }
+    
+          })
+        }
+    })
+
+}
+</script>

@@ -1,7 +1,7 @@
 //functions for payment
 var paymethod=null
 function addPayment(str){
-    paymethod=str
+    paymethod=str 
 }
 
 function validatePayment(addressId){
@@ -20,7 +20,7 @@ function validatePayment(addressId){
                                         }
             })
     }
-    else if(paymethod==='cod' || paymethod==='razor' || paymethod==='paypal'){
+    else if(paymethod==='cod' || paymethod==='razor' || paymethod==='paypal' || paymethod==='wallet'){
         $.ajax({
             url:'/place-order',
             data:{
@@ -66,6 +66,22 @@ function validatePayment(addressId){
                     //                                 }
                     //     })
 
+                }else if(response.razorError){
+
+                    Swal.fire({
+                        title: 'Failed',
+                        text: "Razor Error",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#11B619',
+                        cancelButtonColor: '#A19391',
+                        confirmButtonText: 'Ok'
+                        }).then((result) => {
+                             if (result.isConfirmed) {
+                                                    window.location.href='/';
+                                                    }
+                        })
+
                 }
                 else if(response.paypalSuccess){
                     data=response.data
@@ -77,10 +93,27 @@ function validatePayment(addressId){
                     }
 
                        
-                }else{
+                }
+                else if(response.walletSuccess){
+                        Swal.fire({
+                            title: 'Success',
+                            text: "Order Placed Success fully",
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#11B619',
+                            cancelButtonColor: '#A19391',
+                            confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                 if (result.isConfirmed) {
+                                                        window.location.href='/';
+                                                        }
+                            })
+
+                        }
+                else{
                     Swal.fire({
                         title: 'Failed',
-                        text: "Ajax Error",
+                        text: "Payment Error",
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#11B619',
@@ -101,7 +134,7 @@ function validatePayment(addressId){
     }else{
         Swal.fire({
             title: 'Failed',
-            text: "Ajax Error",
+            text: "Payment Error",
             icon: 'warning',
             showCancelButton: false,
             confirmButtonColor: '#11B619',
@@ -161,7 +194,7 @@ function verifyPayment(resp,order){
     $.ajax({
         url:'/verifyPayment',
         data:{
-            resp,
+            resp, 
             order
         },
         method:'post',

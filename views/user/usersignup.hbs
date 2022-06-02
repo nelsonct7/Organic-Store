@@ -1,57 +1,68 @@
 
-<body itemscope itemtype="http://schema.org/WebPage" id="authentication" class="lang-en country-us currency-eur layout-full-width page-authentication tax-display-disabled page-customer-account">
+<body itemscope  id="authentication" class="lang-en country-us currency-eur layout-full-width tax-display-disabled page-customer-account">
 <section class="container-fluid">
-<div class="row d-flex justify-content-center" >
-    <div class="col-md-8 mt-5 mb-5" style="border: 2px solid black;">
+<div class="row d-flex justify-content-center" style="background-image: url(/images/pexels-lukas-616404.jpg); background-size: contain; background-repeat: round;">
+    <div class="col-md-8 mt-5 mb-5"  id="content-wrapper">
       <h2 class="m-3">User Signup..</h2>
       
-      <form action="/signup" method="post" class="m-5">
-     <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-4 col-form-label">Username</label>
-    <div class="col-sm-8">
-      <input type="text" class="form-control" id="inputEmail33" name="user_name" onkeyup="validName()">
+      <form action="/signup" method="post" class="m-5 ">
+     <div class="row mb-3 d-flex justify-content-center">
+    <label for="inputEmail3" class="col-sm-3 col-form-label " style="text-align: left;">Username</label>
+    <div class="col-sm-5">
+      <input type="text" class="form-control border border-secondary rounded" id="inputEmail33" name="user_name" onkeyup="validName()">
       <span id="name-error" class="text-danger text-center"></span>
     </div>
   </div>
-  <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-4 col-form-label">Email</label>
-    <div class="col-sm-8">
-      <input type="email" class="form-control" id="inputEmail3" name="user_email" onkeyup="validEmail()">
+  <div class="row mb-3 d-flex justify-content-center">
+    <label for="inputEmail3" class="col-sm-3 col-form-label " style="text-align: left;">Email</label>
+    <div class="col-sm-5">
+      <input type="email" class="form-control border border-secondary rounded" id="inputEmail3" name="user_email" onkeyup="validEmail()">
       <span id="uemail-error" class="text-danger text-center"></span>
     </div>
   </div>
-  <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-4 col-form-label">Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" id="inputPassword3" name="user_password" onkeyup="validPsd()">
+  <div class="row mb-3 d-flex justify-content-center ">
+    <label for="inputPassword3" class="col-sm-3 col-form-label " style="text-align: left;">Password</label>
+    <div class="col-sm-5">
+      <input type="password" class="form-control border border-secondary rounded" id="inputPassword3" name="user_password" onkeyup="validPsd()">
       <span id="upsd-error" class="text-danger text-center"></span>
     </div>
   </div>
-  <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-4 col-form-label">Confirm Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" id="inputPassword4" name="password_confirm" onkeyup="validConPsd()">
+  <div class="row mb-3 d-flex justify-content-center">
+    <label for="inputPassword3" class="col-sm-3 " style="text-align: left;">Confirm Password</label>
+    <div class="col-sm-5">
+      <input type="password" class="form-control border border-secondary rounded " id="inputPassword4" name="password_confirm" onkeyup="validConPsd()">
       <span id="uconpsd-error" class="text-danger text-center"></span>
     </div>
   </div>
-  <div class="row mb-3">
-    <label for="inputPassword3" class="col-sm-4 col-form-label">Mobile</label>
-    <div class="col-sm-8">
-      <input type="tel" class="form-control" id="inputMobile" name="user_mobile" onkeyup="validMobile()">
+  <div class="row mb-3 d-flex justify-content-center">
+    <label for="inputPassword3" class="col-sm-3 col-form-label" style="text-align: left;">Mobile</label>
+    <div class="col-sm-5">
+      <input type="tel" class="form-control border border-secondary rounded" id="inputMobile" name="user_mobile" onkeyup="validMobile()">
       <span id="mobile-error" class="text-danger text-center"></span>
     </div>
   </div>
- 
+ <div class="d-flex justify-content-end ">
   <button type="submit" class="btn btn-primary" onclick="return formValid()">Sign in</button>
-  <button type="reset" class="btn btn-primary">Reset</button>
+  <button type="reset" class="btn btn-primary ms-2">Reset</button>
   {{#if prerr}}
     <span class="label label-warning">Email Id is already present...</span>
   {{/if}}
+  </div>
 </form>
     </div>
 </div>
 </section>
 </body>
+        <style>
+            #content-wrapper{
+                background: rgba( 255, 255, 255, 0.25 );
+                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+                backdrop-filter: blur( 4px );
+                -webkit-backdrop-filter: blur( 4px );
+                border-radius: 10px;
+                border: 1px solid rgba( 255, 255, 255, 0.18 );
+            }
+        </style>
 
   <script>
    var psdError = document.getElementById('upsd-error');

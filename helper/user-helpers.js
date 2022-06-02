@@ -90,6 +90,9 @@ module.exports = {
                     }, {
                         $push: {
                             products: prodObj
+                        },
+                        $set:{
+                            coupon:1
                         }
                     }).then((response) => {
                         resolve()
@@ -99,7 +102,8 @@ module.exports = {
             } else {
                 let cartObj = {
                     user_data: objectId(userId),
-                    products: [prodObj]
+                    products: [prodObj],
+                    coupon:1
                 }
                 db.get().collection(collection.CART_COLLECTION).insertOne(cartObj).then((response) => {
                     resolve()
@@ -142,9 +146,38 @@ module.exports = {
                             $arrayElemAt: ['$product', 0]
                         }
                     }
+                },
+                {
+                    $lookup: {
+                        from: collection.CATEGORY_COLLECTION,
+                        localField: 'product.category',
+                        foreignField: 'category-name',
+                        as: 'categoryInfo'
+                    }  
+                },{
+                    $unwind:'$categoryInfo'
+                },
+                {
+                    $project:{
+                        product_id: 1,
+                        quantity: 1,
+                        product:1,
+                        categoryInfo:1,
+                        productprice:{$subtract:['$product.price',{$multiply:['$product.price',{$divide:[{$toInt:'$product.offer'},100]}]}]},
+                        actualPrice:{$subtract:['$productprice',{$multiply:['$productprice',{$divide:[{$toInt:'$categoryInfo.offer'},100]}]}]}
+                    }
+                },
+                {
+                    $project:{
+                        product_id: 1,
+                        quantity: 1,
+                        product:1,
+                        productprice:1,
+                        actualPrice:{$subtract:['$productprice',{$multiply:['$productprice',{$divide:[{$toInt:'$categoryInfo.offer'},100]}]}]}
+                    }
                 }
             ]).toArray()
-            // console.log("\ncart : "+JSON.stringify(cartItems));
+             console.log("\ncart Products : "+JSON.stringify(cartItems));
             resolve(cartItems)
         })
     },
@@ -157,7 +190,7 @@ module.exports = {
                 count = cart.products.length
                 console.log("\nCount in helper : " + count);
             }
-            resolve(count)
+            resolve(count) 
         })
     },
     updateCartQuantity: (details) => {
@@ -222,15 +255,16 @@ module.exports = {
                     }
 
                 },
-                {
-                    $unwind: '$products'
-                },
-                {
-                    $project: {
+                 {
+                     $unwind: '$products'
+                 },
+                 {
+                     $project: {
                         product_id: '$products.product_id',
-                        quantity: '$products.quantity'
-                    }
-                },
+                        quantity: '$products.quantity',
+                        coupon:'$coupon'
+                     }
+                 },
                 {
                     $lookup: {
                         from: collection.PRODUCT_COLLECTION,
@@ -238,21 +272,55 @@ module.exports = {
                         foreignField: '_id',
                         as: 'product'
                     }
-                }, {
+                },
+                {
                     $project: {
                         product_id: 1,
                         quantity: 1,
+                        coupon:1,
                         product: {
                             $arrayElemAt: ['$product', 0]
                         }
                     }
-                }, {
-
+                },
+                {
+                    $lookup:{
+                        from:collection.CATEGORY_COLLECTION,
+                        localField:'product.category',
+                        foreignField:'category-name',
+                        as:'categoryInfo'
+                    }
+                },
+                {
+                    $unwind:'$categoryInfo'
+                },
+                {
+                    $project:{
+                        product_id: 1,
+                        quantity: 1,
+                        product:1,
+                        coupon:1,
+                        cato:'$categoryInfo.offer',
+                        productprice:{$subtract:['$product.price',{$multiply:['$product.price',{$divide:[{$toInt:'$product.offer'},100]}]}]},
+                    }
+                },
+                {
+                    $project:{
+                        product_id: 1,
+                        quantity: 1,
+                        product:1,
+                        categoryInfo:1,
+                        productprice:1,
+                        coupon:1,
+                        actualPrice:{$subtract:['$productprice',{$multiply:['$productprice',{$divide:[{$toInt:'$cato'},100]}]}]}
+                    }
+                },
+                {
                     $group: {
                         _id: null,
                         total: {
                             $sum: {
-                                $multiply: ['$quantity', '$product.price']
+                                $multiply: ['$quantity', '$actualPrice','$coupon']
                             }
                         }
 
@@ -260,9 +328,10 @@ module.exports = {
                 }
             ]).toArray()
 
-            // console.log("\ncart : "+JSON.stringify(total[0].total));
+            //console.log("\ncart : "+JSON.stringify(total));
             if(total.length>0){
                 resolve(total[0].total)
+                // resolve()
             }else{
                 resolve(0)
             }
@@ -385,8 +454,13 @@ module.exports = {
     getAllAddressUser:(usr_id)=>{
         return new Promise(async (resolve, reject) => {
             let address = await db.get().collection(collection.ADDRESS_COLLECTION).find({user_data: objectId(usr_id)}).toArray()
-            console.log(address);
-            resolve(address)
+            //console.log(address);
+            if(address.length>0){
+                resolve(address)
+            }else{
+                resolve(false)
+            }
+            
         })
     }, 
 
@@ -428,9 +502,26 @@ module.exports = {
     getCartProductsList: (user_id) => {
         return new Promise(async (resolve, reject) => {
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({user_data: objectId(user_id)})
-            console.log("product list " + cart.products);
+            //console.log("product list " + cart.products);
             resolve(cart.products)
         })
+    },
+
+    decreaseProducts:(prList)=>{
+        console.log("\ndfdffs");
+        console.log(prList);
+        return new Promise((resolve,reject)=>{
+            prList.map(async(value)=>{
+                await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(value.product_id)},{
+                   
+                        $inc:{'godown-stock':-value.quantity}
+                    
+                })
+            })
+            resolve()
+        })
+        console.log('\n\nLists : ');
+            console.log(prList);
     },
     removeCart: (user_id) => {
         return new Promise(async (resolve, reject) => {
@@ -439,14 +530,15 @@ module.exports = {
             }, {
                 $set: {
 
-                    products: []
+                    products: [],
+                    coupon:1
                 }
             })
             resolve()
         })
     },
     addToOrder: (user_id, address_id, total, payment_option, pr_List) => {
-        let status = payment_option === 'cod' ? 'placed' : 'pending'
+        let status = payment_option === 'cod'||'wallet' ? 'placed' : 'pending'
         let orderObj = {
             user_data: objectId(user_id),
             delivery_address: address_id,
@@ -495,9 +587,10 @@ module.exports = {
                     }
                 }, {
                     $unwind: '$userinfo'
-                }, {
+                },
+                {
                     $project: {
-                        total_amount: 1,
+                        total_amount:{$round :['$total_amount',3]},
                         status: 1,
                         payment_option: 1,
                         dispatched: 1,
@@ -506,12 +599,13 @@ module.exports = {
                         userinfo: 1,
                         deleted: 1,
                         adressIndex: 1,
-                        stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }} 
+                        stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }},
+                        canceled:1
                     }
                 }
 
             ]).sort({date:-1}).toArray()
-            console.log("\nOrders : "+JSON.stringify(orders));
+            //console.log("\nOrders : "+JSON.stringify(orders));
             resolve(orders)
             // let orders=await db.get().collection(collection.ORDER_COLLECTION).find({user_data:userId}).toArray()
             // console.log("\nOrders : "+JSON.stringify(orders));
@@ -642,12 +736,77 @@ module.exports = {
                     }
                 }, {
                     $unwind: '$address'
+                },
+                // {
+                //     $unwind:'$products'
+                // },
+                {
+                    $project:{
+                        products:1,
+                        address:1,
+                        user_info:1,
+                        total_amount:{$round :['$total_amount',3]},
+                        status:1,
+                        payment_option:1,
+                        stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }},
+                        date:1
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collection.PRODUCT_COLLECTION,
+                        localField: 'products.product_id',
+                        foreignField: '_id',
+                        as: 'productDetail'
+                    }
                 }
+                // {
+                //     $project:{
+                //         stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }}
+                //     }
+                    
+                // }
 
 
             ]).sort({date:-1}).toArray()
-            // console.log("\nOrder details : "+JSON.stringify(orders[0]));
+          console.log("\nOrder details : "+JSON.stringify(orders[0].products));
             resolve(orders)
+        })
+    },
+
+
+    getDeliveryStatus:(usrId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let deliveryPending=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{user_data:objectId(usrId),delivery:'pending'}
+                },
+                // {
+                //  $project:{
+                //     returnDate:{
+                //         $dateAdd:
+                //             {
+                //             startDate: "$dispatch_date",
+                //             unit: "day",
+                //             amount: 2
+                //             }
+                //  }   
+                // }
+                // }
+                {
+                    $project:{
+                        _id:1,
+                    }
+                }
+            ]).toArray()
+            console.log('\n Delivery pending orders : '+JSON.stringify(deliveryPending));
+            
+            //.find({user_data:objectId(usrId),delivery:'pending'})
+            if(deliveryPending){
+                resolve(deliveryPending)
+            }else{
+                resolve(false)
+            }
         })
     },
 
@@ -716,7 +875,7 @@ module.exports = {
               instance.orders.create(options, function(err, order) {
                   if(err){
                       //console.log('\n Error : '+JSON.stringify(err));
-                      reject()
+                      reject(err)
                   }else{
                     //console.log("\n***********New Order : "+JSON.stringify(order));
                     resolve(order)
@@ -795,7 +954,7 @@ module.exports = {
                     console.log(payment);
                     resolve(payment)
                 }
-            });
+            }); 
         })
     },
     deleteProfile:(userId)=>{
@@ -811,6 +970,69 @@ module.exports = {
             }).catch(()=>{
                 reject()
             })
+        })
+    },
+    getUserMessages:(usrId)=>{
+        return new Promise(async(resolve,reject)=>{
+            await db.get().collection(collection.MESSAGE_COLLECTION).findOne({user_data:objectId(usrId)}).then((msg)=>{
+                resolve(msg)
+            }).catch((err)=>{
+                reject(err)
+            })
+        })
+    },
+    getValetAmount:(usrId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let balance=0;
+            balance=await db.get().collection(collection.WALLET_COLLECTION).findOne({user_data:objectId(usrId)})
+            if(balance){
+                resolve(balance.amount)
+            }else{
+                resolve(0)
+            }
+        })
+    },
+    updateWallet:(wAmount,usrId)=>{
+        return new Promise(async (resolve,reject)=>{
+            await db.get().collection(collection.WALLET_COLLECTION).updateOne({user_data:objectId(usrId)},{
+                $set:{
+                    amount:wAmount
+                }
+            }).then(()=>{
+                resolve()
+            })
+        })
+    },
+
+    addMessage:(message,userId)=>{
+
+        return new Promise(async (resolve,reject)=>{
+            let userPresent=await db.get().collection(collection.MESSAGE_COLLECTION).find({user_data:objectId(userId)}).toArray()
+            console.log('/nrtrtrtrtrrtr');
+            console.log(userPresent);
+            if(userPresent.length>0){
+                await db.get().collection(collection.MESSAGE_COLLECTION).updateOne({user_data:objectId(userId)},{
+                    $set:{
+                        adminMessage:[],
+                        adminView:false  
+                    },
+                    $push:{
+                        userMessage:message.message
+                    }
+                }).then((data)=>{
+                    resolve()
+                })
+
+            }else{
+                console.log('\nfgdgdfgfdgdfgdgd');
+                await db.get().collection(collection.MESSAGE_COLLECTION).insertOne({user_data:objectId(userId),
+                userMessage:[message.message],
+                adminMessage:[],
+                adminView:false
+                }).then((data)=>{
+                    resolve()
+                })
+            }
         })
     }
 

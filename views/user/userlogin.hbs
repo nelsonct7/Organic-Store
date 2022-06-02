@@ -35,41 +35,42 @@
     </div>
 </section> --}}
 
-    <body itemscope itemtype="http://schema.org/WebPage" id="authentication" class="lang-en country-us currency-eur layout-full-width page-authentication tax-display-disabled page-customer-account">
+    <body itemscope  id="authentication" class="lang-en country-us currency-eur layout-full-width page-authentication tax-display-disabled page-customer-account">
         <main>
-            <div id="wrapper">
+            <div id="wrapper" style="background-image: url(/images/pexels-lukas-616404.jpg); background-size: 100%; background-repeat: no-repeat;">
 
-                <div class="container">
-                    <div class="row d-flex justify-content-center">
-                        <div id="content-wrapper" class="col-xs-6 mb-5" style="border: 1px solid black;">
+                <div class="container" >
+                    <div class="row d-flex justify-content-center" >
+
+                        <div id="content-wrapper" class="col-xs-6 mb-5" >
                             <section id="main">
                                 <header class="page-header mt-3">
                                     <h1>
                                         Log in to your account
                                     </h1>
                                 </header>
-                                <section id="content" class="page-content card card-block shadow-lg p-3 mb-5 bg-body rounded" >
+                                <section id="content-wrapper" class="page-content card card-block shadow-lg p-3 mb-5  rounded d-flex justify-content-around" >
                                     <section class="login-form">
                                         <form id="login-form" action="/login" method="post">
                                             <section>
                                                 <input type="hidden" name="back" value="">
-                                                <div class="form-group row ">
+                                                <div class="form-group row d-flex justify-content-center">
                                                     <label class="col-md-3 form-control-label required">
                                                         Email
                                                     </label>
                                                     <div class="col-md-6">
-                                                        <input class="form-control border border-secondary" name="user_email" type="email" value="" required id="exampleInputEmail1" onkeyup="validEmail()">
+                                                        <input class="form-control border border-secondary rounded" name="user_email" type="email" value="" required id="exampleInputEmail1" onkeyup="validEmail()">
                                                         <span id="email-error" class="text-danger text-center"></span>
                                                     </div>
-                                                    <div class="col-md-3 form-control-comment"></div>
+                                
                                                 </div>
-                                                <div class="form-group row ">
+                                                <div class="form-group row d-flex justify-content-center">
                                                     <label class="col-md-3 form-control-label required">
                                                         Password
                                                     </label>
                                                     <div class="col-md-6">
                                                         <div class="input-group js-parent-focus">
-                                                            <input class="form-control js-child-focus js-visible-password border border-secondary" name="user_password" type="password" value="" pattern=".{2,}" required onkeyup="validPsd()" id="exampleInputPassword1">
+                                                            <input class="form-control js-child-focus js-visible-password border border-secondary rounded" name="user_password" type="password" value="" pattern=".{2,}" required onkeyup="validPsd()" id="exampleInputPassword1">
                                                             <span class="input-group-btn">
                                                                 <button class="btn" type="button" data-action="show-password" data-text-show="Show" data-text-hide="Hide">
                                                                     Show
@@ -80,13 +81,18 @@
                                                         <br>
                                                             <span id="psd-error" class="text-danger text-center"></span>
                                                     </div>
-
-                                                    <div class="col-md-3 form-control-comment"></div>
                                                 </div>
                                                 <div class="forgot-password">
-                                                    <a href="password-recovery.html" rel="nofollow">
-                                                        Forgot your password?
-                                                    </a>
+                                                    {{#if logerr}}
+                                                        <div class="alert alert-danger text-center m-3">
+                                                         Invalid Username or Password
+                                                        </div>
+                                                    {{/if}}
+                                                    {{#if otpError}}
+                                                        <div class="alert alert-danger text-center m-3">
+                                                            Invalid OTP
+                                                        </div>
+                                                    {{/if}}
                                                 </div>
                                             </section>
                                             <footer class="form-footer text-sm-center clearfix">
@@ -99,7 +105,7 @@
                                         </form>
                                     </section>
                                     <hr/>
-                                    <div class="no-account">
+                                    <div class="no-account d-flex justify-content-center">
                                         <a href="/signup" data-link-action="display-register-form">
                                             No account? Create one here
                                         </a>
@@ -128,6 +134,16 @@
 
 
         </main>
+        <style>
+            #content-wrapper{
+                background: rgba( 255, 255, 255, 0.25 );
+                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+                backdrop-filter: blur( 4px );
+                -webkit-backdrop-filter: blur( 4px );
+                border-radius: 10px;
+                border: 1px solid rgba( 255, 255, 255, 0.18 );
+            }
+        </style>
         <script>
    var psdError = document.getElementById('psd-error');
    var emailError = document.getElementById('email-error');

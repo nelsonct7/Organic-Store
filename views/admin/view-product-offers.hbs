@@ -1,0 +1,33 @@
+<section class="ms-5 mt-5">
+<div class="row">
+    <div class="col-md-8 shadow-lg p-3 mb-5 bg-body rounded border">
+<table class="table mt-5" id="prtable">
+<thead>
+    <tr>
+        <th>Product name</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Offer</th>
+        <th>Options</th>
+    </tr>
+</thead>
+<tbody>
+    {{#each products}}
+    <tr>
+        <td>{{this.title}}</td>
+        <td>{{this.price}}</td>
+        <td><img src='/product-images/{{this.img_path.[0]}}' alt="" width="100px" height="100px"></td>
+        <td>{{this.offer}}</td>
+        <td>{{#if this.offerstatus}}
+            <a href="/admin/remove-offer/{{this._id}}" class="btn btn-danger">Remove offer</a>
+            {{else}}
+            <a href="/admin/add-offer/{{this._id}}" class="btn btn-primary">Add offer</a>
+            {{/if}}
+        </td>
+    </tr>
+    {{/each}}
+</tbody>
+        </table>
+    </div>
+</div>
+</section>

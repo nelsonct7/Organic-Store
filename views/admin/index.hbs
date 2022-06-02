@@ -1,11 +1,10 @@
-<script src="https://kit.fontawesome.com/966fe3980d.js" crossorigin="anonymous"></script>
-<section class="m-0">
-    <div class="container-fluid">
-        <div class="row d-flex justify-content-around mt-5">
-            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-align-justify"></i><h6>Total Orders : {{dashData.totalOrder}}</h6></div> 
-            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-truck"></i><br><h6>Total Delivery : {{dashData.totalDelivery}}</h6></div>
-            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-users"></i><br><h6>Total Users : {{dashData.totalUsers}}</h6></div>
-            <div class="col-3 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-cash-register"></i><h6>Total Revenue : {{dashData.totalRevenue}}</h6></div>
+{{!-- 
+
+        <div class="row d-flex justify-content-around ms-0 me-0 mb-3 mt-3 p-0 rounded"  style="background-color: rgb(119, 73, 172);">
+            <div class=" mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-align-justify"></i><h6>Total Orders : {{dashData.totalOrder}}</h6></div> 
+            <div class=" mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-truck"></i><br><h6>Total Delivery : {{dashData.totalDelivery}}</h6></div>
+            <div class=" mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-users"></i><br><h6>Total Users : {{dashData.totalUsers}}</h6></div>
+            <div class=" mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="background-color: rgb(179, 197, 218); height: 100px; width: 100px; border-radius: 5px;"><i class="fa-solid fa-cash-register"></i><h6>Total Revenue : {{dashData.totalRevenue}}</h6></div>
         </div>
         <input type="text" name="placed" id="placed" hidden value="{{dashData.placedOrder}}">
         <input type="text" name="pending" id="pending" hidden value="{{dashData.pendingOrder}}">
@@ -16,24 +15,280 @@
         <input type="text" name="cod" id="cod" hidden value="{{dashData.cod}}">
         <input type="text" name="razor" id="razor" hidden value="{{dashData.razor}}">
     
-        <div class="row d-flex justify-content-around p-3">
-            <div class="col-5 mt-2 me-3 shadow-lg p-3 mb-5 bg-white rounded" style="width: 300; height: 300; border-radius: 5px; background-color: rgb(179, 197, 218);">
+        <div class="row d-flex justify-content-around mt-3 ms-0 me-0 p-0 rounded" style="background-color: rgb(119, 73, 172);">
+            <div class="col-5 mt-3 me-3 shadow-lg p-3 mb-5 bg-white rounded" style="width: 400; height: auto; border-radius: 5px; background-color: rgb(179, 197, 218);">
                 <canvas id="myChart" width="400" height="400"></canvas>
             </div>
-            <div class="col-5 mt-2 shadow-lg p-3 mb-5 bg-white rounded" style="width: 300; height: 300; border-radius: 5px; background-color: rgb(179, 197, 218);">
+            <div class="col-5 mt-3 shadow-lg p-3 mb-5 bg-white rounded" style="width: 400; height: auto; border-radius: 5px; background-color: rgb(179, 197, 218);">
                 <canvas id="donChart" width="400" height="400"></canvas>
             </div>
         </div>
-        <div class="row d-flex justify-content-around">
-            <div class="col-11 shadow-lg p-3 mb-5 bg-white rounded" style=" height: auto; background-color: rgb(179, 197, 218); ">
+        <div class="row d-flex justify-content-around mt-5 ms-0 me-0 p-3 rounded" style="background-color: rgb(119, 73, 172);">
+            <div class="col-11 shadow-lg p-3 mb-5 bg-white rounded" style=" height: auto; background-color: rgb(216, 149, 149); ">
                 <canvas id="lineChart" width="400" height="400"></canvas>
             </div>
         </div>
-    </div>
-</section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
 <script src="/javascripts/admin-graph.js"></script>
 <script>
+     salesChart()
+     $(document).ready(function () { 
+     })
+</script>
+
+   --}}
+
+
+
+    <!-- Header -->
+    <div class="header bg-gradient-primary ps-2 pb-8 pt-5 pt-md-8">
+      <div class="container-fluid">
+        <div class="header-body">
+          <!-- Card stats -->
+          <div class="row">
+            <div class="col-xl-3 col-lg-6">
+              <div class="card card-stats mb-4 mb-xl-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Orders</h5>
+                      <span class="h2 font-weight-bold mb-0">{{dashData.totalOrder}}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                        <i class="fas fa-chart-bar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+              <div class="card card-stats mb-4 mb-xl-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Users</h5>
+                      <span class="h2 font-weight-bold mb-0">{{dashData.totalUsers}}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                        <i class="fas fa-chart-pie"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+              <div class="card card-stats mb-4 mb-xl-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Delivery</h5>
+                      <span class="h2 font-weight-bold mb-0">{{dashData.totalDelivery}}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                        <i class="fas fa-users"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+              <div class="card card-stats mb-4 mb-xl-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Revenue</h5>
+                      <span class="h2 font-weight-bold mb-0">{{dashData.totalRevenue}}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                        <i class="fas fa-percent"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid mt--7">
+      <div class="row">
+        <div class="col-xl-8 mb-5 mb-xl-0">
+          <div class="card bg-gradient-default shadow">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h6 class="text-uppercase text-light ls-1 mb-1">Overview</h6>
+                  <h2 class="text-white mb-0">Sales value</h2>
+                </div>
+                {{!-- <div class="col">
+                  <ul class="nav nav-pills justify-content-end">
+                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart" data-target="#chart-sales" data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}' data-prefix="$" data-suffix="k">
+                      <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
+                        <span class="d-none d-md-block">Month</span>
+                        <span class="d-md-none">M</span>
+                      </a>
+                    </li>
+                    <li class="nav-item" data-toggle="chart" data-target="#chart-sales" data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}' data-prefix="$" data-suffix="k">
+                      <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                        <span class="d-none d-md-block">Week</span>
+                        <span class="d-md-none">W</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div> --}}
+              </div>
+            </div>
+        <input type="text" name="placed" id="placed" hidden value="{{dashData.placedOrder}}">
+        <input type="text" name="pending" id="pending" hidden value="{{dashData.pendingOrder}}">
+        <input type="text" name="orderpro" id="orderpro" hidden value="{{dashData.orderUnderProcessing}}">
+        <input type="text" name="orderout" id="orderout" hidden value="{{dashData.oderOutDelivery}}">
+        <input type="text" name="ordrdel" id="ordrdel" hidden value="{{dashData.deletedOrder}}">
+        <input type="text" name="paypal" id="paypal" hidden value="{{dashData.paypal}}">
+        <input type="text" name="cod" id="cod" hidden value="{{dashData.cod}}">
+        <input type="text" name="razor" id="razor" hidden value="{{dashData.razor}}">
+            <div class="card-body">
+              <!-- Chart -->
+              <div class="chart">
+                <!-- Chart wrapper -->
+                {{!-- <canvas id="chart-sales" class="chart-canvas"></canvas> --}}
+                <canvas id="lineChart" width="400" height="200"></canvas>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card shadow">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
+                  <h2 class="mb-0">Total orders</h2>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Chart -->
+              <div class="chart">
+                {{!-- <canvas id="chart-orders" class="chart-canvas"></canvas> --}}
+                <canvas id="myChart" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-xl-5 mb-5 mb-xl-0">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">Payment Methods</h3>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <!-- Projects table -->
+                <canvas id="donChart" width="400" height="400"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-7">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">Most selling</h3>
+                </div>
+
+              </div>
+            </div>
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Unit price</th>
+                    <th scope="col">Sale in kg</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each mostSelling}}
+                  <tr>
+                    <td>
+                      <img src="/product-images/{{this.productInfo.img_path.[0]}}" alt="" style="width: 80px; height: 80px;">
+                    </td>
+                    <td>
+                       {{this.productInfo.title}}
+                    </td>
+                    <td>
+                       {{this.productInfo.price}} <i class="fa fa-indian-rupee-sign"></i>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="mr-2">{{this.prCount}} Kg</span>
+                      </div>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="row align-items-center justify-content-xl-between">
+          <div class="col-xl-6">
+            <div class="copyright text-center text-xl-left text-muted">
+              &copy; 2022 <a href="/" class="font-weight-bold ml-1" target="_blank">Organic Store</a>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+              <li class="nav-item">
+                <a href="https://www.linkedin.com/in/nelson-c-t-07a89a225/" class="nav-link" target="_blank">Nelson</a>
+              </li>
+              <li class="nav-item">
+                <a href="" class="nav-link" target="_blank">About Us</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--   Core   -->
+  <script src="/assets/js/plugins/jquery/dist/jquery.min.js"></script>
+  <script src="/assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <!--   Optional JS   -->
+  {{!-- <script src="/assets/js/plugins/chart.js/dist/Chart.min.js"></script>
+  <script src="/assets/js/plugins/chart.js/dist/Chart.extension.js"></script> --}}
+  <!--   Argon JS   -->
+  <script src="/assets/js/argon-dashboard.min.js?v=1.1.2"></script>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+  <script src="/javascripts/admin-graph.js"></script>
+  <script>
+    window.TrackJS &&
+      TrackJS.install({
+        token: "ee6fab19c5a04ac1a32a645abde4613a",
+        application: "argon-dashboard-free"
+      });
+  </script>
+  <script>
      salesChart()
      $(document).ready(function () { 
      })

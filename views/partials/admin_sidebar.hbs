@@ -1,19 +1,6 @@
-{{!-- 
 
-  <div class="col-6" style="background-color: rgb(211, 218, 219); max-height: auto; border-radius: 10px;">
-    <div class="ms-4 mt-4 p-4" >
-      <a  href="/admin/view-products"><h6>Product Management</h6></a>
-      <a  href="/admin/view-users"><h6>User Management</h6></a>
-      <a  href="/admin/view-category"><h6>Category Management</h6></a>
-      <a  href="/admin/view-orders"><h6>Order Management</h6></a>
-      <a  href="/admin/adminhome"><h6>Banners</h6></a>
-      <a  href="/admin/adminhome"><h6>Reports</h6></a>
-      <a  href="/admin/adminhome"><h6>Messages</h6></a>
-      <a  href="/admin/adminhome"><h6>Feedback</h6></a>
-    </div>
-</div> --}}
-<div class="row p-5 ms-3 shadow-lg p-3 mb-5 bg-body rounded" style="height: 100%; border-radius: 10px; font-size: smaller;">
-  <div class="col 4">
+{{!-- <div class="row   shadow-lg p-3 mb-5  rounded" style="height: 100vh; border-radius: 10px; font-size: smaller; background-color: #6372c9;">
+  <div class="col-3 ">
     <div class="row">
       <div class="col-12">
       <a  href="/admin/view-products" style="text-decoration: none; mb-3 font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Product Management</h6></a>
@@ -41,18 +28,107 @@
       </div>
     <div class="row">
       <div class="col-12">
-      <a  href="/pdf/" style="text-decoration: none; mb-3 font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Reports</h6></a>
+      <a  href="/pdf/view-reports" style="text-decoration: none; mb-3 font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Reports</h6></a>
       </div>
       </div>
     <div class="row">
       <div class="col-12">
-      <a  href="/admin/adminhome" style="text-decoration: none; mb-3 font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Messages</h6></a>
+      <a  href="/admin/view-message" style="text-decoration: none; mb-3 font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Messages</h6></a>
       </div>
       </div>
     <div class="row">
       <div class="col-12">
-      <a  href="/admin/adminhome" style="text-decoration: none; font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Feedback</h6></a>
+      <a  href="/admin/admin-feedback" style="text-decoration: none; font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Feedback</h6></a>
+      </div>
+      </div>
+    <div class="row">
+      <div class="col-12">
+      <a  href="/admin/view-offers" style="text-decoration: none; font-size: smaller; width: 200px;" class="btn btn-outline-dark btn-sm mb-3"><h6>Offers</h6></a>
       </div>
       </div>
  </div>
-</div>
+</div> --}}
+
+
+  <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white ps-4 m-0 pe-0 pt-2 col-2" style="width: 235px;" >
+   
+
+      <!-- Brand -->
+     
+            <!-- Toggler -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- User -->
+      
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse col-2" id="sidenav-collapse-main">
+        <!-- Collapse header -->
+         {{!-- <div class="navbar-collapse-header d-md-none col-3">
+          <div class="row">
+          </div>
+        </div>  --}}
+        <!-- Form -->
+        <!-- Navigation -->
+         <ul class="navbar-nav">
+          <li class="nav-item  ">
+            <a class="nav-link  " href="/admin/adminhome">
+              <i class="ni ni-tv-2 text-primary"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/admin/view-products">
+              <i class="ni ni-planet text-blue"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/admin/view-users">
+              <i class="ni ni-single-02 text-yellow"></i> Users
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/admin/view-category">
+              <i class="fa-solid fa-boxes-packing"></i>Category
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/admin/view-orders">
+              <i class="ni ni-bullet-list-67 text-red"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/banner">
+              <i class="ni ni-key-25 text-info"></i> Banners
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/pdf/view-reports">
+              <i class="fa-solid fa-book"></i> Reports
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/view-message">
+              <i class="fa-solid fa-envelope"></i> Messages
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/admin-feedback">
+              <i class="fa-brands fa-buffer"></i> Feedback
+            </a>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link" href="/admin/view-offers">
+              <i class="ni ni-circle-08 text-pink"></i> Offers
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/admin/logout">
+              </i><button class="btn btn-danger"><i class="fa-solid fa-square-arrow-up-right"></i> Log_out</button>
+            </a>
+          </li>
+        </ul> 
+        <!-- Divider -->
+        <hr class="my-3">
+      </div>
+    
+  </nav>

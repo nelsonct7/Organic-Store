@@ -1,0 +1,281 @@
+<div id="wrapper">
+
+    <div class="container">
+        <div class="row">
+
+            <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
+                <div id="search_filters_wrapper" class="hidden-sm-down">
+                    <div id="search_filter_controls" class="hidden-md-up">
+                        <span id="_mobile_search_filters_clear_all"></span>
+                        <button class="btn btn-secondary ok">
+                            <i class="material-icons rtl-no-flip">&#xE876;</i>
+                            OK
+                        </button>
+                    </div>
+                    <div id="search_filters" class="ms-3">
+
+                        <p class="text-uppercase h6 hidden-sm-down">Filter By</p>
+
+                        <section class="facet clearfix">
+                            <p class="h6 facet-title hidden-sm-down">Categories</p>
+                            <ul id="facet_25993" class="collapse">
+                                {{#each category}}
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/category/{{this.category-name}}">{{this.category-name}}</a>
+                                    </label>
+                                </li>
+                                {{/each}}
+                            </ul>
+                            <hr>
+                            <p class="h6 facet-title hidden-sm-down">Price</p>
+                            <ul id="facet_25993" class="collapse">
+                                
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/priceRange/0">Less than 50</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/priceRange/50">50-100</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/priceRange/100">100-150</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/priceRange/150">150-200</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="facet-label" for="facet_input_25993_0">
+                                        <a href="/pricerange/200">200 an above</a>
+                                    </label>
+                                </li>
+
+                                
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div id="content-wrapper" class="left-column col-xs-12 col-sm-8 col-md-9">
+                <section id="main">
+                    <section id="products-list">
+                        <div id="">
+                            <div id="js-product-list-top" class=" products-selection">
+                                <div class="row">
+                                    <div class="col-md-6 total-products">
+                                        <ul class="display">
+                                            <li id="grid"> <i class="fa fa-th show_grid"></i></li>
+                                            {{!-- <li id="list"> <i class="fa fa-list show_list"></i></li> --}}
+                                        </ul>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="">
+                            <div id="js-product-list" data-cate="2" data-type="3" data-list="">
+                                <div class="row product_content grid ">
+                                    {{#each products}}
+                                    <div
+                                        class="item-product product_per_4 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+
+                                        <!-- style products default -->
+
+                                        <article class="product-miniature js-product-miniature style_product3"
+                                            data-id-product="2" data-id-product-attribute="9" itemscope
+                                            itemtype="http://schema.org/Product">
+                                            <div class="img_block">
+
+                                                <a href=""
+                                                    class="thumbnail product-thumbnail">
+                                                    <img class="first-image"
+                                                        src="/product-images/{{this.img_path.[0]}}"
+                                                        alt="Juicy Couture Juicy Quilted..."
+                                                        >
+                                                    <img class="img-responsive second-image animation8"
+                                                        src="/product-images/{{this.img_path.[1]}}"
+                                                        alt="" itemprop="image" />
+
+                                                </a>
+
+                                                <ul class="add-to-links">
+                                                    {{!-- <li class="cart">
+                                                        <div class="product-add-to-cart">
+                                                            <a class="addToWishlist wishlistProd_17" id="Wishlist007"
+                                                                title="Add to wishlist" data-rel="17"
+                                                                onclick="addToWishList('{{this._id}}')">
+                                                                Add to wishlist
+                                                            </a>
+                                                        </div>
+                                                    </li> --}}
+                                                    <li class="">
+                                                        <div class="product-add-to-cart">
+                                                            <a class="quick_view" href="/view-product/{{this._id}}"
+                                                                title="Quick view">
+                                                                <i class="fa-regular fa-magnifying-glass"></i>
+                                                                <span>Quick view</span>
+                                                            </a>
+                                                        </div>
+
+                                                    </li>
+                                                    <li class="cart">
+                                                        <div class="product-add-to-cart">
+                                                            <button
+                                                                class="button ajax_add_to_cart_button add-to-cart btn-default"
+                                                                onclick="addToCart('{{this._id}}')">
+                                                                <i class="fa fa-shopping-cart"></i> Add to cart
+                                                            </button>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+
+                                                {{!-- <ul class="product-flag">
+                                                    <li class="discount"><span>-5%</span></li>
+                                                    <li class="new"><span>New</span></li>
+                                                </ul> --}}
+
+                                            </div>
+                                            <div class="product_desc">
+
+                                                <div class="manufacturer"><a
+                                                        href="brand/1-studio-design.html?id_manufacturer=1">{{this.category}}</a>
+                                                </div>
+
+                                                <h3 itemprop="name"><a
+                                                        href="fashion/2-9-juicy-couture-juicy-quilted-terry-track-jacket.html#/1-size-s"
+                                                        class="product_name one_line"
+                                                        title="Juicy Couture Juicy Quilted Terry Track Jacket">{{this.title}}</a>
+                                                </h3>
+
+
+                                                <div class="hook-reviews">
+                                                    <div class="comments_note" itemprop="aggregateRating" itemscope
+                                                        itemtype="https://schema.org/AggregateRating">
+                                                        <div class="star_content clearfix">
+                                                            <div class="star star_on"></div>
+                                                            <div class="star star_on"></div>
+                                                            <div class="star star_on"></div>
+                                                            <div class="star star_on"></div>
+                                                            <div class="star star_on"></div>
+                                                            <meta itemprop="worstRating" content="0" />
+                                                            <meta itemprop="ratingValue" content="5" />
+                                                            <meta itemprop="bestRating" content="5" />
+                                                        </div>
+                                                        <span class="nb-comments"><span itemprop="reviewCount">1</span>
+                                                            Review(s)</span>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="product-price-and-shipping">
+
+
+                                                    <span class="sr-only">Regular price</span>
+                                                    <span class="regular-price">{{this.price}}</span>
+
+
+
+                                                    <span class="sr-only">Price</span>
+                                                    <span itemprop="price"
+                                                        class="price price-sale">{{this.finalPrice}}</span>
+
+
+
+                                                    <span class="discount-percentage discount-product">{{this.discount}}</span>
+                                                </div>
+
+                                            </div>
+                                        </article>
+
+                                        <!-- end style products default type 3 -->
+                                    </div>
+                                    {{/each}}
+                                </div>
+
+
+                                {{!-- <nav class="pagination">
+
+                                    <ul class="page-list clearfix text-sm-center">
+
+
+                                        <li class="current">
+                                            <a rel="nofollow" href="13-hot-categories.html"
+                                                class="disabled js-search-link">
+                                                1
+                                            </a>
+                                        </li>
+
+
+                                        <li>
+                                            <a rel="nofollow" href="13-hot-categories4658.html?page=2"
+                                                class="js-search-link">
+                                                2
+                                            </a>
+                                        </li>
+
+
+                                        <li>
+                                            <a rel="next" href="13-hot-categories4658.html?page=2"
+                                                class="next js-search-link">
+                                                Next<i class="material-icons">&#xE315;</i>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+
+                                </nav> --}}
+
+                            </div>
+
+                        </div>
+
+                        <div id="js-product-list-bottom">
+
+                            <div id="js-product-list-bottom"></div>
+
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</main>
+<div class="back-top"><a href="#" class="back-top-button"></a></div>
+
+                <script>
+                        function addToCart(prdId) {
+                            $.ajax({
+                                url: '/add-to-cart/' + prdId,
+                                method: 'get',
+                                success: (response) => {
+                                    if (response.status) {
+                                        let count = $('#cartCount').html()
+                                        count = parseInt(count) + 1
+                                        $('#cartCount').html(count)
+
+                                    }
+                                }
+                            })
+                        };
+                    </script>

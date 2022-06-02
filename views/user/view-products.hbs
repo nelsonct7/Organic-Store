@@ -44,14 +44,14 @@
                                     </strong>
                                     <span class="amount-old">{{ product.price }}</span>
                                     <span class="pro-price">
-                                        {{ product.price }}</span>
+                                        {{ actualPrice }}</span>
                                 </div>
-                    <div class="form-group">
+                    {{!-- <div class="form-group">
                   <label>Quantity</label>
                   <input type="quantiy" placeholder="1" class="form-control quantity">
-                    </div> 
+                    </div>  --}}
                                 <p>
-                                    <button class="btn btn-round btn-danger" type="button">
+                                    <button class="btn btn-round btn-danger" type="button" onclick="addToCart('{{product._id}}')">
                                         <i class="fa fa-shopping-cart"></i>
                                         Add to Cart</button>
                                 </p>
@@ -96,4 +96,22 @@
                         new ImageZoom(document.getElementById("img-container"), options1);
                     }
                 </script>
+
+                <script>
+                        function addToCart(prdId) {
+                            $.ajax({
+                                url: '/add-to-cart/' + prdId,
+                                method: 'get',
+                                success: (response) => {
+                                    if (response.status) {
+                                        let count = $('#cartCount').html()
+                                        count = parseInt(count) + 1
+                                        $('#cartCount').html(count)
+
+                                    }
+                                }
+                            })
+                        };
+                    </script>
+
 

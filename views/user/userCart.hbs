@@ -2,8 +2,8 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container">
 <div class="">
-    <div class="row">
-        <div class="col-md-9">
+    <div class="row d-flex justify-content-around m-5">
+        <div class="col-md-8" id="transparenter">
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Items in your cart</h5>
@@ -25,44 +25,22 @@
                                         {{this.product.title}}
                                     </a>
                                     </h3>
-                                    {{!-- <p class="small">
-                                        {{this.product.description}}
-                                       
-                                    </p> --}}
-                                    {{!-- <dl class="small m-b-none">
-                                        <dt>Description lists</dt>
-                                        <dd>A description list is perfect for defining terms.</dd>
-                                    </dl> --}}
-
-                                    <div class="m-t-sm" style="margin-top: 100px;">
-                                        {{!-- <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a> --}}
-                                        |
+                                    <div class="m-t-sm" style="margin-top: 100px;">                                        |
                                         <a href="/remove-item-from-cart/{{this.product._id}}" class="text-muted" onclick="alert('Are you sure to remove this item')"><i class="fa fa-trash"></i> Remove item</a>
                                     </div>
                                 </td>
-
-                                <td>
-                                    {{this.product.price}}<br>
-                                    {{!-- <s class="small text-muted">230,00</s> --}}
+                                <td> 
+                                    <s class="small text-muted"> {{this.product.price}}</s>
                                 </td>
-                                
-                                <td  width="65" height="50" class="d-flex justify-content-between">
-                                        
-                                        <button class="btn btn-secondary btn-sm me-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.product.title}}','{{../user._id}}')"    id="{{this.product._id}}+'demo'" style="padding-bottom: 30px;">-</button>
-                                        
-                                        {{!-- <input type="text" class="form-control form-control-sm" style="width: 50px;" value="{{this.quantity}}" id="{{this.product._id}}"> --}}
-                                        <span id="{{this.product._id}}" style="padding-top: 10px;">{{this.quantity}}</span>
-                                        <button class="btn btn-secondary btn-sm ms-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.product.title}}','{{../user._id}}')" style="padding-bottom: 30px;">+</button>
-                                    
-                                    
+                                <td class="d-flex justify-content-between"> 
+                                        <button class="btn btn-secondary btn-sm me-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.product.title}}','{{../user._id}}')"    id="{{this.product._id}}+'demo'">-</button>                                        <span id="{{this.product._id}}" style="padding-top: 10px;">{{this.quantity}}</span>
+                                        <button class="btn btn-secondary btn-sm ms-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.product.title}}','{{../user._id}}')">+</button>
                                 </td>
-                                
                                 <td>
                                     <h4>
-                                        {{this.product.price}}{{products.quantity}}
+                                        {{this.actualPrice}}
                                     </h4>
                                 </td>
-                                
                             </tr>
                             {{/each}}
                             </tbody>
@@ -81,7 +59,7 @@
             </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3" id="transparenter">
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Cart Summary</h5>
@@ -110,7 +88,16 @@
     </div>
 </div>
 </div>
-
+        <style>
+            #transparenter{
+                background: rgba( 255, 255, 255, 0.25 );
+                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+                backdrop-filter: blur( 4px );
+                -webkit-backdrop-filter: blur( 4px );
+                border-radius: 10px;
+                border: 1px solid rgba( 255, 255, 255, 0.18 );
+            }
+        </style>
 
 <script>
     function changeQuantity(cartId,prodId,count,title,userId){

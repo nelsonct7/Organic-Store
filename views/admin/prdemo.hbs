@@ -1,0 +1,31 @@
+<section>
+<div class="row">
+    <div class="col-md-8">
+<table class="table mt-5" id="prtable">
+<thead>
+    <tr>
+        <th>Product name</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Options</th>
+    </tr>
+</thead>
+<tbody>
+    {{#each products}}
+    <tr>
+        <td>{{this.title}}</td>
+        <td>{{this.price}}</td>
+        <td><img src='/product-images/{{this.img_path.[0]}}' alt="" width="100px" height="100px"></td>
+        <td>{{#if .offerset}}
+            <button class="btn btn-danger" onclick="removeOffer('{{this._id}}')">Remove offer</button>
+            {{else}}
+            <a href="/admin/add-offer/{{this._id}}" class="btn btn-primary">Add offer</a>
+            {{/if}}
+        </td>
+    </tr>
+    {{/each}}
+</tbody>
+        </table>
+    </div>
+</div>
+</section>
