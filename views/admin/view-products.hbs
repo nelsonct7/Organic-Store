@@ -1,4 +1,4 @@
-<diw class="row mt-5 ms-5" >
+<div class="row mt-5 ms-5" >
   <div class="col-10 shadow-lg p-3 mb-5 bg-body rounded border border-dark" >
     <div class="row " style="background-color: rgb(119, 73, 172);">
       <div class="col-10">
@@ -49,35 +49,9 @@
     </div>
 
   </div>
-</diw>
+</div>
  
-<script>
-function deleteData(id){ 
-        Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-          if (result.isConfirmed) {
-              $.ajax({
-              url:"/admin/delete-product/"+id,
-              method:'get',
-              success:(responce)=>{
-              if(responce.success){
-                  location.reload()
-               }
-            }
-    
-          })
-        }
-    })
-
-}
-</script>
+<script src="/javascripts/viewProductAdmin.js"></script>
 
 
 

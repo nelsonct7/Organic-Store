@@ -1,172 +1,161 @@
+<body
+  itemscope
+  id="authentication"
+  class="lang-en country-us currency-eur layout-full-width tax-display-disabled page-customer-account"
+>
+  <section class="container-fluid">
+    <div
+      class="row d-flex justify-content-center"
+      style="background-image: url(/images/pexels-lukas-616404.jpg); background-size: contain; background-repeat: round;"
+    >
+      <div class="col-md-8 mt-5 mb-5" id="content-wrapper">
+        <h2 class="m-3">User Signup..</h2>
 
-<body itemscope  id="authentication" class="lang-en country-us currency-eur layout-full-width tax-display-disabled page-customer-account">
-<section class="container-fluid">
-<div class="row d-flex justify-content-center" style="background-image: url(/images/pexels-lukas-616404.jpg); background-size: contain; background-repeat: round;">
-    <div class="col-md-8 mt-5 mb-5"  id="content-wrapper">
-      <h2 class="m-3">User Signup..</h2>
-      
-      <form action="/signup" method="post" class="m-5 ">
-     <div class="row mb-3 d-flex justify-content-center">
-    <label for="inputEmail3" class="col-sm-3 col-form-label " style="text-align: left;">Username</label>
-    <div class="col-sm-5">
-      <input type="text" class="form-control border border-secondary rounded" id="inputEmail33" name="user_name" onkeyup="validName()">
-      <span id="name-error" class="text-danger text-center"></span>
+        <form action="/signup" method="post" class="m-5">
+          <div class="row mb-3 d-flex justify-content-center">
+            <label
+              for="inputEmail3"
+              class="col-sm-3 col-form-label"
+              style="text-align: left;"
+            >Username</label>
+            <div class="col-sm-5">
+              <input
+                type="text"
+                class="form-control border border-secondary rounded"
+                id="inputEmail33"
+                name="user_name"
+                onkeyup="validName()"
+              />
+              <span id="name-error" class="text-danger text-center"></span>
+            </div>
+          </div>
+          <div class="row mb-3 d-flex justify-content-center">
+            <label
+              for="inputEmail3"
+              class="col-sm-3 col-form-label"
+              style="text-align: left;"
+            >Email</label>
+            <div class="col-sm-5">
+              <input
+                type="email"
+                class="form-control border border-secondary rounded"
+                id="inputEmail3"
+                name="user_email"
+                onkeyup="validEmail()"
+              />
+              <span id="uemail-error" class="text-danger text-center"></span>
+            </div>
+          </div>
+          <div class="row mb-3 d-flex justify-content-center">
+            <label
+              for="inputPassword3"
+              class="col-sm-3 col-form-label"
+              style="text-align: left;"
+            >Password</label>
+            <div class="col-sm-5">
+              <input
+                type="password"
+                class="form-control border border-secondary rounded"
+                id="inputPassword3"
+                name="user_password"
+                onkeyup="validPsd()"
+              />
+              <span id="upsd-error" class="text-danger text-center"></span>
+            </div>
+          </div>
+          <div class="row mb-3 d-flex justify-content-center">
+            <label
+              for="inputPassword3"
+              class="col-sm-3"
+              style="text-align: left;"
+            >Confirm Password</label>
+            <div class="col-sm-5">
+              <input
+                type="password"
+                class="form-control border border-secondary rounded"
+                id="inputPassword4"
+                name="password_confirm"
+                onkeyup="validConPsd()"
+              />
+              <span id="uconpsd-error" class="text-danger text-center"></span>
+            </div>
+          </div>
+          <div class="row mb-3 d-flex justify-content-center">
+            <label
+              for="inputPassword3"
+              class="col-sm-3 col-form-label"
+              style="text-align: left;"
+            >Mobile</label>
+            <div class="col-sm-5">
+              <input
+                type="tel"
+                class="form-control border border-secondary rounded"
+                id="inputMobile"
+                name="user_mobile"
+                onkeyup="validMobile()"
+              />
+              <span id="mobile-error" class="text-danger text-center"></span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              onclick="return formValid()"
+            >Sign in</button>
+            <button type="reset" class="btn btn-primary ms-2">Reset</button>
+            {{#if prerr}}
+              <span class="label label-warning">Email Id is already present...</span>
+            {{/if}}
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-  <div class="row mb-3 d-flex justify-content-center">
-    <label for="inputEmail3" class="col-sm-3 col-form-label " style="text-align: left;">Email</label>
-    <div class="col-sm-5">
-      <input type="email" class="form-control border border-secondary rounded" id="inputEmail3" name="user_email" onkeyup="validEmail()">
-      <span id="uemail-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3 d-flex justify-content-center ">
-    <label for="inputPassword3" class="col-sm-3 col-form-label " style="text-align: left;">Password</label>
-    <div class="col-sm-5">
-      <input type="password" class="form-control border border-secondary rounded" id="inputPassword3" name="user_password" onkeyup="validPsd()">
-      <span id="upsd-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3 d-flex justify-content-center">
-    <label for="inputPassword3" class="col-sm-3 " style="text-align: left;">Confirm Password</label>
-    <div class="col-sm-5">
-      <input type="password" class="form-control border border-secondary rounded " id="inputPassword4" name="password_confirm" onkeyup="validConPsd()">
-      <span id="uconpsd-error" class="text-danger text-center"></span>
-    </div>
-  </div>
-  <div class="row mb-3 d-flex justify-content-center">
-    <label for="inputPassword3" class="col-sm-3 col-form-label" style="text-align: left;">Mobile</label>
-    <div class="col-sm-5">
-      <input type="tel" class="form-control border border-secondary rounded" id="inputMobile" name="user_mobile" onkeyup="validMobile()">
-      <span id="mobile-error" class="text-danger text-center"></span>
-    </div>
-  </div>
- <div class="d-flex justify-content-end ">
-  <button type="submit" class="btn btn-primary" onclick="return formValid()">Sign in</button>
-  <button type="reset" class="btn btn-primary ms-2">Reset</button>
-  {{#if prerr}}
-    <span class="label label-warning">Email Id is already present...</span>
-  {{/if}}
-  </div>
-</form>
-    </div>
-</div>
-</section>
+  </section>
 </body>
-        <style>
-            #content-wrapper{
-                background: rgba( 255, 255, 255, 0.25 );
-                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-                backdrop-filter: blur( 4px );
-                -webkit-backdrop-filter: blur( 4px );
-                border-radius: 10px;
-                border: 1px solid rgba( 255, 255, 255, 0.18 );
-            }
-        </style>
+<style>
+  #content-wrapper{ background: rgba( 255, 255, 255, 0.25 ); box-shadow: 0 8px
+  32px 0 rgba( 31, 38, 135, 0.37 ); backdrop-filter: blur( 4px );
+  -webkit-backdrop-filter: blur( 4px ); border-radius: 10px; border: 1px solid
+  rgba( 255, 255, 255, 0.18 ); }
+</style>
 
-  <script>
-   var psdError = document.getElementById('upsd-error');
-   var emailError = document.getElementById('uemail-error');
-   var nameError = document.getElementById('name-error');
-  var mobileError = document.getElementById('mobile-error');
-  var psdConError = document.getElementById('uconpsd-error');
-
-  const form=document.getElementById('form');
-
-  function validName(){
-    
-    var name = document.getElementById('inputEmail33').value;
-   
-    if(name.length==0){
-        nameError.innerHTML= 'Name is required';
-        return false;
-    }
-    if(!name.match(/^[A-Za-z]*$/)){
-        nameError.innerHTML='Numbers and Special Charectors not allowd';
-        return false;
-    }
-    nameError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
-}
-
-function validEmail(){
-    
-    var email = document.getElementById('inputEmail3').value;
-   
-    if(email.length==0){
-        emailError.innerHTML= 'Email is required....';
-        return false;
-    }
-    if(!email.match(/^[A-Za-z\._\-[0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
-        emailError.innerHTML='Invalid Email Format....';
-        return false;
-    }
-    emailError.innerHTML = "";
-    return true;
-}
- 
- function validPsd(){
- 
-  var psd = document.getElementById('inputPassword3').value;
-   if(psd.length == 0){
-        psdError.innerHTML= 'Password is required';
-        return false;
-    }
-    if(psd.length < 3){
-        psdError.innerHTML= 'Password must be atleast 3 charecters ';
-        return false;
-    }
-    //if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
-    //  psdError.innerHTML= 'Password has invalid syntax';
-    //    return false;
-    //}
-  
-    psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
- }
-
- function validConPsd(){
-   var psd = document.getElementById('inputPassword3').value;
-   var psdCon = document.getElementById('inputPassword4').value;
-   if(psdCon.length == 0){
-        psdConError.innerHTML= 'This Field is required';
-        return false;
-    }
-
-    if(psd!=psdCon){
-      psdConError.innerHTML= 'Password Miss Match';
-        return false;
-    }
-     psdConError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
-
- }
- function validMobile(){
-   var mob = document.getElementById('inputMobile').value;
-    if(!mob.match(/^\d*$/)){
-        mobileError.innerHTML='Numbers only';
-        return false;
-   }
-
-      if(mob.length==0){
-      mobileError.innerHTML= 'This Field is Required..';
-        return false;
-   }
-   
-   if(mob.length!=10){
-      mobileError.innerHTML= 'Invalid Mobile';
-        return false;
-   }
-  
-mobileError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
- }
- function formValid(){
-   if(!validName() || !validPsd() || !validEmail() || !validConPsd() || !validMobile()){
-      return false;
-   }
-   return true;
- }
+<script>
+  var psdError = document.getElementById('upsd-error'); var emailError =
+  document.getElementById('uemail-error'); var nameError =
+  document.getElementById('name-error'); var mobileError =
+  document.getElementById('mobile-error'); var psdConError =
+  document.getElementById('uconpsd-error'); const
+  form=document.getElementById('form'); function validName(){ var name =
+  document.getElementById('inputEmail33').value; if(name.length==0){
+  nameError.innerHTML= 'Name is required'; return false; }
+  if(!name.match(/^[A-Za-z]*$/)){ nameError.innerHTML='Numbers and Special
+  Charectors not allowd'; return false; } nameError.innerHTML = '<i
+  class="fa-solid fa-circle-check"></i>'; return true; } function validEmail(){
+  var email = document.getElementById('inputEmail3').value; if(email.length==0){
+  emailError.innerHTML= 'Email is required....'; return false; }
+  if(!email.match(/^[A-Za-z\._\-[0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+  emailError.innerHTML='Invalid Email Format....'; return false; }
+  emailError.innerHTML = ""; return true; } function validPsd(){ var psd =
+  document.getElementById('inputPassword3').value; if(psd.length == 0){
+  psdError.innerHTML= 'Password is required'; return false; } if(psd.length <
+  3){ psdError.innerHTML= 'Password must be atleast 3 charecters '; return
+  false; }
+  //if(!psd.match(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/)){
+  // psdError.innerHTML= 'Password has invalid syntax'; // return false; //}
+  psdError.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; return true;
+  } function validConPsd(){ var psd =
+  document.getElementById('inputPassword3').value; var psdCon =
+  document.getElementById('inputPassword4').value; if(psdCon.length == 0){
+  psdConError.innerHTML= 'This Field is required'; return false; }
+  if(psd!=psdCon){ psdConError.innerHTML= 'Password Miss Match'; return false; }
+  psdConError.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; return
+  true; } function validMobile(){ var mob =
+  document.getElementById('inputMobile').value; if(!mob.match(/^\d*$/)){
+  mobileError.innerHTML='Numbers only'; return false; } if(mob.length==0){
+  mobileError.innerHTML= 'This Field is Required..'; return false; }
+  if(mob.length!=10){ mobileError.innerHTML= 'Invalid Mobile'; return false; }
+  mobileError.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; return
+  true; } function formValid(){ if(!validName() || !validPsd() || !validEmail()
+  || !validConPsd() || !validMobile()){ return false; } return true; }
 </script>
-
-

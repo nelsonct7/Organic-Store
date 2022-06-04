@@ -29,7 +29,7 @@
 </section>
 <script>
     window.onload = function() {
-  //yourFunction();
+    yourFunction();
 };
 function yourFunction(){
                 Swal.fire({
@@ -42,7 +42,7 @@ function yourFunction(){
                 confirmButtonText: 'Ok'
                 }).then((result) => {
                      if (result.isConfirmed) {
-                                            window.location.href='/';
+                                            location.reload()
                                             }
                 })
     };

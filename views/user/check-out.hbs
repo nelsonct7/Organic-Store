@@ -1,209 +1,149 @@
 <section style="margin: 0px;">
-    <div class="row m-0">
-    <div class="container-fluid col-1 d-flex justify-content-center mt-4" style="width: 100%;">
-        <img src="/banner/img-banner-offer.webp" alt="" class="img-fluid" style="max-width: 100%; height: auto;">
+  <div class="row m-0">
+    <div
+      class="container-fluid col-1 d-flex justify-content-center mt-4"
+      style="width: 100%;"
+    >
+      <img
+        src="/banner/img-banner-offer.webp"
+        alt=""
+        class="img-fluid"
+        style="max-width: 100%; height: auto;"
+      />
     </div>
-    </div>
+  </div>
 </section>
 
 <section style="margin-top: 50px;">
-    <div class="row m-0 ">
-        <form action="/proceed-to-payment-address" method="post" class="form-control d-flex justify-content-around">
-        <div class="col-7" style="border: 1px solid gray; border-radius: 20px; padding: 50px;">
-            <table>
-                {{#each address}}
-                <tr style="padding: 15px; ">
-                    <td style="padding: 15px; ">Address : </td>
-                    <td style="padding: 15px; "><input type="radio" name="arrdessIndex" id="{{this._id}}" value="{{this._id}}">
-                    {{this.address_collection.first_name}}
-                    {{this.address_collection.house_name}}
-                    {{this.address_collection.street}}
-                    {{this.address_collection.town}}
-                    {{this.address_collection.pin}}
-                    </td>
-                </tr> 
-                {{/each}}
-                <tr>
- 
-                    <td><a href="/proceed-to-payment" style="color: blue; font-style: italic;">Add Address....</a></td>
-                    
-                </tr>
-            </table>
-        </div>
-        <div class="col-4" style="border: 1px solid black; border-radius: 20px; padding-top: 50px; padding-bottom: 50px;">
+  <div class="row m-0">
+    <form
+      action="/proceed-to-payment-address"
+      method="post"
+      class="form-control d-flex justify-content-around"
+    >
+      <div
+        class="col-7"
+        style="border: 1px solid gray; border-radius: 20px; padding: 50px;"
+      >
+        <table>
+          {{#each address}}
+            <tr style="padding: 15px; ">
+              <td style="padding: 15px; ">Address : </td>
+              <td style="padding: 15px; "><input
+                  type="radio"
+                  name="arrdessIndex"
+                  id="{{this._id}}"
+                  value="{{this._id}}"
+                />
+                {{this.address_collection.first_name}}
+                {{this.address_collection.house_name}}
+                {{this.address_collection.street}}
+                {{this.address_collection.town}}
+                {{this.address_collection.pin}}
+              </td>
+            </tr>
+          {{/each}}
+          <tr>
+
+            <td><a
+                href="/proceed-to-payment"
+                style="color: blue; font-style: italic;"
+              >Add Address....</a></td>
+
+          </tr>
+        </table>
+      </div>
+      <div
+        class="col-4"
+        style="border: 1px solid black; border-radius: 20px; padding-top: 50px; padding-bottom: 50px;"
+      >
+        <div class="row">
+          <div class="col-12">
+            <div class="row d-flex justify-content-center mt-2 mb-2">
+              <div class="col-6 p-0">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Coupons"
+                  style="width: 200px;"
+                  id="coupon"
+                />
+              </div>
+              <div class="col-3 p-0">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  id="button"
+                  onclick="validateCoupon()"
+                >Apply</button>
+              </div>
+            </div>
+            <hr />
+            <span
+              id="couponAlert"
+              class="text-danger text-center"
+              style="margin-left: 170px;"
+            ></span>
             <div class="row">
-                <div class="col-12">
-                <div class="row d-flex justify-content-center mt-2 mb-2">
-                <div class="col-6 p-0">
-                    <input type="text" class="form-control " placeholder="Coupons"   style="width: 200px;" id="coupon">
-                </div>
-                <div class="col-3 p-0">
-                    <button class="btn btn-primary" type="button" id="button" onclick="validateCoupon()">Apply</button>
-                </div>
+              <div class="col-6 p-0 d-flex justify-content-end"><h6>Total MRP :
+                </h6></div>
+              <div class="col-6 p-0">
+                <h5><span id="totalView"> {{total}}</span></h5>
+                <input
+                  type="text"
+                  name="total"
+                  id="total"
+                  value="{{total}}"
+                  hidden
+                />
+              </div>
             </div>
-            <hr>
-            <span id="couponAlert" class="text-danger text-center" style="margin-left: 170px;"></span>
-            <div class="row ">
-                <div class="col-6 p-0 d-flex justify-content-end"><h6 >Total MRP : </h6></div>
-                <div class="col-6 p-0">
-                    <h5><span id="totalView"> {{total}}</span></h5> 
-                    <input type="text" name="total" id="total" value="{{total}}" hidden>
-                </div>
+            <div class="row">
+              <div class="col-6 p-0 d-flex justify-content-end">
+                <h6>Wallet : </h6>
+              </div>
+              <div class="col-6 p-0">
+                <h5><span id="totalView1"> {{walletBalance}}</span></h5>
+                <input
+                  type="text"
+                  name="wallet"
+                  id="wallet"
+                  value="{{walletBalance}}"
+                  hidden
+                />
+              </div>
             </div>
-            <div class="row ">
-                <div class="col-6 p-0 d-flex justify-content-end">
-                    <h6 >Wallet : </h6>
-                </div>
-                <div class="col-6 p-0">
-                    <h5><span id="totalView1"> {{walletBalance}}</span></h5>
-                    <input type="text" name="wallet" id="wallet" value="{{walletBalance}}" hidden>
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-6 p-0 d-flex justify-content-end">
-                    <h6 >Amount Payable : </h6>
-                </div>
-                <div class="col-6 p-0">
-                  <h5><span id="totalView2">{{amountPayable}}</span></h5> 
-                  <input type="text" name="amountPay" id="amountPay" value="{{amountPayable}}" hidden>
-                </div>
+            <div class="row">
+              <div class="col-6 p-0 d-flex justify-content-end">
+                <h6>Amount Payable : </h6>
+              </div>
+              <div class="col-6 p-0">
+                <h5><span id="totalView2">{{amountPayable}}</span></h5>
+                <input
+                  type="text"
+                  name="amountPay"
+                  id="amountPay"
+                  value="{{amountPayable}}"
+                  hidden
+                />
+              </div>
             </div>
             <div class="row d-flex justify-content-center mt-2 mb-2">
-                <div class="col-3 p-0"><a href="/" class="btn btn-warning rounded" >Cancel</a></div>
-                <div class="col-3 p-0"><button class="btn btn-success rounded" type="submit" onclick="return validateForm()">Proceed</button></div>
+              <div class="col-3 p-0"><a
+                  href="/"
+                  class="btn btn-warning rounded"
+                >Cancel</a></div>
+              <div class="col-3 p-0"><button
+                  class="btn btn-success rounded"
+                  type="submit"
+                  onclick="return validateForm()"
+                >Proceed</button></div>
             </div>
-                </div>
-            </div>
+          </div>
         </div>
-        </form>
-    </div>
+      </div>
+    </form>
+  </div>
 </section>
 
-<script>
-function validateForm() {
-    //let walletAmnt=document.getElementById('wallet').innerHTML
-    //alert(walletAmnt)
-    var radios = document.getElementsByName("arrdessIndex");
-    var formValid = false;
-
-    var i = 0;
-    while (!formValid && (i < radios.length)) {
-        if (radios[i].checked) formValid = true;
-        i++;        
-    }
-
-    if (!formValid) {
-                Swal.fire({
-                title: 'Warning',
-                text: "Please select one address",
-                icon: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                })
-    }
-        return formValid;
-    
-    
-};
-let alertCoupon=document.getElementById('couponAlert')
-
-function validateCoupon(){
-    let coupon=document.getElementById('coupon').value
-    let walletAmnt=document.getElementById('wallet').innerHTML
-   
-    if(coupon.length!=7){
-        alertCoupon.innerHTML='Invalid Coupon'
-    }else{
-        $.ajax({
-            url:'/check-coupon/'+coupon,
-            method:'post',
-            success:(response)=>{
-                if(response.couponInvalid){
-                Swal.fire({
-                title: 'Failed',
-                text: "Invalid Coupon",
-                icon: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                })
-
-                }else if(response.couponExpired){
-                Swal.fire({
-                title: 'Failed',
-                text: "Coupon Expired",
-                icon: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                })
-
-                }else if(response.couponUsed){
-                Swal.fire({
-                title: 'Failed',
-                text: "You already used this coupon",
-                icon: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                })
-
-                }else if(response.couponSuccess){
-                        Swal.fire({
-                        title: 'Success',
-                        text: "Coupon Applied Successfully",
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#11B619',
-                        cancelButtonColor: '#A19391',
-                        confirmButtonText: 'Ok'
-                        }).then((result) => {
-                             if (result.isConfirmed) {
-                                                    document.getElementById('coupon').disabled=true
-                                                    document.getElementById('totalView').innerHTML=response.couponTotal
-                                                    document.getElementById('total').value=response.couponTotal
-                                                    
-                                                    let amnt=response.couponTotal
-                                                   
-                                                    if(response.couponTotal>walletAmnt){
-                                                        amnt=response.couponTotal-walletAmnt
-                                                        walletAmnt=0
-                                                       
-                                                    }else if(response.couponTotal<walletAmnt){
-                                                        walletAmnt=walletAmnt-response.couponTotal
-                                                        amnt=0
-                                                        
-                                                    }else{
-                                                        walletAmnt=0
-                                                        amnt=0 
-                                                    }
-                                                    document.getElementById('totalView1').innerHTML=walletAmnt
-                                                    document.getElementById('wallet').value=walletAmnt
-                                                    document.getElementById('totalView2').innerHTML=amnt
-                                                    document.getElementById('amountPay').value=amnt
-                                                    }
-                        })
-                    
-                }else{
-                Swal.fire({
-                title: 'Warning',
-                text: "Ajax Error",
-                icon: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                })
-
-                }
-
-            }
-        })
-    }
-}
-</script>
+<script src="/javascripts/validateCheckout.js"></script>

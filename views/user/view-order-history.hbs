@@ -1,50 +1,50 @@
+<section class="d-flex justify-content-around">
 
-    <section class="d-flex justify-content-around" >
- 
-    <div class=" p-3 m-4" style="border: 1px solid grey; border-radius: 10px;">
-        <div class="d-flex align-items-end mt-4 mb-3" >
-           <h3 class="me-3">View Orders</h3>
-            
-        </div>
+  <div class="p-3 m-4" style="border: 1px solid grey; border-radius: 10px;">
+    <div class="d-flex align-items-end mt-4 mb-3">
+      <h3 class="me-3">View Orders</h3>
 
-   <table class="table mt-5" id="prtable" > 
-  <thead>
-    <tr>
-      
-      
-      <th scope="col">Date</th>
-      <th scope="col">Address</th>
-      <th scope="col">Mobile</th>
-      <th scope="col">Products</th>
-      <th scope="col">Payment</th>
-      <th scope="col">Amount</th>
-      <th scope="col">Status</th>
-      {{!-- <th scope="col">Order Status</th> --}}
-    </tr>
-  </thead>
-  <tbody>
-    {{#each orders}}
-    <tr>
-      
-     
-      <td>{{this.stringDate}}</td>
-      <td>                       
-                                    {{this.address.address_collection.first_name}}<br>{{this.address.address_collection.house_name}}<br>{{this.address.address_collection.street}}
-                                    {{this.address.address_collection.town}}{{this.address.address_collection.pin}}<br>{{this.address.address_collection.state}}
-                                    {{this.address.address_collection.country}}
-                                    
-      </td>
-    
-      <td>{{this.user_info.user_mobile}}</td>
-      <td>
-          {{#each this.productDetail}}
-          {{this.title}}<br>
-          {{/each}}
-      </td>
-      <td>{{this.payment_option}}</td>
-      <td>{{this.total_amount}}</td>
-      <td>{{this.status}}</td>
-      {{!-- <td>{{#if this.dispatched}}
+    </div>
+
+    <table class="table mt-5" id="prtable">
+      <thead>
+        <tr>
+
+          <th scope="col">Date</th>
+          <th scope="col">Address</th>
+          <th scope="col">Mobile</th>
+          <th scope="col">Products</th>
+          <th scope="col">Payment</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Status</th>
+          {{! <th scope="col">Order Status</th> }}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orders}}
+          <tr>
+
+            <td>{{this.stringDate}}</td>
+            <td>
+              {{this.address.address_collection.first_name}}<br
+              />{{this.address.address_collection.house_name}}<br
+              />{{this.address.address_collection.street}}
+              {{this.address.address_collection.town}}{{this.address.address_collection.pin}}<br
+              />{{this.address.address_collection.state}}
+              {{this.address.address_collection.country}}
+
+            </td>
+
+            <td>{{this.user_info.user_mobile}}</td>
+            <td>
+              {{#each this.productDetail}}
+                {{this.title}}<br />
+              {{/each}}
+            </td>
+            <td>{{this.payment_option}}</td>
+            <td>{{this.total_amount}}</td>
+            <td>{{this.status}}</td>
+            {{!-- <td>{{#if this.dispatched}}
         Order Out for Delivery
         {{else}}
         {{#if this.deleted}}
@@ -54,18 +54,16 @@
         {{/if}}
         {{/if}}
       </td> --}}
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
-    </div>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </section>
 
-
-
-{{!-- 
+{{! 
 <script>
 $(function () {
     $('#prtable').DataTable();
 } );
-</script> --}}
+</script> }}

@@ -1,142 +1,141 @@
 <div class="row ms-5">
-    <div class="col-10 mt-4 rounded border border-dark bg-body" >
-        <div class="row">
-            <div class="col-12">
-                    <div class="row p-3" style="background-color: rgb(119, 73, 172);">
-                        <div class="col-12">
-                        <h3 style="color: white;">Reports</h3>
-                        </div>
-                    </div>
-            </div>
+  <div class="col-10 mt-4 rounded border border-dark bg-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="row p-3" style="background-color: rgb(119, 73, 172);">
+          <div class="col-12">
+            <h3 style="color: white;">Reports</h3>
+          </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-            <div class="row d-flex justify-content-between m-0 p-3">
-                <div class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark">
-                <div class="row">
-                <div class="col-md-5">Lastyear Sales</div>
-                <div class="col-md-6 d-flex justify-content-between"><a href="/pdf/yearPdf" class="btn btn-outline-dark  mb-3" >Pdf</a><a href="/pdf/yearXml" class="btn btn-outline-secondary ms-3 mb-3" >Excel</a></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="row d-flex justify-content-between m-0 p-3">
+          <div
+            class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark"
+          >
+            <div class="row">
+              <div class="col-md-5">Lastyear Sales</div>
+              <div class="col-md-6 d-flex justify-content-between"><a
+                  href="/pdf/yearPdf"
+                  class="btn btn-outline-dark mb-3"
+                >Pdf</a><a
+                  href="/pdf/yearXml"
+                  class="btn btn-outline-secondary ms-3 mb-3"
+                >Excel</a></div>
             </div>
             <div class="row">
-                <div class="col-md-5">Monthly Sales</div>
-                <div class="col-md-6 d-flex justify-content-between"><a href="/pdf/monthPdf" class="btn btn-outline-dark  mb-3" >Pdf</a><a href="/pdf/monthXml" class="btn btn-outline-secondary ms-3 mb-3">Excel</a></div>
+              <div class="col-md-5">Monthly Sales</div>
+              <div class="col-md-6 d-flex justify-content-between"><a
+                  href="/pdf/monthPdf"
+                  class="btn btn-outline-dark mb-3"
+                >Pdf</a><a
+                  href="/pdf/monthXml"
+                  class="btn btn-outline-secondary ms-3 mb-3"
+                >Excel</a></div>
             </div>
-            {{!-- <div class="row">
+            {{! <div class="row">
                 <div class="col-md-6">Lastweek Sales</div>
                 <div class="col-md-6"><button type="button" class="btn btn-outline-dark  mb-3" onclick="getWeekPdf()">Pdf</button><button type="button" class="btn btn-outline-secondary" onclick="getWeekxml()">Excel</button></div>
-            </div> --}}
+            </div> }}
             <div class="row">
-                <div class="col-md-5">Daily Sales</div>
-                <div class="col-md-6 d-flex justify-content-between"><a href="/pdf/dayPdf" class="btn btn-outline-dark  mb-3" >Pdf</a><a href="/pdf/dayXml" class="btn btn-outline-secondary ms-3 mb-3" >Excel</a></div>
+              <div class="col-md-5">Daily Sales</div>
+              <div class="col-md-6 d-flex justify-content-between"><a
+                  href="/pdf/dayPdf"
+                  class="btn btn-outline-dark mb-3"
+                >Pdf</a><a
+                  href="/pdf/dayXml"
+                  class="btn btn-outline-secondary ms-3 mb-3"
+                >Excel</a></div>
             </div>
+          </div>
+          <div
+            class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark"
+          >
+            <div class="row mt-3">
+              <div class="col-5">From</div>
+              <div class="col-6"><input
+                  type="date"
+                  name="startDate"
+                  id="startDate"
+                /></div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-5">To</div>
+              <div class="col-6"><input
+                  type="date"
+                  name="endDate"
+                  id="endDate"
+                /></div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-5"><button
+                  type="button"
+                  onclick="getPdf()"
+                  class="btn btn-secondary"
+                >PDF</button></div>
+              <div class="col-6"><button
+                  onclick="getXml()"
+                  class="btn btn-secondary"
+                >XML</button></div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark">
-            <div class="row mt-3">
-                <div class="col-5">From</div>
-                <div class="col-6"><input type="date" name="startDate" id="startDate"></div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-5">To</div>
-                <div class="col-6"><input type="date" name="endDate" id="endDate"></div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-5"><button type="button" onclick="getPdf()" class="btn btn-secondary">PDF</button></div>
-                <div class="col-6"><button onclick="getXml()" class="btn btn-secondary">XML</button></div>
-            </div>
-        </div>
+      </div>
     </div>
-            </div>
-        </div>
-<div class="row">
-    <div class="col-12">
-    <div class="row m-0">
-    <div class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark">
-    <table class="table mt-5" id="prtable" > 
-  <thead>
-    <tr>
-      
-      <th scope="col">Title</th>
-      <th scope="col">Category</th>
-      <th scope="col">Discription</th>
-      <th scope="col">Storage</th>
-      <th scope="col">Date</th>
-      <th scope="col">Status</th>
+    <div class="row">
+      <div class="col-12">
+        <div class="row m-0">
+          <div
+            class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark"
+          >
+            <table class="table mt-5" id="prtable">
+              <thead>
+                <tr>
 
-    </tr>
-  </thead>
-  <tbody>
-    {{#each products}}
-    <tr>
-      
-      <td>{{this.title}}</td>
-      <td>{{this.category}}</td>
-      <td>{{this.description}}</td>
-      <td>{{this.storage-spec}}</td>
-      <td>{{this.date}}</td>
-      <td>{{this.price}}</td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+                  <th scope="col">Title</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Discription</th>
+                  <th scope="col">Storage</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Status</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {{#each products}}
+                  <tr>
+
+                    <td>{{this.title}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.description}}</td>
+                    <td>{{this.storage-spec}}</td>
+                    <td>{{this.date}}</td>
+                    <td>{{this.price}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
-    </div>
+
+  </div>
 </div>
-
-        
-    </div>
-</div>
-
-
 
 <script>
-function getPdf(){
-        let sdate=document.getElementById('startDate').value
-        let edate=document.getElementById('endDate').value
-        if(sdate=='' || edate=='' || sdate>edate){
-            Swal.fire('Invalid Date Formats')
-        }else{
-        $.ajax({
-            url:'/pdf/limitpdf',
-            method:'post',
-            data:{
-                sdate:sdate,
-                edate:edate
-            },
-            success:(responce)=>{
-                if(responce.status){
-                    alert(responce.file)
-                    location.href='/documents/'+responce.file
-                }
-
-            }
-        })
-
-        }
-
-    }
- function   getXml(){
-        let sdate=document.getElementById('startDate').value
-        let edate=document.getElementById('endDate').value
-        if(sdate=='' || edate=='' || sdate>edate){
-            Swal.fire('Invalid Date Formats')
-        }else{
-        $.ajax({
-            url:'/pdf/limitxml',
-            method:'post',
-            data:{
-                sdate:sdate,
-                edate:edate
-            },
-            success:(responce)=>{
-                if(responce.status){
-                    alert(responce.file)
-                    location.href='/documents/'+responce.file+'.xlsx'
-                }
-
-            }
-        })
-
-        }
-    }
+  function getPdf(){ let sdate=document.getElementById('startDate').value let
+  edate=document.getElementById('endDate').value if(sdate=='' || edate=='' ||
+  sdate>edate){ Swal.fire('Invalid Date Formats') }else{ $.ajax({
+  url:'/pdf/limitpdf', method:'post', data:{ sdate:sdate, edate:edate },
+  success:(responce)=>{ if(responce.status){ alert(responce.file)
+  location.href='/documents/'+responce.file } } }) } } function getXml(){ let
+  sdate=document.getElementById('startDate').value let
+  edate=document.getElementById('endDate').value if(sdate=='' || edate=='' ||
+  sdate>edate){ Swal.fire('Invalid Date Formats') }else{ $.ajax({
+  url:'/pdf/limitxml', method:'post', data:{ sdate:sdate, edate:edate },
+  success:(responce)=>{ if(responce.status){ alert(responce.file)
+  location.href='/documents/'+responce.file+'.xlsx' } } }) } }
 </script>

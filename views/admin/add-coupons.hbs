@@ -1,42 +1,60 @@
-    <section class="ms-5 mt-5">
-    <div class="container-fluid">
+<section class="ms-5 mt-5">
+  <div class="container-fluid">
     <div class="row">
-  <div class="col-md-6 mt-5 pt-4 shadow-lg p-3 mb-5 bg-body rounded" > 
-  <h3>Add Coupon</h3>
-  <form method="post" action="/admin/add-coupons" name="coupon-form" id="coupon-form">
+      <div class="col-md-6 mt-5 pt-4 shadow-lg p-3 mb-5 bg-body rounded">
+        <h3>Add Coupon</h3>
+        <form
+          method="post"
+          action="/admin/add-coupons"
+          name="coupon-form"
+          id="coupon-form"
+        >
 
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Coupon Code</label>
-    <input type="text" name="couponcode" id="" class="form-control form-control-file">
-    <span id="coupon-error" class="text-danger text-center"></span>
-    </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Coupon Code</label>
+            <input
+              type="text"
+              name="couponcode"
+              id="couponcode"
+              class="form-control form-control-file"
+              onkeyup="validateCoupon()"
+            />
+            <span id="coupon-error" class="text-danger text-center"></span>
+          </div>
 
-   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Offer Amount</label>
-    <input type="number" name="offer" id="offeramount" required class="form-control form-control-file" onkeyup="validateOffer()">
-    <span id="offer-error" class="text-danger text-center"></span>
-    </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Offer Amount</label>
+            <input
+              type="number"
+              name="offer"
+              id="offeramount"
+              required
+              class="form-control form-control-file"
+              onkeyup="validateOffer()"
+            />
+            <span id="offer-error" class="text-danger text-center"></span>
+          </div>
 
-   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Offer End Date</label>
-    <input type="date" name="enddate" id="date" class="form-control form-control-file" required>
-    <span id="date-error" class="text-danger text-center"></span>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Offer End Date</label>
+            <input
+              type="date"
+              name="enddate"
+              id="date"
+              class="form-control form-control-file"
+              required
+            />
+            <span id="date-error" class="text-danger text-center"></span>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            onclick="return validateForm()"
+          >Submit</button>
+        </form>
+      </div>
     </div>
-  <button type="submit" class="btn btn-primary" onclick="">Submit</button>
-</form>
-</div>
-</div>
-</div>
+  </div>
 </section>
-<script>
-  let offerError=document.getElementById('offer-error')
-  function validateOffer(){
-    let offer=document.getElementById('offeramount').value
-    if(offer>90){
-      offerError.innerHTML='Invalid Percentage...'
-      return false
-    }
-     offerError.innerHTML=''
-     return true
-  }
+<script src="/javascripts/couponValidate.js">
 </script>

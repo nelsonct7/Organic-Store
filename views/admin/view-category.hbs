@@ -1,83 +1,66 @@
+<div class="row ms-5">
+  <div class="col-10">
 
-   <div class="row ms-5">
-     <div class="col-10">
-
+    <div class="row">
+      <div
+        class="col-md-12 shadow-lg mt-5 mb-5 bg-body rounded border border-dark"
+      >
         <div class="row">
-            <div class="col-md-12 shadow-lg mt-5 mb-5 bg-body rounded border border-dark">
-                     <div class="row">
-         <div class="col-12 d-flex justify-content-between p-3" style="background-color: rgb(119, 73, 172);">
-           <h2 style="color: white;">Categories</h2>
-           <a href="/admin/add-category" class="btn btn-success ms-3" style="margin-left: auto;">Add Category</a>
-         </div>
-       </div>
-        <div class="row mt-3">
-          <div class="col-12">
-               <table class="table mt-5 " id="categorytable" > 
-  <thead>
-    <tr>
-      <th scope="col">Image</th>
-      <th scope="col">Category ID</th>
-      <th scope="col">Category</th>
-      <th scope="col" style="width: 100px;">Description</th>
-      <th scope="col">Options</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each categories}}
-    <tr>
-      <td><img src="/category-images/{{this.img_path}}" alt="" style="width: 50px; height: 50px;"></td>
-      <td>{{this._id}}</td>
-      <td>{{this.category-name}}</td>
-      <td>{{this.category-description}}</td>
-      <td>
-        <a href="edit-category/{{this._id}}" class="btn btn-primary">Edit</a>
-        <button class="btn btn-danger" onclick="deleteData('{{this._id}}')">Delete</button>
-        {{!-- <a href="/admin/delete-category?id={{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a> --}}
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+          <div
+            class="col-12 d-flex justify-content-between p-3"
+            style="background-color: rgb(119, 73, 172);"
+          >
+            <h2 style="color: white;">Categories</h2>
+            <a
+              href="/admin/add-category"
+              class="btn btn-success ms-3"
+              style="margin-left: auto;"
+            >Add Category</a>
           </div>
         </div>
-</div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <table class="table mt-5" id="categorytable">
+              <thead>
+                <tr>
+                  <th scope="col">Image</th>
+                  <th scope="col">Category ID</th>
+                  <th scope="col">Category</th>
+                  <th scope="col" style="width: 100px;">Description</th>
+                  <th scope="col">Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each categories}}
+                  <tr>
+                    <td><img
+                        src="/category-images/{{this.img_path}}"
+                        alt=""
+                        style="width: 50px; height: 50px;"
+                      /></td>
+                    <td>{{this._id}}</td>
+                    <td>{{this.category-name}}</td>
+                    <td>{{this.category-description}}</td>
+                    <td>
+                      <a
+                        href="edit-category/{{this._id}}"
+                        class="btn btn-primary"
+                      >Edit</a>
+                      <button
+                        class="btn btn-danger"
+                        onclick="deleteData('{{this._id}}')"
+                      >Delete</button>
+                      {{!-- <a href="/admin/delete-category?id={{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete this {{this._id}}')">Delete</a> --}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </div>
-     </div>
-   </div>
-   
+      </div>
+    </div>
+  </div>
+</div>
 
-
-
-
-<script>
-$(function () {
-    $('#categorytable').DataTable();
-} );
-</script>
-<script>
-function deleteData(id){ 
-        Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-          if (result.isConfirmed) {
-              $.ajax({
-              url:"/admin/delete-category?id="+id,
-              method:'get',
-              success:(responce)=>{
-              if(responce.success){
-                  location.reload()
-               }
-            }
-    
-          })
-        }
-    })
-
-}
-</script>
+<script src="/javascripts/viewCategoryAdmin.js"></script>
