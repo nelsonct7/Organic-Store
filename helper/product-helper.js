@@ -118,7 +118,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTION)
-        .remove({ _id: objectId(proId) })
+        .deleteOne({ _id: objectId(proId) })
         .then((response) => {
           resolve(response);
         });
@@ -387,10 +387,10 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       let categories = await db
         .get()
-        .collection(collection.CATEGORY_COLLECTION)
+        .collection(collection.CATEGORY_COLLECTION) 
         .find({ deleted: false })
-        .toArray();
-      resolve(categories);
+        .toArray()
+          resolve(categories);      
     });
   },
   deleteCategory: (CategoryId) => {
@@ -1616,4 +1616,23 @@ module.exports = {
       });
     }
   },
+  getTodayData:()=>{
+    return new Promise(async(resolve,reject)=>{
+      let data=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $match:{
+          status:'placed',
+          }
+        },
+        {
+          $sort : { date : -1}
+        },
+        {
+          $limit : 5
+        }
+      ]).toArray()
+
+      resolve(data)
+    })
+  }
 };

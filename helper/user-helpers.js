@@ -11,14 +11,14 @@ var collection = require('../config/collections');
 const { resolve } = require('node:path');
 
 var instance = new Razorpay({
-    key_id: 'rzp_test_PXSooyoIiq4q2A',
-    key_secret: 'aVa1964TkOSnoCdw15DjRTeM',
+    key_id: process.env.rz_key_id,
+    key_secret: process.env.rz_key_secret,
   });
 
   paypal.configure({
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AXN2zZWyhDZdKxZnzcT4rtKLnP3doqDdfYD9R1WcB7ahs4q88kMZbR0JKA6kb9uJVtO239rREH_40xq6',
-    'client_secret': 'EMwlxld2i8PlFPkl5HwerTu0s5pQElIzEG4wYhYswxxOvCZCavA8R0F00LNtqj_ZM0xEtH9_hOX5s1f_'
+    'client_id': process.env.pay_client_id,
+    'client_secret': process.env.pay_client_secret
   });
 
 
@@ -415,8 +415,9 @@ module.exports = {
     },
     userPresent: (usermail) => {
         return new Promise(async (resolve, reject) => {
-            let admin = await db.get().collection(collection.USER_COLLECTION).findOne({uemail: usermail})
+            let admin = await db.get().collection(collection.USER_COLLECTION).findOne({user_email: usermail})
             let response = {}
+            console.log('Data : '+admin);
             if (admin) {
                 console.log("sign up false...");
                 response.status = true
@@ -538,7 +539,12 @@ module.exports = {
         })
     },
     addToOrder: (user_id, address_id, total, payment_option, pr_List) => {
-        let status = payment_option === 'cod'||'wallet' ? 'placed' : 'pending'
+        let status = 'pending' 
+        if(payment_option==='cod' || payment_option==='wallet'){
+            status='placed'
+        }else{
+            status='pending'
+        }
         let orderObj = {
             user_data: objectId(user_id),
             delivery_address: address_id,
@@ -563,6 +569,7 @@ module.exports = {
                     $match: {
                         user_data: objectId(userId),
                         deleted: false
+                        
                     }
                 },
 
@@ -599,7 +606,7 @@ module.exports = {
                         userinfo: 1,
                         deleted: 1,
                         adressIndex: 1,
-                        stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }},
+                        stringDate:{$dateToString: { format: "%d-%m-%Y", date: "$date" }},
                         canceled:1
                     }
                 }
@@ -663,7 +670,8 @@ module.exports = {
                 _id: objectId(orderId)
             }, {
                 $set: {
-                    deleted: true
+                    deleted: true,
+                    status:'deleted'
                 }
             })
             resolve()
@@ -748,7 +756,7 @@ module.exports = {
                         total_amount:{$round :['$total_amount',3]},
                         status:1,
                         payment_option:1,
-                        stringDate:{$dateToString: { format: "%Y-%m-%d", date: "$date" }},
+                        stringDate:{$dateToString: { format: "%d-%m-%Y", date: "$date" }},
                         date:1
                     }
                 },
@@ -769,7 +777,7 @@ module.exports = {
 
 
             ]).sort({date:-1}).toArray()
-          console.log("\nOrder details : "+JSON.stringify(orders[0].products));
+          console.log("\nOrder details : "+JSON.stringify(orders[0]));
             resolve(orders)
         })
     },

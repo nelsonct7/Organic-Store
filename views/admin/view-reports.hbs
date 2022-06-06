@@ -88,31 +88,28 @@
       <div class="col-12">
         <div class="row m-0">
           <div
-            class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark"
-          >
+            class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark">
+            <h2>Latest Orders</h2>
             <table class="table mt-5" id="prtable">
               <thead>
                 <tr>
 
-                  <th scope="col">Title</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Discription</th>
-                  <th scope="col">Storage</th>
-                  <th scope="col">Date</th>
+                  <th scope="col">Order Id</th>
+                  <th scope="col">User Id</th>
+                  <th scope="col">Amount</th>
                   <th scope="col">Status</th>
+                  <th scope="col">Payment option</th>
 
                 </tr>
               </thead>
               <tbody>
-                {{#each products}}
+                {{#each orders}}
                   <tr>
-
-                    <td>{{this.title}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.description}}</td>
-                    <td>{{this.storage-spec}}</td>
-                    <td>{{this.date}}</td>
-                    <td>{{this.price}}</td>
+                    <td>{{this._id}}</td>
+                    <td>{{this.user_data}}</td>
+                    <td>{{this.total_amount}}</td>
+                    <td>{{this.status}}</td>
+                    <td>{{this.payment_option}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -125,17 +122,4 @@
   </div>
 </div>
 
-<script>
-  function getPdf(){ let sdate=document.getElementById('startDate').value let
-  edate=document.getElementById('endDate').value if(sdate=='' || edate=='' ||
-  sdate>edate){ Swal.fire('Invalid Date Formats') }else{ $.ajax({
-  url:'/pdf/limitpdf', method:'post', data:{ sdate:sdate, edate:edate },
-  success:(responce)=>{ if(responce.status){ alert(responce.file)
-  location.href='/documents/'+responce.file } } }) } } function getXml(){ let
-  sdate=document.getElementById('startDate').value let
-  edate=document.getElementById('endDate').value if(sdate=='' || edate=='' ||
-  sdate>edate){ Swal.fire('Invalid Date Formats') }else{ $.ajax({
-  url:'/pdf/limitxml', method:'post', data:{ sdate:sdate, edate:edate },
-  success:(responce)=>{ if(responce.status){ alert(responce.file)
-  location.href='/documents/'+responce.file+'.xlsx' } } }) } }
-</script>
+<script src="/javascripts/viewRepot.js"></script>

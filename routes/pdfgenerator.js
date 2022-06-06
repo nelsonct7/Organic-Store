@@ -58,7 +58,6 @@ function generatePdf(Data, template) {
   pdf
     .create(document, options)
     .then((res) => {
-      // console.log("123123123123123"+JSON.stringify(res));
     })
     .catch((error) => {
       console.error(error);
@@ -101,13 +100,12 @@ function generateLimidPdf(orders) {
   };
 
   pdf.create(document, options).then((res) => {
-    // console.log("123123123123123"+JSON.stringify(res));
   });
   return filename1;
 }
 
 router.get("/", verifyAdmin, async (req, res) => {
-  console.log("ghhghghghhghgghghhgh");
+
   var html = fs.readFileSync("./views/admin/template.html", "utf8");
   var options = {
     format: "A3",
@@ -156,11 +154,6 @@ router.get("/", verifyAdmin, async (req, res) => {
 
   let order1 = await prhelper.getAllOrders();
 
-  // const newObject = order1.reduce(function(result, item, index) {
-  //   result[index] = item
-  //   return result
-  // }, {})
-
   console.log("\nExcel Data " + JSON.stringify(order1[0]));
   let pr = "";
 
@@ -204,71 +197,92 @@ router.get("/", verifyAdmin, async (req, res) => {
   });
 });
 
-router.get("/view-reports", verifyAdmin, (req, res) => {
-  res.render("admin/view-reports", { admin: req.session.admin });
+router.get("/view-reports", verifyAdmin,async (req, res) => {
+  try{
+    let orders = await prhelper.getTodayData();
+    res.render("admin/view-reports", { admin: req.session.admin,orders});
+  }catch(err){
+    res.render('errors/error404',{title:'title'})
+  }
+
 });
 
 router.get("/yearPdf", verifyAdmin, async (req, res) => {
-  let yearOrder = await prhelper.getYearlyData();
-
-  if (yearOrder) {
-    let filename = generatePdf(yearOrder, "templateyear.html");
-    console.log("rtrtrtrtrtrtrtrtrtrtr : " + filename);
-    res.render("admin/reports", {
-      title: "Admin",
-      admin: req.session.admin,
-      pdf: true,
-      path: filename,
-    });
-  } else {
-    res.redirect("/admin");
+  try{
+    let yearOrder = await prhelper.getYearlyData();
+    if (yearOrder) {
+      let filename = generatePdf(yearOrder, "templateyear.html");
+  
+      res.render("admin/reports", {
+        title: "Admin",
+        admin: req.session.admin,
+        pdf: true,
+        path: filename,
+      });
+    } else {
+      res.redirect("/admin");
+    }
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
 });
 
 router.get("/monthPdf", verifyAdmin, async (req, res) => {
-  let monthOrder = await prhelper.getMonthlyData();
-  if (monthOrder) {
-    let filename = generatePdf(monthOrder, "templatemonth.html");
-    res.render("admin/reports", {
-      title: "Admin",
-      admin: req.session.admin,
-      pdf: true,
-      path: filename,
-    });
-  } else {
-    res.redirect("/admin");
+  try{
+    let monthOrder = await prhelper.getMonthlyData();
+    if (monthOrder) {
+      let filename = generatePdf(monthOrder, "templatemonth.html");
+      res.render("admin/reports", {
+        title: "Admin",
+        admin: req.session.admin,
+        pdf: true,
+        path: filename,
+      });
+    } else {
+      res.redirect("/admin");
+    }
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
 });
 
 router.get("/dayPdf", verifyAdmin, async (req, res) => {
-  let dailyOrder = await prhelper.getDailyData();
-  if (dailyOrder) {
-    let filename = generatePdf(dailyOrder, "templateday.html");
-    res.render("admin/reports", {
-      title: "Admin",
-      admin: req.session.admin,
-      pdf: true,
-      path: filename,
-    });
-  } else {
-    res.redirect("/admin");
+  try{
+    let dailyOrder = await prhelper.getDailyData();
+    if (dailyOrder) {
+      let filename = generatePdf(dailyOrder, "templateday.html");
+      res.render("admin/reports", {
+        title: "Admin",
+        admin: req.session.admin,
+        pdf: true,
+        path: filename,
+      });
+    } else {
+      res.redirect("/admin");
+    }
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
+
 });
 
 router.get("/yearXml", verifyAdmin, async (req, res) => {
-  let yearOrder = await prhelper.getYearlyData();
-
-  if (yearOrder) {
-    let filename = generateXml(yearOrder);
-    console.log("rtrtrtrtrtrtrtrtrtrtr : " + filename);
-    res.render("admin/reports", {
-      title: "Admin",
-      admin: req.session.admin,
-      xml: true,
-      xlpath: filename,
-    });
-  } else {
-    res.redirect("/admin");
+  try{
+    let yearOrder = await prhelper.getYearlyData();
+    if (yearOrder) {
+      let filename = generateXml(yearOrder);
+      console.log("rtrtrtrtrtrtrtrtrtrtr : " + filename);
+      res.render("admin/reports", {
+        title: "Admin",
+        admin: req.session.admin,
+        xml: true,
+        xlpath: filename,
+      });
+    } else {
+      res.redirect("/admin");
+    }
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
 });
 

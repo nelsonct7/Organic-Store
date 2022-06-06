@@ -8,8 +8,8 @@ const bodyParser = require("body-parser");
 const db = require("./config/connection");
 const session = require("express-session");
 const HBS = hbs.create({});
-const moment = require("moment"); // require
-moment().format();
+require('dotenv').config()
+
 
 // Deprecated since version 0.8.0
 

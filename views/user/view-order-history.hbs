@@ -1,15 +1,11 @@
 <section class="d-flex justify-content-around">
-
   <div class="p-3 m-4" style="border: 1px solid grey; border-radius: 10px;">
     <div class="d-flex align-items-end mt-4 mb-3">
       <h3 class="me-3">View Orders</h3>
-
     </div>
-
     <table class="table mt-5" id="prtable">
       <thead>
         <tr>
-
           <th scope="col">Date</th>
           <th scope="col">Address</th>
           <th scope="col">Mobile</th>
@@ -23,7 +19,6 @@
       <tbody>
         {{#each orders}}
           <tr>
-
             <td>{{this.stringDate}}</td>
             <td>
               {{this.address.address_collection.first_name}}<br
@@ -44,26 +39,9 @@
             <td>{{this.payment_option}}</td>
             <td>{{this.total_amount}}</td>
             <td>{{this.status}}</td>
-            {{!-- <td>{{#if this.dispatched}}
-        Order Out for Delivery
-        {{else}}
-        {{#if this.deleted}}
-        Order Deleted
-        {{else}}
-        Order under Processing
-        {{/if}}
-        {{/if}}
-      </td> --}}
           </tr>
         {{/each}}
       </tbody>
     </table>
   </div>
 </section>
-
-{{! 
-<script>
-$(function () {
-    $('#prtable').DataTable();
-} );
-</script> }}

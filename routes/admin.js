@@ -7,7 +7,7 @@ const usrhelper = require("../helper/user-helpers");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
-
+const { render } = require("../app");
 const categoryStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/category-images");
@@ -16,7 +16,10 @@ const categoryStorage = multer.diskStorage({
     callback(null, "category_image-" + Date.now() + ".jpeg");
   },
 });
-const categoryImgStore = multer({ storage: categoryStorage });
+
+  const categoryImgStore = multer({ storage: categoryStorage });
+
+
 
 const productStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -26,7 +29,10 @@ const productStorage = multer.diskStorage({
     callback(null, "product_image-" + Date.now() + ".jpeg");
   },
 });
-const productImgStore = multer({ storage: productStorage });
+
+  const productImgStore = multer({ storage: productStorage });
+
+
 
 const bannerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -37,34 +43,6 @@ const bannerStorage = multer.diskStorage({
   },
 });
 const bannerImgStore = multer({ storage: bannerStorage });
-// const upload=multer({
-
-//   dest:'./public/category_images'
-// })
-// const fileStorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "./public/kill/");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(
-//       null,
-//       file.fieldname+"-"+Date.now()+".jpg"
-//     );
-//   },
-// });
-
-// const upload = multer({
-//   storage:fileStorage
-// })
-// SET STORAGE
-// var storage = multer.diskStorage({
-//     destination:  (req, file, cb) => {
-//       cb(null, "./public/ifg")
-//     },
-//     filename:  (req, file, cb) => {
-//       cb(null, file.originalname.toLowerCase())
-//     }
-//   })
 
 //Admin verify middle ware
 const verifyAdmin = (req, res, next) => {
@@ -77,94 +55,114 @@ const verifyAdmin = (req, res, next) => {
 
 /* GET landning router */
 router.get("/", (req, res) => {
-  if (req.session.adminLoged) {
-    res.redirect("/admin/adminhome");
-  } else {
-    if (req.session.err) {
-      res.render("admin/admin-login", {
-        title: "Organic Store",
-        logerr: req.session.err,
-      });
-      req.session.err = false;
+  try{
+    if (req.session.adminLoged) {
+      res.redirect("/admin/adminhome");
     } else {
-      res.render("admin/admin-login", { title: "Organic Store" });
+      if (req.session.err) {
+        res.render("admin/admin-login", {
+          title: "Organic Store",
+          logerr: req.session.err,
+        });
+        req.session.err = false;
+      } else {
+        res.render("admin/admin-login", { title: "Organic Store",adminLogin:true });
+      }
     }
+  }catch(err){
+    res.render('errors/errror404',{title:'Error'})
   }
+  
 });
 
 // Admin Login Router
 router.post("/login", (req, res) => {
-  if (req.session.adminLoged) {
-    res.redirect("/");
-  } else {
-    //console.log("Admin req body : "+req.body);
-    usrhelper.doAdminLogin(req.body).then((response) => {
-      //console.log("@@@@@@@admin : "+response.status);
-      if (response.status) {
-        req.session.admin = req.body.admin_field;
-        req.session.adminLoged = true;
-
-        res.redirect("/admin/adminhome");
-      } else {
-        req.session.err = true;
-        res.redirect("/admin");
-        // console.log("$$$$$$$"+req.session.error);
-      }
-    });
+  try{
+    if (req.session.adminLoged) {
+      res.redirect("/");
+    } else {
+      usrhelper.doAdminLogin(req.body).then((response) => {
+        if (response.status) {
+          req.session.admin = req.body.admin_field;
+          req.session.adminLoged = true;
+          res.redirect("/admin/adminhome");
+        } else {
+          req.session.err = true;
+          res.redirect("/admin");
+        }
+      });
+    }
+  }catch(err){
+    res,render('errors/error404',{title:'Error'})
   }
 });
 
 //Admin Logout router
-router.get("/logout", (req, res) => {
-  req.session.adminLoged = false;
-  res.redirect("/admin");
+router.get("/logout",verifyAdmin,(req, res) => {
+  try{
+    req.session.adminLoged = false;
+    res.redirect("/admin");
+  }catch(err){
+    res.render('errors/error',{title:'Error'})
+  }
 });
 
 // Admin home page router
 router.get("/adminhome", async function (req, res, next) {
-  if (req.session.adminLoged) {
-    let dashData = await prhelper.getTotalDashbord();
-    let mostSelling = await prhelper.getMostSellin();
-    //console.log("\norder view at admin side : "+JSON.stringify(totalOrder));
-
-    res.render("admin/index", {
-      title: "Admin",
-      admin: req.session.admin,
-      dashData,
-      mostSelling,
-    });
-  } else {
-    res.redirect("/admin");
+  try{
+    if (req.session.adminLoged) {
+      let dashData = await prhelper.getTotalDashbord();
+      let mostSelling = await prhelper.getMostSellin();
+      res.render("admin/index", {
+        title: "Admin",
+        admin: req.session.admin,
+        dashData,
+        mostSelling,
+      });
+    } else {
+      res.redirect("/admin");
+    }
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
+  
 });
 
 //Admin Product management routers
 router.get("/view-products", function (req, res, next) {
-  console.log('Conrol is here');
-  if (req.session.adminLoged) {
-    prhelper.getAllProductsAdmin().then((products) => {
-      res.render("admin/view-products", {
-        title: "Admin",
-        admin: req.session.admin,
-        products,
+  try{
+    if (req.session.adminLoged) {
+      prhelper.getAllProductsAdmin().then((products) => {
+        res.render("admin/view-products", {
+          title: "Admin",
+          admin: req.session.admin,
+          products,
+        });
       });
-    });
-  } else {
-    res.redirect("/admin");
+    } else {
+      res.redirect("/admin");
+    }
+  
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
 });
 
 router.get("/add-products", verifyAdmin, function (req, res, next) {
-  if (req.session.adminLoged) {
-    prhelper.getAllCategory().then((category) => {
-      res.render("admin/add-products", {
-        title: "Admin",
-        admin: req.session.admin,
-        category,
+  try{
+    if (req.session.adminLoged) {
+      prhelper.getAllCategory().then((category) => {
+        res.render("admin/add-products", {
+          title: "Admin",
+          admin: req.session.admin,
+          category,
+        });
       });
-    });
-  } else {
-    res.redirect("/admin");
+    } else {
+      res.redirect("/admin");
+    }  
+  }catch(err){
+    res.render('error/error404',{title:'Error'})
   }
 });
 
@@ -173,77 +171,83 @@ router.post(
   productImgStore.array("image"),
   verifyAdmin,
   async function (req, res) {
-    let addError = false;
-    let addSucces = false;
-    //console.log("%%%%%%%"+req.body_id);
-    console.log(req.body);
-    if (req.files) {
-      let img = req.files;
-      if (img.length >= 2) {
-        await prhelper.addProduct(req.body, async (result) => {
-          //////// console.log(img);
-          let id = req.body._id;
-          //console.log("&&&&&&&&"+req.body_id);
-          for (let index = 0; index < img.length; index++) {
-            //console.log(img[index]);
-            let img_path = img[index].filename;
-            await prhelper.addProductImage(id, img_path);
-          }
-          addSucces = true;
-          await prhelper.getAllCategory().then((category) => {
+    try{
+      let addError = false;
+      let addSucces = false;
+      console.log(req.body);
+      if (req.files) {
+        let img = req.files;
+        if (img.length >= 2) {
+          await prhelper.addProduct(req.body, async (result) => {
+            let id = req.body._id;
+            for (let index = 0; index < img.length; index++) {
+              let img_path = img[index].filename;
+              await prhelper.addProductImage(id, img_path);
+            }
+            addSucces = true;
+            await prhelper.getAllCategory().then((category) => {
+              res.render("admin/add-products", {
+                title: "Admin",
+                admin: req.session.admin,
+                category,
+                addSucces,
+              });
+            });
+          });
+        } else {
+          let add2Error = true;
+          await prhelper.getCategory().then((category) => {
             res.render("admin/add-products", {
               title: "Admin",
               admin: req.session.admin,
               category,
-              addSucces,
+              add2Error,
             });
           });
-        });
+        }
       } else {
-        let add2Error = true;
+        addError = true;
         await prhelper.getCategory().then((category) => {
           res.render("admin/add-products", {
             title: "Admin",
             admin: req.session.admin,
             category,
-            add2Error,
+            addError,
           });
         });
       }
-    } else {
-      addError = true;
-      await prhelper.getCategory().then((category) => {
-        res.render("admin/add-products", {
-          title: "Admin",
-          admin: req.session.admin,
-          category,
-          addError,
-        });
-      });
+  
+    }catch(err){
+      res.render('errors/error404',{title:'Error'})
     }
   }
 );
 
 router.get("/delete-product/:id", verifyAdmin, (req, res) => {
-  let proId = req.params.id;
-  prhelper.deleteProduct(proId).then((response) => {
-    //res.redirect('/admin/view-products')
-    res.json({ success: true });
-  });
-  //console.log("\nparams ID "+proId);
+  try{
+    let proId = req.params.id;
+    prhelper.deleteProduct(proId).then((response) => {
+      res.json({ success: true });
+    }); 
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
+  }
 });
 
 router.get("/edit-product/:id", verifyAdmin, async (req, res) => {
-  let product = await prhelper.getProductDetails(req.params.id);
-  prhelper.getAllCategory().then((category) => {
-    ///console.log("category details : "+category);
-    res.render("admin/edit-product", {
-      product,
-      title: "Admin",
-      admin: true,
-      category,
+  try{
+    let product = await prhelper.getProductDetails(req.params.id);
+    prhelper.getAllCategory().then((category) => {
+      res.render("admin/edit-product", {
+        product,
+        title: "Admin",
+        admin: true,
+        category,
+      });
     });
-  });
+  }catch(err){
+    res.redirect('errors/error404',{title:'Error'})
+  }
 });
 
 router.post(
@@ -251,53 +255,73 @@ router.post(
   verifyAdmin,
   productImgStore.array("image"),
   async (req, res) => {
-    let prId = req.params.id;
-    console.log(req.body);
-    console.log(req.files);
-    await prhelper.updateProduct(prId, req.body).then(() => {
-      if (req.files) {
-        let img = req.files;
 
-        for (let index = 0; index < img.length; index++) {
-          prhelper.addProductImage(prId, img[index].filename);
+    try{
+      let prId = req.params.id;
+      console.log(req.body);
+      console.log(req.files);
+      await prhelper.updateProduct(prId, req.body).then(() => {
+        if (req.files) {
+          let img = req.files;  
+          for (let index = 0; index < img.length; index++) {
+            prhelper.addProductImage(prId, img[index].filename);
+          }
+          res.redirect("/admin/view-products");
+        } else {
+          res.redirect("/admin/view-products");
         }
-        res.redirect("/admin/view-products");
-      } else {
-        res.redirect("/admin/view-products");
-      }
-    });
+      });
+  
+    }catch(err){
+      res.render('errors/error404',{title:'Error'})
+    }
   }
 );
 
 //Admin User Management routers
 router.get("/view-users", verifyAdmin, (req, res) => {
-  usrhelper.getAllUser().then((users) => {
-    console.log("$$$$$$" + users);
-    res.render("admin/view-users", {
-      title: "Admin",
-      admin: req.session.admin,
-      users,
+  try{
+    usrhelper.getAllUser().then((users) => {
+      console.log("$$$$$$" + users);
+      res.render("admin/view-users", {
+        title: "Admin",
+        admin: req.session.admin,
+        users,
+      });
     });
-  });
+  
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
+  }
 });
 
 router.get("/edit-user/:id", verifyAdmin, async (req, res) => {
+try{
   let usrId = req.params.id;
   let userData = await usrhelper.getUserDetails(usrId);
   res.render("admin/edit-user", { title: "Admin", admin: true, userData });
+
+}catch(err){
+  res.render('errors/error404',{title:'Error'})
+}
 });
 
 router.post("/edit-users/:id", verifyAdmin, async (req, res) => {
-  let usrId = req.params.id;
-  console.log("User Data " + JSON.stringify(req.body));
-  await usrhelper.updateUser(usrId, req.body).then(() => {
-    res.redirect("/admin/view-users");
-  });
+  try{
+    let usrId = req.params.id;
+    console.log("User Data " + JSON.stringify(req.body));
+    await usrhelper.updateUser(usrId, req.body).then(() => {
+      res.redirect("/admin/view-users");
+    });
+  
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
+  }
 });
 
 router.get("/delete-user/:id", verifyAdmin, (req, res) => {
   usrhelper.deleteUser(req.params.id).then((response) => {
-    res.redirect("/admin/view-users");
+    res.json({deleted:true});
   });
 });
 
@@ -338,43 +362,48 @@ router.post(
   "/add-category",
   categoryImgStore.single("category_image"),
   function (req, res) {
-    addCategoryError = false;
-    addCategorySucces = false;
-    //console.log("FFFF"+req.body);
-    //console.log("File : "+JSON.stringify(req.file));
-    if (req.file) {
-      //let img=req.files.category_image
-      prhelper.addCategory(req.body, (result) => {
-        let id = req.body._id;
-        console.log("&&&&&&&&" + JSON.stringify(req.body._id));
-        let img_path = req.file.filename;
-
-        prhelper.updateCategoryImage(id, img_path);
-        addCategorySucces = true;
+    try{
+      addCategoryError = false;
+      addCategorySucces = false;
+      if (req.file) {
+        prhelper.addCategory(req.body, (result) => {
+          let id = req.body._id;
+          console.log("&&&&&&&&" + JSON.stringify(req.body._id));
+          let img_path = req.file.filename;
+  
+          prhelper.updateCategoryImage(id, img_path);
+          addCategorySucces = true;
+          res.render("admin/add-category", {
+            title: "Admin",
+            admin: req.session.admin,
+            addCategorySucces,
+          });
+        });
+      } else {
+        addCategoryError = true;
         res.render("admin/add-category", {
           title: "Admin",
           admin: req.session.admin,
-          addCategorySucces,
+          addCategoryError,
         });
-      });
-    } else {
-      addCategoryError = true;
-      res.render("admin/add-category", {
-        title: "Admin",
-        admin: req.session.admin,
-        addCategoryError,
-      });
+      }
+  
+    }catch(err){
+      res.render('errors/error404',{title:'Error'})
     }
   }
 );
 
 router.get("/delete-category/", (req, res) => {
+try{
   let caegoryId = req.query.id;
-  //console.log("$$$$$$$&&&&&&******* : "+caegoryId);
   prhelper.deleteCategory(caegoryId).then((response) => {
-    //res.redirect('/admin/view-category')
     res.json({ success: true });
   });
+
+}catch(err){
+  res.render('errors/error404',{title:'Error'})
+}
 });
 
 router.get("/edit-category/:id", verifyAdmin, async (req, res) => {
@@ -392,33 +421,35 @@ router.post(
   categoryImgStore.single("category_image"),
   verifyAdmin,
   async (req, res) => {
-    let categoryId = req.params.id;
-    //let filenm=store.single('category_image')
-    //console.log("image update : "+req.file.filename);
-    await prhelper.updateCategory(categoryId, req.body).then(() => {
-      if (req.file) {
-        let img_path = req.file.filename;
-        prhelper.updateCategoryImage(categoryId, img_path);
-        addCategorySucces = true;
-        prhelper.getAllCategory().then((categories) => {
-          res.render("admin/view-category", {
-            title: "Admin",
-            admin: req.session.admin,
-            categories,
-            addCategorySucces,
+    try{
+      let categoryId = req.params.id;
+      await prhelper.updateCategory(categoryId, req.body).then(() => {
+        if (req.file) {
+          let img_path = req.file.filename;
+          prhelper.updateCategoryImage(categoryId, img_path);
+          addCategorySucces = true;
+          prhelper.getAllCategory().then((categories) => {
+            res.render("admin/view-category", {
+              title: "Admin",
+              admin: req.session.admin,
+              categories,
+              addCategorySucces,
+            });
           });
-        });
-      } else {
-        prhelper.getAllCategory().then((categories) => {
-          res.render("admin/view-category", {
-            title: "Admin",
-            admin: req.session.admin,
-            categories,
+        } else {
+          prhelper.getAllCategory().then((categories) => {
+            res.render("admin/view-category", {
+              title: "Admin",
+              admin: req.session.admin,
+              categories,
+            });
           });
-        });
-      }
-      //res.redirect('/admin/view-category')
-    });
+        }
+      });
+  
+    }catch(err){
+      res.render('errors/error404',{title:'Error'})
+    }
   }
 );
 
@@ -649,15 +680,17 @@ router.get("/admin-feedback", verifyAdmin, async (req, res) => {
 });
 
 router.get("/view-message", verifyAdmin, async (req, res) => {
+try{
   await prhelper.getMessage().then((data) => {
-    console.log("\n Feed back data ");
-    console.log(data);
     res.render("admin/view-message", {
       title: "Admin",
       admin: req.session.admin,
       data,
     });
   });
+}catch(err){
+  res.render('errors/error404',{title:'Error'})
+}
 });
 
 module.exports = router;

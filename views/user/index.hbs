@@ -273,11 +273,9 @@
                     </script>
                     <script>
                          $(document).ready(async function () {
-                             
                              let delivery=document.getElementById('deliveryStatus').value
-                            //let deliveryStatus=document.getElementById('orderId').value
-                            //alert('Data in text '+JSON.stringify(deliveryStatus))
-                             if(delivery==='true'){
+                            let deliveryStatus=document.getElementById('orderId').value
+                             if(delivery=='true'){
                                     const { value: text } = await Swal.fire({
                                     input: 'textarea',
                                     inputLabel: 'Hope you are happy with our product...',
@@ -297,7 +295,7 @@
                                         },
                                         success:(responce)=>{
                                             if(responce.feedbackSatatus){
-                                                Swal.fire('Thank you for your valuable feedback...')
+                                                Swal.fire('Thank you for your valuable feedback')
                                             }
                                         }
                                     })
@@ -311,7 +309,7 @@
                                         },
                                         success:(responce)=>{
                                             if(responce.feedbackSatatus){
-                                                Swal.fire('Thank you for your valuable feedback...')
+                                                Swal.fire('Thank you for your valuable feedback')
                                             }
                                         }
                                     })

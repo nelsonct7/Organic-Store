@@ -17,9 +17,7 @@ const client = require("twilio")(config.accountSID, config.authToken);
 // midleware
 function validTotp(req, res, dbResponse) {
   var number = `+91${dbResponse.user_mobile}`;
-  client.verify
-    .services(config.serviceSID)
-    .verifications.create({
+  client.verify.services(config.serviceSID).verifications.create({
       to: number,
       channel: "sms",
     })
@@ -146,11 +144,11 @@ router.post("/login", function (req, res, next) {
       .doLogin(req.body)
       .then((response) => {
         if (response.status) {
-          // validTotp(req,res,response)
+          validTotp(req,res,response)
           req.session.user = response;
-          req.session.loggedIn = true;
-          req.session.amountPay = null;
-          res.redirect("/");
+          // req.session.loggedIn = true;
+          // req.session.amountPay = null;
+          // res.redirect("/");
         } else {
           req.session.userError = true;
           res.redirect("/login");
@@ -178,6 +176,7 @@ router.get("/signup", async function (req, res, next) {
 });
 
 router.post("/signup", function (req, res, next) {
+  console.log('/nRouter..');
   usrhelper
     .userPresent(req.body.user_email)
     .then((response) => {
@@ -189,7 +188,7 @@ router.post("/signup", function (req, res, next) {
           .doSignup(req.body)
           .then((response) => {
             req.session.loggedIn = true;
-            req.session.user = req.body.user_name;
+            req.session.user.user_name = req.body.user_name;
             res.redirect("/");
           })
           .catch((err) => {
@@ -226,7 +225,6 @@ router.post("/otpauth/:number", (req, res) => {
     })
     .then((resp) => {
       if (resp.valid) {
-        req.session.user = userName;
         console.log("session user : " + req.session.user);
         req.session.loggedIn = true;
         res.redirect("/");
@@ -683,6 +681,11 @@ router.post("/verifyPayment", (req, res) => {
 router.get("/view-orders", verifyLogin, async (req, res) => {
   userId = req.session.user._id;
   let orders = await usrhelper.getOrders(userId);
+  for(i=0;i<orders.length;i++){
+    if(orders[i].status==='pending'){
+      orders[i].canceled=true
+    }
+  }
   let category = await prhelper.getAllCategory();
   let walletBalance = 0;
   walletBalance = (
@@ -751,6 +754,8 @@ router.get("/view-order-products/:id/:total", verifyLogin, async (req, res) => {
 router.get("/view-order-history", verifyLogin, async (req, res) => {
   let userId = req.session.user._id;
   let orders = await usrhelper.getAllOrders(userId);
+  console.log('Orders are : '+orders);
+  console.log(orders);
   let category = await prhelper.getAllCategory();
   let walletBalance = 0;
   walletBalance = (
