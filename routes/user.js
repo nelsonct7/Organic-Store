@@ -54,72 +54,76 @@ const verifyLogin = (req, res, next) => {
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  await prhelper.validateOffers();
-  if (!req.session.loggedIn) {
-    prhelper
-      .getAllProducts()
-      .then((products) => {
-        prhelper
-          .getBanner()
-          .then((banner) => {
-            prhelper.getAllCategory().then((category) => {
+  try{
+    await prhelper.validateOffers();
+    if (!req.session.loggedIn) {
+      prhelper
+        .getAllProducts()
+        .then((products) => {
+          prhelper
+            .getBanner()
+            .then((banner) => {
+              prhelper.getAllCategory().then((category) => {
+                res.render("user/index", {
+                  title: "Organic Store",
+                  products,
+                  banner,
+                  category,
+                });
+              });
+            })
+            .catch((err) => {
+              res.render("errors/error404");
+            });
+        })
+        .catch((err) => {
+          res.render("errors/error404");
+        });
+    } else {
+      let cartCount = 0;
+      let walletBalance = 0;
+      let delivery = false;
+      let user = req.session.user;
+      let deliveryStatus = false;
+      if (req.session.loggedIn) {
+        cartCount = await userHelpers.getCartCount(req.session.user._id);
+        walletBalance = (
+          await usrhelper.getValetAmount(req.session.user._id)
+        ).toFixed(2);
+        deliveryStatus = await usrhelper.getDeliveryStatus(req.session.user._id);
+        if (deliveryStatus.length > 0) {
+          delivery = true;
+        }
+      }
+      let category = await prhelper.getAllCategory();
+      prhelper
+        .getAllProducts()
+        .then((products) => {
+          prhelper
+            .getBanner()
+            .then((banner) => {
               res.render("user/index", {
-                title: "Organic Store",
+                title: "Home",
+                user,
                 products,
+                cartCount,
                 banner,
                 category,
+                walletBalance,
+                delivery,
+                deliveryStatus,
               });
+            })
+            .catch(() => {
+              res.render("errors/error404");
             });
-          })
-          .catch((err) => {
-            res.render("errors/error404");
-          });
-      })
-      .catch((err) => {
-        res.render("errors/error404");
-      });
-  } else {
-    let cartCount = 0;
-    let walletBalance = 0;
-    let delivery = false;
-    let user = req.session.user;
-    let deliveryStatus = false;
-    if (req.session.loggedIn) {
-      cartCount = await userHelpers.getCartCount(req.session.user._id);
-      walletBalance = (
-        await usrhelper.getValetAmount(req.session.user._id)
-      ).toFixed(2);
-      deliveryStatus = await usrhelper.getDeliveryStatus(req.session.user._id);
-      if (deliveryStatus.length > 0) {
-        delivery = true;
-      }
+        })
+        .catch((err) => {
+          res.render("errors/error404");
+        });
     }
-    let category = await prhelper.getAllCategory();
-    prhelper
-      .getAllProducts()
-      .then((products) => {
-        prhelper
-          .getBanner()
-          .then((banner) => {
-            res.render("user/index", {
-              title: "Home",
-              user,
-              products,
-              cartCount,
-              banner,
-              category,
-              walletBalance,
-              delivery,
-              deliveryStatus,
-            });
-          })
-          .catch(() => {
-            res.render("errors/error404");
-          });
-      })
-      .catch((err) => {
-        res.render("errors/error404");
-      });
+  }catch(err){
+    res.render('errors/error404',{title:'Error'})
   }
 });
 
@@ -176,7 +180,7 @@ router.get("/signup", async function (req, res, next) {
 });
 
 router.post("/signup", function (req, res, next) {
-  console.log('/nRouter..');
+  
   usrhelper
     .userPresent(req.body.user_email)
     .then((response) => {
@@ -187,8 +191,11 @@ router.post("/signup", function (req, res, next) {
         usrhelper
           .doSignup(req.body)
           .then((response) => {
+            let user={}
+            user._id=ObjectId(response.insertedId)
+            user.user_name=req.body.user_name
             req.session.loggedIn = true;
-            req.session.user.user_name = req.body.user_name;
+            req.session.user = user ;
             res.redirect("/");
           })
           .catch((err) => {
@@ -211,7 +218,7 @@ router.post("/delete-profile", verifyLogin, async (req, res) => {
         profileDeleted: true,
       });
     });
-  } catch (err) {}
+  } catch (err) {res.render("errors/error404");}
 });
 
 router.post("/otpauth/:number", (req, res) => {
@@ -237,18 +244,6 @@ router.post("/otpauth/:number", (req, res) => {
     .catch((reject) => {
       console.log("Invalid OTP");
     });
-
-  // let tocken=req.body.otp1
-  // messagebird.verify.verify(id,tocken,(err,response)=>{
-  // if(err){
-  //     res.render('user/otpVerify',{id,dbResponse,otpError:true})
-  // }else{
-
-  //       req.session.user=dbResponse.user_name
-  //       req.session.loggedIn=true
-  //       res.redirect('/')
-  // }
-  // })
 });
 
 router.get("/logout", (req, res) => {
@@ -258,7 +253,6 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/view-product/:id", verifyLogin, async (req, res) => {
- 
   await prhelper
     .getProductDetails(req.params.id)
     .then(async (product) => {
@@ -279,7 +273,6 @@ router.get("/view-product/:id", verifyLogin, async (req, res) => {
       ).toFixed(2);
       let actualPrice = productPrice;
       for (i = 0; i < category.length; i++) {
-        //console.log(category[i]['category-name']);
         if (category[i]["category-name"] === product.category) {
           actualPrice = (
             productPrice -
@@ -432,9 +425,7 @@ router.post("/proceed-to-payment", verifyLogin, async (req, res) => {
   let wallet = parseFloat(req.body.wallet);
   let category = await prhelper.getAllCategory();
   let walletBalance = 0;
-  let walletB = (await usrhelper.getValetAmount(req.session.user._id)).toFixed(
-    2
-  );
+  let walletB = (await usrhelper.getValetAmount(req.session.user._id)).toFixed(2);
   let paymentByWallet = false;
   req.session.amountPay = amountPay;
   if (walletB) {
@@ -683,6 +674,9 @@ router.get("/view-orders", verifyLogin, async (req, res) => {
   let orders = await usrhelper.getOrders(userId);
   for(i=0;i<orders.length;i++){
     if(orders[i].status==='pending'){
+      orders[i].canceled=true
+    }
+    if(orders[i].payment_option==='cod' && orders[i].status==='placed'){
       orders[i].canceled=true
     }
   }

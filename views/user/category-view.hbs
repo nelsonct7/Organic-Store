@@ -116,31 +116,27 @@
                                                         </div>
                                                     </li> --}}
                                                     <li class="">
-                                                        <div class="product-add-to-cart">
-                                                            <a class="quick_view" href="/view-product/{{this._id}}"
-                                                                title="Quick view">
-                                                                <i class="fa-regular fa-magnifying-glass"></i>
-                                                                <span>Quick view</span>
+                                                   
+                                                        <div class="product-add-to-cart"> 
+                                                            <a class="" href="/view-product/{{this._id}}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search " viewBox="0 0 20 20" style="margin-top: 5px;">
+                                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                                            </svg>
                                                             </a>
                                                         </div>
 
                                                     </li>
                                                     <li class="cart">
-                                                        <div class="product-add-to-cart">
-                                                            <button
-                                                                class="button ajax_add_to_cart_button add-to-cart btn-default"
-                                                                onclick="addToCart('{{this._id}}')">
-                                                                <i class="fa fa-shopping-cart"></i> Add to cart
+                                                        <div class="">
+                                                            
+                                                            <button class="button ajax_add_to_cart_button add-to-cart btn-default" onclick="addToCart('{{this._id}}')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
+                                                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                                                </svg>
                                                             </button>
                                                         </div>
                                                     </li>
                                                 </ul>
-
-                                                {{!-- <ul class="product-flag">
-                                                    <li class="discount"><span>-5%</span></li>
-                                                    <li class="new"><span>New</span></li>
-                                                </ul> --}}
-
                                             </div>
                                             <div class="product_desc">
 
@@ -153,28 +149,6 @@
                                                         class="product_name one_line"
                                                         title="Juicy Couture Juicy Quilted Terry Track Jacket">{{this.title}}</a>
                                                 </h3>
-
-
-                                                <div class="hook-reviews">
-                                                    <div class="comments_note" itemprop="aggregateRating" itemscope
-                                                        itemtype="https://schema.org/AggregateRating">
-                                                        <div class="star_content clearfix">
-                                                            <div class="star star_on"></div>
-                                                            <div class="star star_on"></div>
-                                                            <div class="star star_on"></div>
-                                                            <div class="star star_on"></div>
-                                                            <div class="star star_on"></div>
-                                                            <meta itemprop="worstRating" content="0" />
-                                                            <meta itemprop="ratingValue" content="5" />
-                                                            <meta itemprop="bestRating" content="5" />
-                                                        </div>
-                                                        <span class="nb-comments"><span itemprop="reviewCount">1</span>
-                                                            Review(s)</span>
-                                                    </div>
-
-                                                </div>
-
-
                                                 <div class="product-price-and-shipping">
 
 
@@ -185,11 +159,11 @@
 
                                                     <span class="sr-only">Price</span>
                                                     <span itemprop="price"
-                                                        class="price price-sale">{{this.finalPrice}}</span>
+                                                        class="price price-sale">{{this.finalPrice}}<i class="fa-solid fa-indian-rupee-sign"></i></span>
 
 
 
-                                                    <span class="discount-percentage discount-product">{{this.discount}}</span>
+                                                    <span class="discount-percentage discount-product">{{this.discount}}<i class="fa-solid fa-percent"></i></span>
                                                 </div>
 
                                             </div>
@@ -199,40 +173,6 @@
                                     </div>
                                     {{/each}}
                                 </div>
-
-
-                                {{!-- <nav class="pagination">
-
-                                    <ul class="page-list clearfix text-sm-center">
-
-
-                                        <li class="current">
-                                            <a rel="nofollow" href="13-hot-categories.html"
-                                                class="disabled js-search-link">
-                                                1
-                                            </a>
-                                        </li>
-
-
-                                        <li>
-                                            <a rel="nofollow" href="13-hot-categories4658.html?page=2"
-                                                class="js-search-link">
-                                                2
-                                            </a>
-                                        </li>
-
-
-                                        <li>
-                                            <a rel="next" href="13-hot-categories4658.html?page=2"
-                                                class="next js-search-link">
-                                                Next<i class="material-icons">&#xE315;</i>
-                                            </a>
-                                        </li>
-                                    </ul>
-
-
-                                </nav> --}}
-
                             </div>
 
                         </div>

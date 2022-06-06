@@ -387,7 +387,7 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       let categories = await db
         .get()
-        .collection(collection.CATEGORY_COLLECTION) 
+        .collection(collection.CATEGORY_COLLECTION)  
         .find({ deleted: false })
         .toArray()
           resolve(categories);      
