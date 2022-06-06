@@ -63,6 +63,7 @@ router.get("/", (req, res) => {
         res.render("admin/admin-login", {
           title: "Organic Store",
           logerr: req.session.err,
+          adminLogin:true
         });
         req.session.err = false;
       } else {

@@ -391,11 +391,13 @@ module.exports = {
             })
         })
     },
+    
     doAdminLogin: (adminData) => {
         return new Promise(async (resolve, reject) => {
             let admin = await db.get().collection(collection.ADMIN_COLLECTION).findOne({og_admin: adminData.admin_field})
             let loginStatus = false;
             let response = {}
+            console.log(admin);
             if (admin) { // console.log("$$$$$$$$$$$$"+adminData.psd);
                 if (adminData.admin_password == admin.admin_password) { // console.log("Login Success...");
                     response.status = true
