@@ -1,79 +1,68 @@
-
-  <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white ps-4 m-0 pe-0 pt-2 col-2" style="width: 235px;" >
-   
-
-      <!-- Brand -->
-     
-            <!-- Toggler -->
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- User -->
-      
-      <!-- Collapse -->
-      <div class="collapse navbar-collapse col-2" id="sidenav-collapse-main">
-        <!-- Collapse header -->
-        <!-- Form -->
-        <!-- Navigation -->
-         <ul class="navbar-nav">
-          <li class="nav-item  ">
-            <a class="nav-link  " href="/admin/adminhome">
-              <i class="ni ni-tv-2 text-primary"></i> Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/admin/view-products">
-              <i class="ni ni-planet text-blue"></i> Products
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/admin/view-users">
-              <i class="ni ni-single-02 text-yellow"></i> Users
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/admin/view-category">
-              <i class="fa-solid fa-boxes-packing"></i>Category
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/admin/view-orders">
-              <i class="ni ni-bullet-list-67 text-red"></i> Orders
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/banner">
-              <i class="ni ni-key-25 text-info"></i> Banners
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/pdf/view-reports">
-              <i class="fa-solid fa-book"></i> Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/view-message">
-              <i class="fa-solid fa-envelope"></i> Messages
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/admin-feedback">
-              <i class="fa-brands fa-buffer"></i> Feedback
-            </a>
-          </li>
-           <li class="nav-item">
-            <a class="nav-link" href="/admin/view-offers">
-              <i class="ni ni-circle-08 text-pink"></i> Offers
-            </a>
-          </li>
-            <li class="nav-item">
-            <a class="nav-link" href="/admin/logout">
-              </i><button class="btn btn-danger"><i class="fa-solid fa-square-arrow-up-right"></i> Log_out</button>
-            </a>
-          </li>
-        </ul> 
-        <!-- Divider -->
-        <hr class="my-3">
+  <div class="d-flex flex-column" style="width: 235px; height: 100vh; background: #fff; border-right: 1px solid #e5e7eb; position: fixed; top: 0; left: 0; z-index: 100;">
+    <!-- Brand -->
+    <div class="d-flex align-items-center gap-2 px-4 py-3" style="border-bottom: 1px solid #f3f4f6;">
+      <div style="width: 36px; height: 36px; background: #16a34a; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; flex-shrink: 0;">OS</div>
+      <div>
+        <div class="brand-text" style="font-weight: 700; font-size: 1rem; color: #166534; line-height: 1.2;">Organic<span style="color: #16a34a;">Store</span></div>
+        <div style="font-size: 0.6875rem; color: #9ca3af;">Admin Panel</div>
       </div>
-    
-  </nav>
+    </div>
+
+    <!-- Navigation -->
+    <div style="flex: 1; overflow-y: auto; padding: 12px 8px;">
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/home" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-tv-2" style="width: 18px; text-align: center; color: #16a34a;"></i> Dashboard
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-products" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-planet" style="width: 18px; text-align: center; color: #16a34a;"></i> Products
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-users" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-single-02" style="width: 18px; text-align: center; color: #16a34a;"></i> Users
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-category" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="fa-solid fa-boxes-packing" style="width: 18px; text-align: center; color: #16a34a;"></i> Categories
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-orders" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-bullet-list-67" style="width: 18px; text-align: center; color: #16a34a;"></i> Orders
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/banner" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-key-25" style="width: 18px; text-align: center; color: #16a34a;"></i> Banners
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-message" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="fa-solid fa-envelope" style="width: 18px; text-align: center; color: #16a34a;"></i> Messages
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/admin-feedback" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="fa-brands fa-buffer" style="width: 18px; text-align: center; color: #16a34a;"></i> Feedback
+          </a>
+        </li>
+        <li style="margin-bottom: 2px;">
+          <a href="/admin/view-offers" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #4b5563; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+            <i class="ni ni-circle-08" style="width: 18px; text-align: center; color: #16a34a;"></i> Offers
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Logout -->
+    <div style="padding: 12px 8px; border-top: 1px solid #f3f4f6;">
+      <a href="/admin/logout" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #ef4444; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.15s;">
+        <i class="fa-solid fa-right-from-bracket" style="width: 18px; text-align: center;"></i> Log out
+      </a>
+    </div>
+  </div>

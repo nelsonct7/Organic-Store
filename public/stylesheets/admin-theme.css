@@ -1,0 +1,471 @@
+/* =========================================
+   Organic Store - Admin Theme Overrides
+   Applies green organic palette over Argon
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ---- CSS Variable Overrides ---- */
+:root {
+  --primary: #16a34a;
+  --primary-dark: #15803d;
+  --primary-light: #dcfce7;
+  --primary-50: #f0fdf4;
+  --success: #22c55e;
+  --info: #0ea5e9;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --default: #166534;
+
+  --font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ---- Body ---- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8fafc;
+  color: #1f2937;
+}
+
+/* ---- Header Gradient ---- */
+.header.bg-gradient-primary {
+  background: linear-gradient(135deg, #166534 0%, #15803d 50%, #16a34a 100%) !important;
+}
+
+/* ---- Sidebar ---- */
+.navbar-vertical .navbar-nav .nav-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  color: #4b5563;
+  border-radius: 8px;
+  margin: 2px 8px;
+  transition: all 0.2s;
+}
+.navbar-vertical .navbar-nav .nav-link:hover {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.navbar-vertical .navbar-nav .nav-link.active {
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 600;
+}
+.navbar-vertical .navbar-brand {
+  padding: 1rem 1.25rem;
+}
+.navbar-vertical .navbar-brand .brand-text {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #166534;
+}
+.navbar-vertical .navbar-brand .brand-text span {
+  color: #16a34a;
+}
+
+/* ---- Sidebar icon colors overridden to green tones ---- */
+.navbar-vertical .nav-link i.ni,
+.navbar-vertical .nav-link i.fa-solid,
+.navbar-vertical .nav-link i.fa-brands {
+  color: #16a34a !important;
+}
+.navbar-vertical .nav-link.active i {
+  color: #15803d !important;
+}
+
+/* ---- Stat Cards ---- */
+.card.card-stats {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s;
+}
+.card.card-stats:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+.card.card-stats .card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+.card.card-stats .h2 {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---- Icon shapes in stats cards ---- */
+.icon-shape {
+  border-radius: 10px !important;
+}
+.icon-shape.bg-danger { background: linear-gradient(135deg, #ef4444, #dc2626) !important; }
+.icon-shape.bg-warning { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+.icon-shape.bg-yellow { background: linear-gradient(135deg, #16a34a, #15803d) !important; }
+.icon-shape.bg-info { background: linear-gradient(135deg, #0ea5e9, #0284c7) !important; }
+
+/* ---- Buttons ---- */
+.btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #15803d;
+  border-color: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.3);
+}
+.btn-primary:active {
+  background: #166534 !important;
+  border-color: #166534 !important;
+}
+
+.btn-success {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+.btn-success:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+.btn-danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #374151;
+}
+.btn-secondary:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.btn-outline-primary {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+.btn-outline-primary:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+/* ---- Cards ---- */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 1.25rem 1.5rem;
+}
+.card-header h2, .card-header h3, .card-header h5 {
+  font-weight: 700;
+  color: #111827;
+}
+.card-body {
+  padding: 1.5rem;
+}
+
+/* ---- Tables ---- */
+.table {
+  font-size: 0.875rem;
+  color: #374151;
+}
+.table thead th {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0.85rem 1rem;
+}
+.table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f3f4f6;
+}
+.table tbody tr {
+  transition: background 0.15s;
+}
+.table tbody tr:hover {
+  background: #f9fafb;
+}
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---- Forms ---- */
+.form-control {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.575rem 0.85rem;
+  color: #1f2937;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+.form-select {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.575rem 2.25rem 0.575rem 0.85rem;
+}
+.form-select:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.35rem;
+}
+.form-check-input:checked {
+  background-color: #16a34a;
+  border-color: #16a34a;
+}
+
+/* ---- Breadcrumb ---- */
+.breadcrumb {
+  background: transparent;
+  padding: 0.75rem 0;
+  font-size: 0.8125rem;
+}
+.breadcrumb-item a {
+  color: #16a34a;
+}
+.breadcrumb-item.active {
+  color: #6b7280;
+}
+
+/* ---- Alerts ---- */
+.alert {
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+.alert-success {
+  background: #f0fdf4;
+  color: #15803d;
+}
+.alert-danger {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.alert-info {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* ---- Badges ---- */
+.badge {
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+  border-radius: 6px;
+}
+.badge.bg-success { background: #dcfce7 !important; color: #15803d !important; }
+.badge.bg-danger { background: #fef2f2 !important; color: #dc2626 !important; }
+.badge.bg-warning { background: #fffbeb !important; color: #b45309 !important; }
+.badge.bg-info { background: #eff6ff !important; color: #1d4ed8 !important; }
+
+/* ---- Progress Bars ---- */
+.progress {
+  border-radius: 50px;
+  background: #f3f4f6;
+}
+.progress-bar {
+  background: #16a34a;
+}
+
+/* ---- Page Headers ---- */
+.header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+.header-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* ---- Nav Tabs ---- */
+.nav-tabs .nav-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  transition: color 0.2s;
+}
+.nav-tabs .nav-link:hover {
+  color: #16a34a;
+}
+.nav-tabs .nav-link.active {
+  color: #16a34a;
+  font-weight: 600;
+  border-bottom: 2px solid #16a34a;
+  background: transparent;
+}
+
+/* ---- Pagination ---- */
+.page-link {
+  color: #16a34a;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin: 0 2px;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.85rem;
+}
+.page-link:hover {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+.page-item.active .page-link {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+/* ---- Dropdown ---- */
+.dropdown-menu {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  padding: 0.5rem;
+}
+.dropdown-item {
+  font-size: 0.875rem;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  color: #374151;
+  transition: all 0.15s;
+}
+.dropdown-item:hover {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+/* ---- Modal ---- */
+.modal-content {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+.modal-header {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 1.25rem 1.5rem;
+}
+.modal-header .modal-title {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+.modal-footer {
+  border-top: 1px solid #f3f4f6;
+  padding: 1rem 1.5rem;
+}
+
+/* ---- Custom Admin Section Headers ---- */
+.admin-section-header {
+  background: linear-gradient(135deg, #166534, #15803d) !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+.admin-section-header h2,
+.admin-section-header h3 {
+  color: #fff !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+/* ---- Admin Login Page ---- */
+.admin-login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 50%, #f0fdf4 100%);
+  padding: 20px;
+}
+.admin-login-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+  border: 1px solid #e5e7eb;
+}
+.admin-login-card .login-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.admin-login-card .login-logo .logo-icon {
+  width: 56px;
+  height: 56px;
+  background: #16a34a;
+  color: #fff;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.admin-login-card .login-logo h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+.admin-login-card .login-logo p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+/* ---- Responsive tweaks ---- */
+@media (max-width: 768px) {
+  .navbar-vertical {
+    width: 100% !important;
+    position: relative !important;
+  }
+  .col-2.m-0.p-0.mt-5 {
+    width: 100% !important;
+  }
+  .col-10.p-0.m-0 {
+    width: 100% !important;
+  }
+}

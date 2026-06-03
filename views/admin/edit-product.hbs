@@ -61,7 +61,7 @@
 
   <img src="/product-images/{{product.img_path.[0]}}" alt="" style="width: 100px; height: auto;" id="imgView1" class="p-3">
   <img src="/product-images/{{product.img_path.[1]}}" alt="" style="width: 100px; height: auto;" id="imgView2" class="p-3">
-  <input class="form-control" type="file" id="formFile" name="image"  onchange="viewImage(event)" value="./product-images/{{product.img_path.[]}}" multiple>
+  <input class="form-control" type="file" id="formFile" name="image"  onchange="viewImage(event)" multiple>
 </div>
   <a href="/admin/view-products" class="btn btn-primary">Cancel</a>
   <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure to Submit this')">Submit</button>

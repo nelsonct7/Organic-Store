@@ -36,6 +36,12 @@ const categorySchema = new Schema(
         ref: "Category",
       },
     ],
+    offers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Offer",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -23,9 +23,10 @@ const userSchema = new Schema(
       required: true,
       index: true,
     },
-    roles: {
-      type: [String],
-      default: ["user"],
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: "Roles",
+      required: true,
     },
     profilePicture: {
       type: String,

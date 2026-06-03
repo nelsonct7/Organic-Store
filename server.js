@@ -17,6 +17,7 @@ const { authLimiter } = require("./middlewares/ratelimit.middleware");
 // route imports
 const authRoutes = require("./routes/auth.routes");
 const baseRoutes=require("./routes/base.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const requiredEnvVars = [
   "PORT",
@@ -89,12 +90,15 @@ const createServer = async () => {
       next();
     });
 
-    // register handlebars helper
+    // register handlebars helpers
     HBS.handlebars.registerHelper("ifCond", function (v1, v2, options) {
       if (v1 === v2) {
         return options.fn(this);
       }
       return options.inverse(this);
+    });
+    HBS.handlebars.registerHelper("eq", function (v1, v2) {
+      return v1 === v2;
     });
 
     // health check endpoint
@@ -110,6 +114,7 @@ const createServer = async () => {
     // routes setup
     app.use("/", baseRoutes);
     app.use("/v1/auth", authRoutes);
+    app.use("/admin", adminRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

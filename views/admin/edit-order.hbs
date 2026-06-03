@@ -1,95 +1,86 @@
-<section class=" m-4">
-    <div class=" p-3 mt-4 shadow-lg p-4 mb-5 bg-body rounded border border-dark">
-        <div class="d-flex align-items-end mt-4 mb-3">
-            <h3 class="me-3">Edit Order</h3>
-        </div>
-        <form action="/admin/update-order" method="post">
-            <table class="table mt-5" id="prtable">
-                <thead>
-                    <tr>
-                        <th scope="col">Field</th>
-                        <th scope="col">Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Order Id</td>
-                        <td>
-                            <input type="text" id="" disabled value="{{ orderDetail._id }}">
-                                <input type="text" name="orderId" id="" hidden value="{{ orderDetail._id }}"></td>
-                            </tr>
-                            <tr>
-                                <td>User Id</td>
-                                <td>
-                                    <input type="text" name="" id="" disabled value="{{ orderDetail.user_data }}"></td>
-                                </tr>
-                                <tr>
-                                    <td>User Name</td>
-                                    <td>
-                                        <input type="text" name="" id="" disabled value="{{ orderDetail.address_info.address_collection.first_name }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date</td>
-                                        <td>
-                                            <input type="text" name="" id="" disabled value="{{ orderDetail.date }}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Status</td>
-                                            <td>
-                                                <input type="text" name="" id="" disabled value="{{ orderDetail.status }}"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Address</td>
-                                                <td>{{ orderDetail.address_info.address_collection.first_name }}
-                                                    {{ orderDetail.address_info.address_collection.house_name }}
-                                                    {{ orderDetail.address_info.address_collection.street }}
-                                                    {{ orderDetail.address_info.address_collection.town }}
-                                                    {{ orderDetail.address_info.address_collection.pin }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Products</td>
-                                                <td>
-                                                    {{#each orderDetail.products}}
-                                                        {{ this.product_id }}<br>
-                                                        {{/each}}
-                                                    </td>
-                                                </tr>
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <h4 class="mb-0" style="font-weight: 600; color: #1f2937;">Edit Order</h4>
+  <a href="/admin/view-orders" class="btn btn-sm" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.8125rem; text-decoration: none;">← Back to Orders</a>
+</div>
 
-                                                <tr>
-                                                    <td>Deleted</td>
-                                                    <td>
-                                                        <input type="text" name="" id="" disabled value="{{#if orderDetail.deleted}}Order Deleted{{else}}Order Active{{/if}}"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Dispatched</td>
-                                                        <td>
-                                                            {{#if orderDetail.dispatched}}
-                                                                <input type="text" name="" id="" disabled value="Order out for delivery">
-                                                                {{ else }}
-                                                                    <select class="form-select" aria-label="Default select example" name="dispatched">
-                                                                        <option value="false" selected>Order under processing</option>
-                                                                        <option value="true">Order Out for Delivery</option>
-                                                                    {{/if}}
-                                                                </select>
-                                                                <tr>
-                                                                    <td>
-                                                                        <a href="/admin/view-orders" class="btn btn-primary">Cancel</a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tr>
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <form action="/admin/update-order" method="post">
+      <input type="hidden" name="orderId" value="{{orderDetail._id}}">
 
-                                                        </tbody>
-                                                    </table>
-                                                </form>
-                                            </div>
-                                        </section>
-                                    </tr>
-                                </tr>
-                            </tr>
-                        </td>
-                    </tr>
-                </tbody>
+      <table class="table mb-0" style="font-size: 0.875rem;">
+        <tbody>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Order ID</td>
+            <td style="border: none; padding: 12px 0;">
+              <input type="text" class="form-control" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #6b7280; max-width: 320px;" value="{{orderDetail._id}}" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Customer</td>
+            <td style="border: none; padding: 12px 0;">
+              <input type="text" class="form-control" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #1f2937; max-width: 320px;" value="{{orderDetail.user_name}} — {{orderDetail.mobile}}" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Date</td>
+            <td style="border: none; padding: 12px 0;">
+              <input type="text" class="form-control" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #6b7280; max-width: 320px;" value="{{orderDetail.stringDate}}" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Status</td>
+            <td style="border: none; padding: 12px 0;">
+              <input type="text" class="form-control" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #6b7280; max-width: 320px;" value="{{orderDetail.status}}" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Amount</td>
+            <td style="border: none; padding: 12px 0;">
+              <input type="text" class="form-control" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; font-weight: 600; color: #166534; max-width: 320px;" value="₹{{orderDetail.total_amount}}" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Address</td>
+            <td style="border: none; padding: 12px 0;">
+              <textarea class="form-control" rows="3" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #4b5563; max-width: 320px;" disabled>{{orderDetail.address.street}}, {{orderDetail.address.city}}, {{orderDetail.address.state}} - {{orderDetail.address.postalCode}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Products</td>
+            <td style="border: none; padding: 12px 0;">
+              <div style="max-width: 320px;">
+                {{#each orderDetail.products}}
+                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.875rem; color: #4b5563;">
+                  <span>{{this.title}} <span style="color: #9ca3af;">x{{this.quantity}}</span></span>
+                  <span style="font-weight: 500;">₹{{this.offPrice}}</span>
+                </div>
+                {{/each}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Delivery</td>
+            <td style="border: none; padding: 12px 0;">
+              {{#if orderDetail.dispatched}}
+              <input type="text" class="form-control" style="background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #166534; font-weight: 500; max-width: 320px;" value="Shipped — out for delivery" disabled>
+              {{else}}
+              <select name="dispatched" class="form-select" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; max-width: 320px;">
+                <option value="false" selected>Pending / Processing</option>
+                <option value="true">Mark as Shipped</option>
+              </select>
+              {{/if}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid #f3f4f6;">
+        {{#unless orderDetail.dispatched}}
+        <button type="submit" class="btn" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; font-weight: 500;">Update Order</button>
+        {{/unless}}
+        <a href="/admin/view-orders" class="btn" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; text-decoration: none;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

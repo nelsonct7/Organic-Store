@@ -24,6 +24,15 @@
   <link href="/assets/js/plugins/nucleo/css/nucleo.css" rel="stylesheet">
   <link href="/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="/assets/css/argon-dashboard.css?v=1.1.2" rel="stylesheet">
+  <link href="/stylesheets/admin-theme.css" rel="stylesheet">
+  {{else if adminLogin}}
+  <!-- Admin Login: load Argon CSS for login page -->
+  <link href="/assets/img/brand/favicon.png" rel="icon" type="image/png">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="/assets/js/plugins/nucleo/css/nucleo.css" rel="stylesheet">
+  <link href="/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="/assets/css/argon-dashboard.css?v=1.1.2" rel="stylesheet">
+  <link href="/stylesheets/admin-theme.css" rel="stylesheet">
   {{else}}
   <!-- User theme -->
   <link rel="stylesheet" href="/stylesheets/main-theme.css">
@@ -38,13 +47,15 @@
     {{/if}}
   {{/if}}
 
-  {{#if admin}}
-  <section class="container-fluid">
-    <div class="row m-0 p-0">
-      <div class="col-2 m-0 p-0 mt-5">{{>admin_sidebar}}</div>
-      <div class="col-10 p-0 m-0">{{{body}}}</div>
+  {{#if adminLogin}}
+  {{{body}}}
+  {{else if admin}}
+  {{>admin_sidebar}}
+  <div style="margin-left: 235px; min-height: 100vh; background: #f8fafc;">
+    <div class="p-4">
+      {{{body}}}
     </div>
-  </section>
+  </div>
   {{else}}
   {{{body}}}
   {{/if}}

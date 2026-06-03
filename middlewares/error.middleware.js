@@ -1,3 +1,5 @@
+const { ValidationError, ConflictError, AuthenticationError, AuthorizationError, NotFoundError } = require("../shared/utils/error.util");
+
 const globalErrorHandler = (err, req, res, next) => {
   console.error(err.stack);
   if(err instanceof ValidationError){
@@ -24,9 +26,10 @@ const globalErrorHandler = (err, req, res, next) => {
     });
   }
   if(err instanceof AuthorizationError){
-    return res.status(403).json({
-      success: false,
-      message: err.message
+    return res.status(403).render("errors/error403", {
+      layout: false,
+      title: "Access Forbidden",
+      message: err.message,
     });
   }
   if(err instanceof NotFoundError){
@@ -35,7 +38,7 @@ const globalErrorHandler = (err, req, res, next) => {
       message: err.message
     });
   }
-  
+
   res.status(500).render("errors/error500", {
     title: "Server Error",
     message: "An unexpected error occurred. Please try again later.",

@@ -11,6 +11,11 @@ const offerSchema = new Schema(
       type: String,
       default: null,
     },
+    appliedTo: {
+      type: String,
+      enum: ["category", "product"],
+      required: true,
+    },
     type: {
       type: String,
       enum: ["percentage", "fixed"],
