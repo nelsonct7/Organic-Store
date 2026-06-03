@@ -1,5 +1,5 @@
 var db = require('../config/connection');
-const bcrypt = require('bcrypt');
+
 const {promise, reject} = require('bcrypt/promises');
 const async = require('hbs/lib/async');
 const {response} = require('../app');

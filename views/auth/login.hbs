@@ -1,0 +1,98 @@
+<div class="auth-card">
+  {{!-- Left Brand Panel --}}
+  <div class="auth-brand">
+    <div class="brand-logo">
+      <div class="brand-logo-icon">Og</div>
+      <span class="brand-logo-text">Organic Store</span>
+    </div>
+
+    <div class="brand-content">
+      <h1>Fresh & Organic<br>Delivered to You</h1>
+      <p>Farm-fresh fruits, vegetables and organic groceries delivered straight from the farm to your doorstep.</p>
+      <div class="brand-features">
+        <div class="brand-feature">
+          <span class="brand-feature-icon"><i class="fas fa-leaf"></i></span>
+          <span>100% Organic & Chemical Free</span>
+        </div>
+        <div class="brand-feature">
+          <span class="brand-feature-icon"><i class="fas fa-truck"></i></span>
+          <span>Free delivery on orders above ₹299</span>
+        </div>
+        <div class="brand-feature">
+          <span class="brand-feature-icon"><i class="fas fa-shield-alt"></i></span>
+          <span>Secure payments & easy returns</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-footer-text">Farm to table, naturally.</div>
+  </div>
+
+  {{!-- Right Form Panel --}}
+  <div class="auth-form-panel">
+    <div class="auth-form-header">
+      <h2>Welcome Back!</h2>
+      <p>Sign in to continue shopping organic</p>
+    </div>
+
+    {{#if error}}
+    <div class="auth-alert auth-alert-danger">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{error}}</span>
+    </div>
+    {{/if}}
+
+    <form id="loginForm" action="/v1/auth/login" method="post" novalidate>
+      <div class="auth-form-group">
+        <label for="email">Email Address</label>
+        <div class="auth-input-wrapper">
+          <i class="auth-input-icon far fa-envelope"></i>
+          <input type="email" id="email" name="email" class="auth-form-control" placeholder="you@example.com" required data-validate>
+          <span class="auth-field-error" data-error="email"></span>
+        </div>
+      </div>
+
+      <div class="auth-form-group">
+        <label for="password">Password</label>
+        <div class="auth-input-wrapper">
+          <i class="auth-input-icon fas fa-lock"></i>
+          <input type="password" id="password" name="password" class="auth-form-control" placeholder="Enter your password" required data-validate>
+          <button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent auth-toggle-password" tabindex="-1" style="z-index: 5;">
+            <i class="far fa-eye text-muted"></i>
+          </button>
+          <span class="auth-field-error" data-error="password"></span>
+        </div>
+      </div>
+
+      <div class="auth-form-options">
+        <div class="auth-remember">
+          <input type="checkbox" id="remember" name="remember">
+          <label for="remember">Remember me</label>
+        </div>
+        <a href="#" class="auth-forgot-link" onclick="Swal.fire('Coming Soon!', 'Password reset will be available soon.', 'info'); return false;">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="auth-btn-primary">
+        <i class="fas fa-arrow-right"></i>
+        Sign In
+      </button>
+    </form>
+
+    <div class="auth-divider"><span>Or continue with</span></div>
+
+    <div class="auth-social-btns">
+      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Google login will be available soon.', 'info')">
+        <i class="fab fa-google google-color"></i>
+        Google
+      </button>
+      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Facebook login will be available soon.', 'info')">
+        <i class="fab fa-facebook facebook-color"></i>
+        Facebook
+      </button>
+    </div>
+
+    <div class="auth-switch">
+      Don't have an account? <a href="/v1/auth/register">Create Account</a>
+    </div>
+  </div>
+</div>

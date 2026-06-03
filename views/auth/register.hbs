@@ -1,0 +1,123 @@
+<div class="auth-card">
+  {{!-- Left Brand Panel --}}
+  <div class="auth-brand">
+    <div class="brand-logo">
+      <div class="brand-logo-icon">Og</div>
+      <span class="brand-logo-text">Organic Store</span>
+    </div>
+
+    <div class="brand-content">
+      <h1>Start Your<br>Organic Journey</h1>
+      <p>Join thousands of health-conscious families getting fresh organic produce delivered weekly.</p>
+      <div class="brand-testimonial">
+        <p>"Since switching to Organic Store, my family eats healthier and we love the farm-fresh taste!"</p>
+        <div class="author">
+          <span class="star"><i class="fas fa-star"></i></span>
+          <span class="star"><i class="fas fa-star"></i></span>
+          <span class="star"><i class="fas fa-star"></i></span>
+          <span class="star"><i class="fas fa-star"></i></span>
+          <span class="star"><i class="fas fa-star"></i></span>
+          &nbsp;— Priya S., Happy Customer
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-footer-text">
+      Already a member? <a href="/v1/auth/login">Sign in</a>
+    </div>
+  </div>
+
+  {{!-- Right Form Panel --}}
+  <div class="auth-form-panel">
+    <div class="auth-form-header">
+      <h2>Create Account</h2>
+      <p>Join the organic revolution today</p>
+    </div>
+
+    {{#if error}}
+    <div class="auth-alert auth-alert-danger">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{error}}</span>
+    </div>
+    {{/if}}
+
+    <form id="registerForm" action="/v1/auth/register" method="post" novalidate>
+      <div class="auth-form-group">
+        <label for="name">Full Name</label>
+        <div class="auth-input-wrapper">
+          <i class="auth-input-icon far fa-user"></i>
+          <input type="text" id="name" name="name" class="auth-form-control" placeholder="Your full name" required data-validate>
+          <span class="auth-field-error" data-error="name"></span>
+        </div>
+      </div>
+
+      <div class="auth-form-group">
+        <label for="email">Email Address</label>
+        <div class="auth-input-wrapper">
+          <i class="auth-input-icon far fa-envelope"></i>
+          <input type="email" id="email" name="email" class="auth-form-control" placeholder="you@example.com" required data-validate>
+          <span class="auth-field-error" data-error="email"></span>
+        </div>
+      </div>
+
+      <div class="auth-name-row">
+        <div class="auth-form-group">
+          <label for="mobile">Mobile Number</label>
+          <div class="auth-input-wrapper">
+            <i class="auth-input-icon fas fa-phone-alt"></i>
+            <input type="tel" id="mobile" name="mobile" class="auth-form-control" placeholder="9876543210" required data-validate>
+            <span class="auth-field-error" data-error="mobile"></span>
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label for="password">Password</label>
+          <div class="auth-input-wrapper">
+            <i class="auth-input-icon fas fa-lock"></i>
+            <input type="password" id="password" name="password" class="auth-form-control" placeholder="Min. 6 characters" required data-validate>
+            <button type="button" class="btn p-0 position-absolute end-0 top-50 translate-middle-y me-3 border-0 bg-transparent auth-toggle-password" tabindex="-1" style="z-index: 5;">
+              <i class="far fa-eye text-muted"></i>
+            </button>
+            <span class="auth-field-error" data-error="password"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="auth-input-wrapper">
+          <i class="auth-input-icon fas fa-lock"></i>
+          <input type="password" id="confirmPassword" name="confirmPassword" class="auth-form-control" placeholder="Re-enter your password" required data-validate>
+          <span class="auth-field-error" data-error="confirmPassword"></span>
+        </div>
+      </div>
+
+      <div class="auth-terms">
+        <input type="checkbox" id="terms" name="terms" required data-validate>
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+
+      <button type="submit" class="auth-btn-primary">
+        <i class="fas fa-user-plus"></i>
+        Create Account
+      </button>
+    </form>
+
+    <div class="auth-divider"><span>Or sign up with</span></div>
+
+    <div class="auth-social-btns">
+      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Google signup will be available soon.', 'info')">
+        <i class="fab fa-google google-color"></i>
+        Google
+      </button>
+      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Facebook signup will be available soon.', 'info')">
+        <i class="fab fa-facebook facebook-color"></i>
+        Facebook
+      </button>
+    </div>
+
+    <div class="auth-switch">
+      Already have an account? <a href="/v1/auth/login">Sign In</a>
+    </div>
+  </div>
+</div>

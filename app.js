@@ -1,101 +1,87 @@
-let createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-let cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const hbs = require("express-handlebars");
-const bodyParser = require("body-parser");
-const db = require("./config/connection");
-const session = require("express-session");
-const HBS = hbs.create({});
-require('dotenv').config()
+const {createServer} = require("./server");
+const http = require('http');
+const debug = require('debug')('shoppingcart:server');
+const dotenv = require("dotenv");
+dotenv.config();
 
+const env = require("./config/env.config");
 
-// Deprecated since version 0.8.0
+const PORT = normalizePort(env.port || '3000');
 
-const userRouter = require("./routes/user");
-const adminRouter = require("./routes/admin");
-const pdfRouter = require("./routes/pdfgenerator");
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+  const port = parseInt(val, 10);
 
-const app = express();
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "hbs");
-app.engine(
-  "hbs",
-  hbs.engine({
-    extname: "hbs",
-    defaultLayout: "layout",
-    layoutDir: __dirname + "/views/layout/",
-    partialsDir: __dirname + "/views/partials/",
-  })
-);
-app.use(logger("dev"));
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use((req, res, next) => {
-  if (!req.user) {
-    res.header("cache-control", "private,no-cache,no-store,must revalidate");
-    res.header("Express", "-3");
+  if (isNaN(port)) {
+    return val;
   }
-  next();
-});
-app.use(
-  session({
-    secret: "key",
-    cookie: {
-      maxAge: 60000000,
-    },
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
-//database connection
-db.connect((err) => {
-  if (err) {
-    console.log("DB Connection error" + err);
-  } else {
-    console.log("DB Connected Successfully....");
+  if (port >= 0) {
+    return port;
   }
-});
 
-HBS.handlebars.registerHelper("ifCond", function (v1, v2, options) {
-  if (v1 === v2) {
-    return options.fn(this);
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
   }
-  return options.inverse(this);
-});
 
-app.use("/", userRouter);
-app.use("/admin", adminRouter);
-app.use("/pdf", pdfRouter);
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  // next(createError(404));
-  res.render("errors/error404", {
-    title: "Error",
-  });
-});
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening(server, port) {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log(`Server is running on port ${port}`);
+}
 
-  // render the error page
-  res.status(err.status || 500);
-  // res.render("errors/error500");
-});
+/**
+ * Start server if this is the main module
+ */
+if (require.main === module) {
+  (async () => {
+    try {
+      const app = await createServer();
+      const port = normalizePort(PORT || '3000');
+      app.set('port', port);
+      
+      const server = http.createServer(app);
+      server.listen(port);
+      server.on('error', onError);
+      server.on('listening', () => onListening(server, port));
+    } catch (err) {
+      console.error('Failed to start server:', err);
+      process.exit(1);
+    }
+  })();
+}
 
-module.exports = app;
+module.exports = createServer;

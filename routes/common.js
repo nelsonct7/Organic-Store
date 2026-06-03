@@ -5,7 +5,6 @@ const router = express.Router();
 const prhelper = require("../helper/product-helper");
 const usrhelper = require("../helper/user-helpers");
 // var messagebird=require('messagebird')('rCPRMKLZeOYZrU17uDIucBatJ')
-const config = require("../config/otpAuth");
 const { reject } = require("bcrypt/promises");
 const async = require("hbs/lib/async");
 const userHelpers = require("../helper/user-helpers");

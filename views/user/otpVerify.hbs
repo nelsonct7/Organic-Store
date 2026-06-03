@@ -1,58 +1,319 @@
-<section class="container-fluid">
-  
-  <div class="row d-flex justify-content-center" style="height: 568px; width: auto; background-image: url(/images/farmbg.jpg); background-repeat: no-repeat; background-size: 250vh;">
-      
-<div class="col-3 d-flex justify-content-center mt-5 rounded" id="content-wrapper">
-          
-<form action="/otpauth/{{number}}" method="post">
-<span class="label label-success"><h3>OTP Verification</h3></span>
-  <div class="mb-3">
-    <input type="hidden" value="{{dbResponse.user_name}}" name="user">
-    <label for="exampleInputEmail1" class="form-label">Enter the otp send to this number : {{number}} </label>
-    <input type="text" class="form-control" id="otp1" name="otp1" required onkeyup="validOtp()" style="text-align: center;">
-    <span id="otp-error" class="text-danger text-center"></span>
-    
-  </div>
-  <div>
-  <button type="submit" class="btn btn-primary" onclick="return validOtp()">Submit</button>
-  <button type="reset" class="btn btn-primary">Reset</button>
-  </div>
-  <div>
-    {{#if otpError}}
-  <div class="alert alert-danger text-center mt-3">
-   Invalid OTP
-  </div>
-  {{/if}}
-  </div>
-</form>
-    </div>
-    </div>
-</section>
 <style>
-  #content-wrapper{ background: rgba( 255, 255, 255, 0.25 ); box-shadow: 0 8px
-  32px 0 rgba( 31, 38, 135, 0.37 ); backdrop-filter: blur( 4px );
-  -webkit-backdrop-filter: blur( 4px ); border-radius: 10px; border: 1px solid
-  rgba( 255, 255, 255, 0.18 ); }
-</style>
-  <script>
-   var otpError = document.getElementById('otp-error');
-   
-  function validOtp(){
-    
-    var otp = document.getElementById('otp1').value;
-   
-    if(otp.length==0 || otp.length!=4){
-        otpError.innerHTML= 'Invalid OTP';
-        return false;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * {
+    font-family: 'Inter', sans-serif;
+  }
+
+  #header, #footer, .header-top, .header-nav, .header-banner, .footer-container {
+    display: none !important;
+  }
+
+  .otp-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9e6 0%, #e8f5e9 50%, #f1f8e9 100%);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .otp-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.08) 0%, transparent 70%);
+    top: -150px;
+    left: -150px;
+  }
+
+  .otp-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139, 195, 74, 0.06) 0%, transparent 70%);
+    bottom: -80px;
+    right: -80px;
+  }
+
+  .otp-card {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+    padding: 48px 40px 40px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .otp-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .otp-icon i {
+    font-size: 36px;
+    color: #2e7d32;
+  }
+
+  .otp-card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .otp-card p {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .otp-card p strong {
+    color: #2e7d32;
+    font-weight: 600;
+  }
+
+  .otp-input-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .otp-input-group input {
+    width: 56px;
+    height: 64px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .otp-input-group input:focus {
+    border-color: #43a047;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.1);
+  }
+
+  .otp-input-group input.input-error {
+    border-color: #ef4444;
+    background: #fef2f2;
+  }
+
+  .btn-otp {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+  }
+
+  .btn-otp:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(67, 160, 71, 0.3);
+  }
+
+  .btn-otp:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-outline-otp {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-outline-otp:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+  }
+
+  .alert-custom {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .alert-custom-danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+  }
+
+  .resend-link {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 12px;
+  }
+
+  .resend-link a {
+    color: #43a047;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .resend-link a:hover {
+    text-decoration: underline;
+  }
+
+  .resend-link a.disabled {
+    color: #9ca3af;
+    pointer-events: none;
+  }
+
+  .timer-text {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .otp-card {
+      padding: 36px 24px 32px;
+      border-radius: 16px;
     }
-    if(!otp.match(/^\d*$/)){
-        otpError.innerHTML='Numbers only';
-        return false;
-   }
-    
-    otpError.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-    return true;
-}
- 
- 
+
+    .otp-input-group {
+      gap: 8px;
+    }
+
+    .otp-input-group input {
+      width: 48px;
+      height: 56px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<div class="otp-wrapper">
+  <div class="otp-card">
+    <div class="otp-icon">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+
+    <h2>Verify OTP</h2>
+    <p>Enter the 4-digit code sent to<br><strong>{{number}}</strong></p>
+
+    {{#if otpError}}
+    <div class="alert-custom alert-custom-danger">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>Invalid OTP. Please try again.</span>
+    </div>
+    {{/if}}
+
+    <form action="/otpauth/{{number}}" method="post" id="otpForm">
+      <input type="hidden" value="{{dbResponse.user_name}}" name="user">
+
+      <div class="otp-input-group">
+        <input type="text" maxlength="1" name="otp1" class="otp-box" id="otp1" inputmode="numeric" autofocus required>
+        <input type="text" maxlength="1" name="otp2" class="otp-box" id="otp2" inputmode="numeric" required>
+        <input type="text" maxlength="1" name="otp3" class="otp-box" id="otp3" inputmode="numeric" required>
+        <input type="text" maxlength="1" name="otp4" class="otp-box" id="otp4" inputmode="numeric" required>
+      </div>
+
+      <button type="submit" class="btn-otp" id="verifyBtn">
+        <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+        Verify &amp; Continue
+      </button>
+    </form>
+
+    <div class="resend-link">
+      Didn't receive the code? <a href="#" id="resendOtp">Resend OTP</a>
+    </div>
+    <div class="timer-text" id="timer"></div>
+  </div>
+</div>
+
+<script>
+  // Auto-advance OTP inputs
+  const otpBoxes = document.querySelectorAll('.otp-box');
+  otpBoxes.forEach((box, index) => {
+    box.addEventListener('input', function() {
+      if (this.value.length === 1 && index < otpBoxes.length - 1) {
+        otpBoxes[index + 1].focus();
+      }
+    });
+    box.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+        otpBoxes[index - 1].focus();
+      }
+    });
+    // Allow only digits
+    box.addEventListener('keypress', function(e) {
+      if (!/^\d$/.test(e.key) && e.key !== 'Backspace') {
+        e.preventDefault();
+      }
+    });
+  });
+
+  // Simple timer
+  let timeLeft = 30;
+  const timerEl = document.getElementById('timer');
+  const resendLink = document.getElementById('resendOtp');
+
+  function updateTimer() {
+    if (timeLeft > 0) {
+      timerEl.textContent = `Resend code in ${timeLeft}s`;
+      timeLeft--;
+      setTimeout(updateTimer, 1000);
+    } else {
+      timerEl.textContent = '';
+      resendLink.classList.remove('disabled');
+    }
+  }
+  resendLink.classList.add('disabled');
+  updateTimer();
+
+  resendLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (!this.classList.contains('disabled')) {
+      Swal.fire('OTP Resent!', 'A new OTP has been sent to your mobile.', 'success');
+      this.classList.add('disabled');
+      timeLeft = 30;
+      updateTimer();
+    }
+  });
 </script>
