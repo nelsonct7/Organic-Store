@@ -1,86 +1,72 @@
-<DOCTYPE !html>
-<html>
-  <head>
-    <title>{{title}}</title>
-<!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous"><!-- Adding jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
 
-{{#if admin}}
-<!-- Adding Datatable -->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
- <link href="/assets/img/brand/favicon.png" rel="icon" type="image/png">
-  <!-- Fonts -->
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  {{#if admin}}
+  <!-- Admin: Datatable -->
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+  <link href="/assets/img/brand/favicon.png" rel="icon" type="image/png">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-  <!-- Icons -->
-  <link href="/assets/js/plugins/nucleo/css/nucleo.css" rel="stylesheet" />
-  <link href="/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link href="/assets/css/argon-dashboard.css?v=1.1.2" rel="stylesheet" />
-
-{{else}}
-<!--Adding animation script-->
-{{!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;display=swap&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" type="text/css" media="all"> --}}
-{{!-- <link rel="stylesheet" href="http://demo.posthemes.com/pos_ecolife/themes/theme_ecolife1/assets/cache/theme-6c783c16.css" type="text/css" media="all"> --}}
-<script src="/javascripts/header-animation.js"></script>
-<link rel="stylesheet" href="/stylesheets/animation.css">
-<link rel="stylesheet" href="/stylesheets/templateHost.css">
-
-
-{{/if}}
-
-
-   
-   </head>
-  <body>
-    {{#if adminLogin}}
-
-    {{else}}
+  <link href="/assets/js/plugins/nucleo/css/nucleo.css" rel="stylesheet">
+  <link href="/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="/assets/css/argon-dashboard.css?v=1.1.2" rel="stylesheet">
+  {{else}}
+  <!-- User theme -->
+  <link rel="stylesheet" href="/stylesheets/main-theme.css">
+  {{/if}}
+</head>
+<body>
+  {{#if adminLogin}}
+  {{else}}
     {{#if admin}}
-    
     {{else}}
     {{>user_header}}
     {{/if}}
-    {{/if}}
-   
-    
+  {{/if}}
 
-    {{#if admin}}
-    <section class="container-fluid">
-      
-    <div class="row m-0 p-0  " style="">
+  {{#if admin}}
+  <section class="container-fluid">
+    <div class="row m-0 p-0">
       <div class="col-2 m-0 p-0 mt-5">{{>admin_sidebar}}</div>
-      <div class="col-10 p-0 m-0" >{{{body}}}</div>
+      <div class="col-10 p-0 m-0">{{{body}}}</div>
     </div>
-    </section>
+  </section>
+  {{else}}
+  {{{body}}}
+  {{/if}}
 
-    {{else}}
-    {{{body}}}
-    {{/if}}
+  {{#if user}}
+  {{>user_footer}}
+  {{/if}}
 
-    {{#if user}}
-    {{>user_footer}}
-    {{/if}}
-  
-<!-- Adding Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
 
-<!-- Adding Sweet Alert -->
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SweetAlert2 -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/966fe3980d.js" crossorigin="anonymous"></script>
 
-<!-- Adding Font awsome -->
-<script src="https://kit.fontawesome.com/966fe3980d.js" crossorigin="anonymous"></script>
-<!-- Adding Ajax script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="/javascripts/ajax-script.js"></script>
+  <!-- Razorpay -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<!--Adding Template js-->
-{{!-- <script type="text/javascript" src="http://demo.posthemes.com/pos_ecolife/themes/theme_ecolife1/assets/cache/bottom-e5bc2515.js"></script> 
-  --}}
+  <script src="/javascripts/ajax-script.js"></script>
   <script src="/javascripts/templateJs.js"></script>
-   </body>
+</body>
 </html>

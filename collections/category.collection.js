@@ -12,6 +12,7 @@ const categorySchema = new Schema(
       type: String,
       default: null,
     },
+    imageUrl: { type: String, default: null },
     isActive: {
       type: Boolean,
       default: true,
@@ -26,8 +27,8 @@ const categorySchema = new Schema(
     },
     parentCategory: {
       type: Schema.Types.ObjectId,
-        ref: "Category",
-        default: null,
+      ref: "Category",
+      default: null,
     },
     childCategories: [
       {

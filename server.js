@@ -16,6 +16,7 @@ const { authLimiter } = require("./middlewares/ratelimit.middleware");
 
 // route imports
 const authRoutes = require("./routes/auth.routes");
+const baseRoutes=require("./routes/base.routes");
 
 const requiredEnvVars = [
   "PORT",
@@ -107,6 +108,7 @@ const createServer = async () => {
     app.use("/v1/auth/register", authLimiter);
 
     // routes setup
+    app.use("/", baseRoutes);
     app.use("/v1/auth", authRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s

@@ -1,222 +1,118 @@
-<head>
-    <title>Organic Store</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body >
-    <main>
-        <header id="header">
-            <div class="header-banner"></div>
-            <nav class="header-nav">
-                <div class="container-fluid">
-                    <div class="hidden-md-down">
+<header class="site-header">
+  <div class="header-top-bar">
+    <div class="container">
+      <span><i class="fas fa-leaf"></i> Free delivery on orders above ₹299</span>
+      <span>
+        <a href="/about-use">About</a>
+        {{#if user}}
+        <span class="ms-3">Welcome, {{user.name}}</span>
+        {{else}}
+        <a href="/v1/auth/login" class="ms-3">Sign In</a>
+        {{/if}}
+      </span>
+    </div>
+  </div>
 
-                        <div id="_desktop_user_info">
-                            <div class="user-info-block selector-block">
-                                <div class="currency-selector localiz_block dropdown js-dropdown">
-                                    <button data-target="#" data-toggle="dropdown" class=" btn-unstyle hidden-md-down">
-                                        <span class="expand-more">Setting</span>
-                                        
-                                    </button>
-                                    <button data-target="#" data-toggle="dropdown" class=" btn-unstyle hidden-lg-up">
-                                        <i class="ion-ios-contact"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="/view-profile" rel="nofollow" class="dropdown-item">My account</a>
-                                        </li>
-                                        
-                                        <li>
-                                            <a href="/view-orders" class="dropdown-item">Orders</a>
-                                        </li>
-                                        <li>
-                                          {{#if user}}
-   
-                                               <button class="dropdown-item" rel="nofollow" onclick=" return doalert(event)"><span>Log out</span></button>
-                                                
-                                      
-                                          {{else}}
-                                            <a href="/login" title="Log in to your customer account" rel="nofollow" class="dropdown-item">
-                                                <span>Sign in</span>
-                                            </a>
-                                            {{/if}}
-                                        </li>
-                                        {{#if user}}
-                                        {{else}}
-                                        <li>
-                                            <a href="/admin" class="dropdown-item">Admin log in</a>
-                                        </li>
-                                        {{/if}}
-                                    </ul>
-                                </div>
-                            </div>
+  <div class="container">
+    <div class="header-main">
+      <a href="/" class="site-logo">
+        <div class="logo-mark">Og</div>
+        <span class="logo-text">Organic <span>Store</span></span>
+      </a>
 
-                        </div>
-                        {{#if user}}
-                        <div id="_desktop_wishtlist">
-                            <div class="wishtlist_top">
-                                <a href="" id="msg" onclick="">
-                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16" style="margin-bottom: 5px; margin-right: 5px;">
-                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
-                                    </svg>
-                                    <span class="txt_wishlist">Message</span>
-                                </a>
-                            </div>
-                        </div>
-                        {{else}}
-                                                <div id="_desktop_wishtlist">
-                            <div class="wishtlist_top">
-                                <a href="" id="" onclick="">
-                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16" style="margin-bottom: 5px; margin-right: 5px;">
-                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
-                                    </svg>
-                                    <span class="txt_wishlist">Message</span>
-                                </a>
-                            </div>
-                        </div>
-                        {{/if}}
-                        <div id="_desktop_wishtlist">
-                            <div class="wishtlist_top">
-                                <a class="" href="">
-                                    <i class="fa-solid fa-money-bill-wave"></i>
-                                    <span class="txt_wishlist"> Wallet</span>
-                                    (<span class="cart-wishlist-number" id="wallet">{{walletBalance}}</span>)
-                                </a>
-                            </div>
-                        </div>
-                        <div id="_desktop_static">
-                            <div class="static-nav">Welcome you to Organic store!</div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+      <div class="header-search">
+        <form action="/search" method="get">
+          <input type="text" name="q" placeholder="Search organic fruits, vegetables & more..." autocomplete="off">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
 
+      <div class="header-actions">
+        {{#if user}}
+        <a href="/view-profile" class="btn-icon" title="My Account">
+          <i class="far fa-user"></i>
+          <span class="d-none d-md-inline">Account</span>
+        </a>
+        <a href="#" class="btn-icon" title="Wallet">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          <span class="d-none d-md-inline">₹{{walletBalance}}</span>
+        </a>
+        {{else}}
+        <a href="/v1/auth/login" class="btn-icon">
+          <i class="far fa-user"></i>
+          <span>Sign In</span>
+        </a>
+        {{/if}}
 
-            <div class="header-top top_bg hidden-md-down pt-2 pb-0">
-                <div class="container-fluid">
-                    <div class="row m-0">
-                        <div class=" col-md-2" id="_desktop_logo">
-                            <a href="/">
-                                <div style="background-color: black; color: rgb(218, 218, 218); width: 50px; height: 50px; font-weight: bolder; text-align: end; border-radius: 10px; font-size: 24px; padding-top: 20px; margin-left: 50px; margin-bottom: 50px;">Og</div>
-                            </a>
-                        </div>
-                        <div class=" col col-md-10 col-sm-12 position-static">
-                            <div id="_desktop_megamenu" class="use-sticky ">
-                                <div class="pos-menu-horizontal">
-                                    <ul class="menu-content">
+        <a href="/get-cart" class="btn-icon" title="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          {{#if cartCount}}<span class="cart-badge" id="cartCount">{{cartCount}}</span>{{/if}}
+          <span class="d-none d-md-inline">Cart</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
-                                        <li class="home menu-item menu-item1   ">
+  <nav class="header-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="/" class="active"><i class="fas fa-home"></i> Home</a></li>
+        <li>
+          <a href="#"><i class="fas fa-th-large"></i> Categories <i class="fas fa-chevron-down"></i></a>
+          {{#if category}}
+          <div class="nav-dropdown">
+            {{#each category}}
+            <a href="/category/{{this.category-name}}">{{this.category-name}}</a>
+            {{/each}}
+          </div>
+          {{/if}}
+        </li>
+        {{#if user}}
+        <li><a href="#" onclick="return doalert(event)"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {{/if}}
+      </ul>
+    </div>
+  </nav>
+</header>
 
-                                            <a href="/">
+<script>
+  function doalert(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You will be logged out!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Log out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: '/logout',
+          method: 'get',
+          success: () => location.reload()
+        })
+      }
+    })
+  }
 
-                                                <span>Home</span>
-                                            </a>
-                                        </li>
-
-                                        <li class=" menu-item menu-item3  hasChild ">
-
-                                          
-
-                                                <span style="font-weight: bold;">
-                                                    Categories</span>
-                                            <div class="pos-sub-menu menu-dropdown col-xs-12 col-sm-12  menu_slidedown">
-                                                <div class="pos-sub-inner">
-                                                    <div class="pos-menu-row row ">
-                                                        {{#each category}}
-                                                        <div class="pos-menu-col col-xs-6 col-sm-3  ">
-                                                            <ul class="ul-column ">
-                                                                <li class="submenu-item ">
-                                                                    <a href="/category/{{this.category-name}}">{{this.category-name}}</a>
-
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        {{/each}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            
-                            <div id="_desktop_cart_block">
-                                <div class="blockcart cart-preview">
-                                    <div class="">
-                                        <a rel="nofollow" href="/get-cart" class="desktop hidden-md-down">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-  <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-</svg>
-                                            <span class="item_count" id="cartCount">{{cartCount}}</span>
-                                        </a>
-                                        {{user.user_name}}
-                                        
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="_desktop_contact_link">
-                                <div class="contact-link">
-                                    <div class="phone">
-                                        <p>Call us:</p>
-                                        <a href="tel:(+91)8089181393">(+91)8089181393</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <script>
-            function doalert(e){
-               Swal.fire({
-                        title: 'Are you sure?',
-                        text: "Log out !",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#A19391',
-                        cancelButtonColor: '#A19391',
-                        confirmButtonText: 'Yes, Log out!'
-                        }).then((result) => {
-                             if (result.isConfirmed) {
-                                            $.ajax({
-                                                url:'/logout',
-                                                method:'get',
-                                                success:(response)=>{
-                                                    location.reload()
-                                                }
-                                            })
-                                                    }
-                        })
-                     }
-
-        
-            $("#msg").click(async function(event) {
-            event.preventDefault();
-                    const { value: text } = await Swal.fire({
-                    input: 'textarea',
-                    inputLabel: 'Message',
-                    inputPlaceholder: 'Type your message here...',
-                    inputAttributes: {
-                       'aria-label': 'Type your message here'
-                         },
-                    showCancelButton: true
-                    })
-                    if (text) {
-                        $.ajax({
-                            url:'/userMessage',
-                            method:'post',
-                            data:{
-                                message:text
-                            },
-                            success:(response)=>{
-                                Swal.fire('Message Send to Admin')
-                            }
-                        })
-                    }
-
-         });
-
-        
-        </script>
+  $("#msg").click(async function(event) {
+    event.preventDefault();
+    const { value: text } = await Swal.fire({
+      input: 'textarea',
+      inputLabel: 'Message',
+      inputPlaceholder: 'Type your message here...',
+      inputAttributes: { 'aria-label': 'Type your message here' },
+      showCancelButton: true
+    })
+    if (text) {
+      $.ajax({
+        url: '/userMessage',
+        method: 'post',
+        data: { message: text },
+        success: () => Swal.fire('Message Sent to Admin')
+      })
+    }
+  });
+</script>
