@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 
-
 const { connect_to_db } = require("./config/db.config");
 const { validateEnvVariables } = require("./shared/utils/env.utils");
 const env = require("./config/env.config");
@@ -54,11 +53,13 @@ const createServer = async () => {
     // middleware setup
     app.use(logger("dev"));
     app.use(helmet());
-    app.use(cors({
+    app.use(
+      cors({
         origin: env.corsOrigin || "*",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
         credentials: true,
-    }));
+      }),
+    );
     app.use(express.json());
     app.use(
       express.urlencoded({
@@ -95,7 +96,13 @@ const createServer = async () => {
       return options.inverse(this);
     });
 
-
+    // health check endpoint
+    app.get("/health", (req, res) => {
+      res
+        .status(200)
+        .json({ status: "ok", timestamp: new Date().toISOString(),message: "Server is healthy..." });
+    });
+    // apply rate limiter to auth routes
     app.use("/v1/auth/login", authLimiter);
     app.use("/v1/auth/register", authLimiter);
 
@@ -119,4 +126,4 @@ const createServer = async () => {
   }
 };
 
-module.exports = {createServer};
+module.exports = { createServer };

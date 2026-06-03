@@ -1,0 +1,46 @@
+const mongoose=require("mongoose");
+const Schema=mongoose.Schema;
+const orderSchema=new Schema({
+    userId:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
+        required:true,
+        index:true
+    },
+    totalAmount:{
+        type:Number,
+        required:true
+    },
+    status:{
+        type:String,
+        enum:["pending","processing","shipped","delivered","cancelled"],
+        default:"pending"
+    },
+    address:{
+        type:Schema.Types.ObjectId,
+        ref:"Address",
+        required:true
+    },
+    paymentMethod:{
+        type:String,
+        enum:["cod","online"],
+        default:"cod"
+    },
+    paymentStatus:{
+        type:String,
+        enum:["pending","paid","failed"],
+        default:"pending"
+    },
+    items:[
+        {
+            orderItemId:{
+                type:Schema.Types.ObjectId,
+                ref:"OrderItem",
+                required:true
+            }
+        }
+    ]
+},{
+    timestamps:true
+});
+module.exports=mongoose.model("Order",orderSchema,"order");

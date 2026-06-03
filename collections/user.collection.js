@@ -39,6 +39,26 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+    lastLogOut: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );

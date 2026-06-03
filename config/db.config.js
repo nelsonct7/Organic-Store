@@ -3,8 +3,9 @@ const env = require("./env.config");
 
 const connect_to_db = async () => {
   try {
-    await mongoose.connect(env.mongoUri);
+    const connection = await mongoose.connect(env.mongoUri);
     console.log("Connected to MongoDB");
+    return connection;
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     throw error;
