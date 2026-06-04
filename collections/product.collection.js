@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { productMetrics } = require("../config/constants.config");
 const Schema = mongoose.Schema;
 const productSchema = new Schema(
   {
@@ -21,6 +22,11 @@ const productSchema = new Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+    metrics: {
+      type: String,
+      enum: Array.from(Object.values(productMetrics)),
+      default: "/Piece",
     },
     offers: [
       {
@@ -45,9 +51,18 @@ const productSchema = new Schema(
         default: null,
       },
     ],
+    storageSpec: {
+      type: String,
+      default: null,
+    },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    status: {
+      type: String,
+      enum: ["available", "out-of-stock"],
+      default: "available",
     },
     isDeleted: {
       type: Boolean,

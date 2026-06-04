@@ -1,16 +1,15 @@
+const { productMetrics } = require("../config/constants.config");
 const adminService = require("../services/admin.service");
 
 /* ---- Auth ---- */
 const renderAdminLogin = async (req, res, next) => {
   try {
     if (req.session.isAdmin) return res.redirect("/admin/home");
-    res.render("admin/admin-login", {
+    res.render("admin/auth/admin-login", {
       title: "Admin Login - Organic Store",
       admin: true,
       adminLogin: true,
-      logErr: req.session.err || false,
     });
-    req.session.err = false;
   } catch (error) {
     next(error);
   }
@@ -25,7 +24,7 @@ const postAdminLogin = async (req, res, next) => {
       req.session.admin = result.admin;
       return res.redirect("/admin/home");
     }
-    req.session.err = true;
+    req.flash("error", "Invalid credentials");
     res.redirect("/admin");
   } catch (error) {
     next(error);
@@ -61,12 +60,20 @@ const renderAdminHome = async (req, res, next) => {
 /* ---- Products ---- */
 const renderAdminViewProduct = async (req, res, next) => {
   try {
-    const products = await adminService.getAllProducts();
-    res.render("admin/view-products", {
+    const { page, limit, sort, order, search } = req.query;
+    const { data: products, pagination } = await adminService.getProductPage({
+      page, limit,
+      sort: sort || "name",
+      order: order || "asc",
+      search: search || "",
+    });
+    res.render("admin/product/view-products", {
       title: "Products - Organic Store",
       admin: true,
       adminData: req.session.admin,
       products,
+      pagination,
+      searchValue: search || "",
     });
   } catch (error) {
     next(error);
@@ -76,11 +83,12 @@ const renderAdminViewProduct = async (req, res, next) => {
 const renderAdminAddProduct = async (req, res, next) => {
   try {
     const categories = await adminService.getAllCategories();
-    res.render("admin/add-products", {
+    res.render("admin/product/add-products", {
       title: "Add Product - Organic Store",
       admin: true,
       adminData: req.session.admin,
       category: categories,
+      metrics:Array.from(Object.values(productMetrics))
     });
   } catch (error) {
     next(error);
@@ -102,7 +110,7 @@ const renderAdminEditProduct = async (req, res, next) => {
   try {
     const product = await adminService.getProductById(req.params.id);
     const categories = await adminService.getAllCategories();
-    res.render("admin/edit-product", {
+    res.render("admin/product/edit-product", {
       title: "Edit Product - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -119,7 +127,7 @@ const postAdminEditProduct = async (req, res, next) => {
     const files = req.files || [];
     const imgPaths = files.map((f) => f.filename);
     await adminService.updateProduct(req.params.id, req.body, imgPaths);
-    res.redirect("/admin/view-products");
+    res.redirect("/admin/product/view-products");
   } catch (error) {
     next(error);
   }
@@ -147,12 +155,20 @@ const deleteProductImage = async (req, res, next) => {
 /* ---- Users ---- */
 const renderAdminViewUsers = async (req, res, next) => {
   try {
-    const users = await adminService.getAllUsers();
-    res.render("admin/view-users", {
+    const { page, limit, sort, order, search } = req.query;
+    const { data: users, pagination } = await adminService.getUserPage({
+      page, limit,
+      sort: sort || "createdAt",
+      order: order || "desc",
+      search: search || "",
+    });
+    res.render("admin/user/view-users", {
       title: "Users - Organic Store",
       admin: true,
       adminData: req.session.admin,
       users,
+      pagination,
+      searchValue: search || "",
     });
   } catch (error) {
     next(error);
@@ -161,7 +177,7 @@ const renderAdminViewUsers = async (req, res, next) => {
 
 const renderAdminAddUser = async (req, res, next) => {
   try {
-    res.render("admin/add-users", {
+    res.render("admin/user/add-users", {
       title: "Add User - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -174,7 +190,7 @@ const renderAdminAddUser = async (req, res, next) => {
 const postAdminAddUser = async (req, res, next) => {
   try {
     await adminService.addUser(req.body);
-    res.redirect("/admin/view-users");
+    res.redirect("/admin/user/view-users");
   } catch (error) {
     next(error);
   }
@@ -183,7 +199,7 @@ const postAdminAddUser = async (req, res, next) => {
 const renderAdminEditUser = async (req, res, next) => {
   try {
     const user = await adminService.getUserById(req.params.id);
-    res.render("admin/edit-user", {
+    res.render("admin/user/edit-user", {
       title: "Edit User - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -215,12 +231,28 @@ const deleteUser = async (req, res, next) => {
 /* ---- Categories ---- */
 const renderViewCategory = async (req, res, next) => {
   try {
-    const categories = await adminService.getAllCategories();
-    res.render("admin/view-category", {
+    const { page, limit, sort, order, search } = req.query;
+    const options = {
+      parentOnly: true,
+      page,
+      limit,
+      sort: sort || "name",
+      order: order || "asc",
+      search: search || "",
+    };
+    const { data: categories, pagination: catPagination } =
+      await adminService.getCategoryPage(options);
+
+    const subCategories = await adminService.getAllCategories();
+
+    res.render("admin/category/view-category", {
       title: "Categories - Organic Store",
       admin: true,
       adminData: req.session.admin,
       categories,
+      subCategories: subCategories.filter((c) => c.isSubCategory),
+      pagination: catPagination,
+      searchValue: search || "",
     });
   } catch (error) {
     next(error);
@@ -229,10 +261,13 @@ const renderViewCategory = async (req, res, next) => {
 
 const renderAddCategory = async (req, res, next) => {
   try {
-    res.render("admin/add-category", {
+    const parentCategories = await adminService.getParentCategories();
+    res.render("admin/category/add-category", {
       title: "Add Category - Organic Store",
       admin: true,
       adminData: req.session.admin,
+      parentCategories,
+      hasParentCategories: parentCategories.length > 0,
     });
   } catch (error) {
     next(error);
@@ -253,7 +288,7 @@ const postAddCategory = async (req, res, next) => {
 const renderEditCategory = async (req, res, next) => {
   try {
     const categoryData = await adminService.getCategoryById(req.params.id);
-    res.render("admin/edit-category", {
+    res.render("admin/category/edit-category", {
       title: "Edit Category - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -290,7 +325,7 @@ const deleteCategory = async (req, res, next) => {
 const renderViewCategoryOffer = async (req, res, next) => {
   try {
     const categories = await adminService.getAllCategories();
-    res.render("admin/view-category-offer", {
+    res.render("admin/offers/view-category-offer", {
       title: "Category Offers - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -304,7 +339,7 @@ const renderViewCategoryOffer = async (req, res, next) => {
 const renderAddCatOffer = async (req, res, next) => {
   try {
     const categ = await adminService.getCategoryById(req.params.id);
-    res.render("admin/add-cat-offer", {
+    res.render("admin/offers/add-cat-offer", {
       title: "Add Category Offer - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -336,12 +371,20 @@ const removeCatOffer = async (req, res, next) => {
 /* ---- Orders ---- */
 const renderViewOrders = async (req, res, next) => {
   try {
-    const orders = await adminService.getAllOrders();
-    res.render("admin/view-orders", {
+    const { page, limit, sort, order, search } = req.query;
+    const { data: orders, pagination } = await adminService.getOrderPage({
+      page, limit,
+      sort: sort || "createdAt",
+      order: order || "desc",
+      search: search || "",
+    });
+    res.render("admin/order/view-orders", {
       title: "Orders - Organic Store",
       admin: true,
       adminData: req.session.admin,
       orders,
+      pagination,
+      searchValue: search || "",
     });
   } catch (error) {
     next(error);
@@ -351,7 +394,7 @@ const renderViewOrders = async (req, res, next) => {
 const renderEditOrder = async (req, res, next) => {
   try {
     const orderDetail = await adminService.getOrderDetails(req.params.id);
-    res.render("admin/edit-order", {
+    res.render("admin/order/edit-order", {
       title: "Edit Order - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -386,7 +429,7 @@ const deleteOrder = async (req, res, next) => {
 const renderCoupons = async (req, res, next) => {
   try {
     const coup = await adminService.getCoupons();
-    res.render("admin/view-coupon", {
+    res.render("admin/coupons/view-coupon", {
       title: "Coupons - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -399,7 +442,7 @@ const renderCoupons = async (req, res, next) => {
 
 const renderAddCoupon = async (req, res, next) => {
   try {
-    res.render("admin/add-coupons", {
+    res.render("admin/coupons/add-coupons", {
       title: "Add Coupon - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -430,12 +473,18 @@ const removeCoupon = async (req, res, next) => {
 /* ---- Banners ---- */
 const renderBanners = async (req, res, next) => {
   try {
-    const banners = await adminService.getBanners();
-    res.render("admin/view-banner", {
+    const { page, limit, sort, order } = req.query;
+    const { data: banners, pagination } = await adminService.getBannerPage({
+      page, limit,
+      sort: sort || "createdAt",
+      order: order || "desc",
+    });
+    res.render("admin/banner/view-banner", {
       title: "Banners - Organic Store",
       admin: true,
       adminData: req.session.admin,
       banners,
+      pagination,
     });
   } catch (error) {
     next(error);
@@ -444,7 +493,7 @@ const renderBanners = async (req, res, next) => {
 
 const renderAddBanner = async (req, res, next) => {
   try {
-    res.render("admin/add-banner", {
+    res.render("admin/banner/add-banner", {
       title: "Add Banner - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -478,7 +527,7 @@ const deleteBanner = async (req, res, next) => {
 const renderProductOffers = async (req, res, next) => {
   try {
     const products = await adminService.getProductInfoOffer();
-    res.render("admin/view-product-offers", {
+    res.render("admin/offers/view-product-offers", {
       title: "Product Offers - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -492,7 +541,7 @@ const renderProductOffers = async (req, res, next) => {
 const renderAddOffer = async (req, res, next) => {
   try {
     const product = await adminService.getProductById(req.params.id);
-    res.render("admin/add-offer", {
+    res.render("admin/offers/add-offer", {
       title: "Add Offer - Organic Store",
       admin: true,
       adminData: req.session.admin,
@@ -524,12 +573,14 @@ const removeOffer = async (req, res, next) => {
 /* ---- Feedback & Messages ---- */
 const renderFeedback = async (req, res, next) => {
   try {
-    const data = await adminService.getFeedback();
+    const { page, limit } = req.query;
+    const { data, pagination } = await adminService.getFeedbackPage({ page, limit });
     res.render("admin/view-feedback", {
       title: "Feedback - Organic Store",
       admin: true,
       adminData: req.session.admin,
       data,
+      pagination,
     });
   } catch (error) {
     next(error);
@@ -538,12 +589,14 @@ const renderFeedback = async (req, res, next) => {
 
 const renderMessages = async (req, res, next) => {
   try {
-    const data = await adminService.getMessages();
+    const { page, limit } = req.query;
+    const { data, pagination } = await adminService.getMessagePage({ page, limit });
     res.render("admin/view-message", {
       title: "Messages - Organic Store",
       admin: true,
       adminData: req.session.admin,
       data,
+      pagination,
     });
   } catch (error) {
     next(error);
@@ -586,7 +639,7 @@ const renderViewReports = async (req, res, next) => {
 
 const renderOfferControl = async (req, res, next) => {
   try {
-    res.render("admin/offer-control", {
+    res.render("admin/offers/offer-control", {
       title: "Offers - Organic Store",
       admin: true,
       adminData: req.session.admin,

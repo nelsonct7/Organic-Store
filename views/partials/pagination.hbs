@@ -1,0 +1,20 @@
+{{#if pagination.totalPages}}
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; font-size: 0.8125rem; color: #6b7280;">
+  <span>Showing {{pagination.start}}–{{pagination.end}} of {{pagination.total}}</span>
+  <div style="display: flex; gap: 4px;">
+    {{#if pagination.hasPrev}}
+    <a href="?page={{subtract pagination.page 1}}&limit={{pagination.limit}}&sort={{pagination.sort}}&order={{pagination.order}}&search={{pagination.search}}" style="padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 6px; color: #4b5563; text-decoration: none;">Prev</a>
+    {{else}}
+    <span style="padding: 4px 10px; border: 1px solid #f3f4f6; border-radius: 6px; color: #d1d5db;">Prev</span>
+    {{/if}}
+    {{#each pagination.pages}}
+    <a href="?page={{this}}&limit={{../pagination.limit}}&sort={{../pagination.sort}}&order={{../pagination.order}}&search={{../pagination.search}}" style="padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 6px; color: {{#if (eq this ../pagination.page)}}#fff{{else}}#4b5563{{/if}}; text-decoration: none; background: {{#if (eq this ../pagination.page)}}#16a34a{{else}}#fff{{/if}};">{{this}}</a>
+    {{/each}}
+    {{#if pagination.hasNext}}
+    <a href="?page={{add pagination.page 1}}&limit={{pagination.limit}}&sort={{pagination.sort}}&order={{pagination.order}}&search={{pagination.search}}" style="padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 6px; color: #4b5563; text-decoration: none;">Next</a>
+    {{else}}
+    <span style="padding: 4px 10px; border: 1px solid #f3f4f6; border-radius: 6px; color: #d1d5db;">Next</span>
+    {{/if}}
+  </div>
+</div>
+{{/if}}

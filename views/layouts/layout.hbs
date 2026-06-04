@@ -53,6 +53,18 @@
   {{>admin_sidebar}}
   <div style="margin-left: 235px; min-height: 100vh; background: #f8fafc;">
     <div class="p-4">
+      {{#if flash.error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size:0.875rem;">
+        {{flash.error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {{/if}}
+      {{#if flash.success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size:0.875rem;">
+        {{flash.success}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {{/if}}
       {{{body}}}
     </div>
   </div>

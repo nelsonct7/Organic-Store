@@ -6,9 +6,11 @@ const { validationMiddleware } = require("../shared/utils/validation.utils");
 const {
   adminLoginSchema,
   addProductSchema,
+  editProductSchema,
   addUserSchema,
   addCategorySchema,
   addCouponSchema,
+  getAdminDataPaginationSchema,
 } = require("../shared/validators/admin.validator");
 const {
   categoryImgStore,
@@ -20,19 +22,20 @@ const ctrl = require("../controllers/admin.controller");
 
 /* ---- Auth (no admin guard) ---- */
 router.get("/", ctrl.renderAdminLogin);
-router.post("/login", ctrl.postAdminLogin);
+router.post("/login", validationMiddleware(adminLoginSchema), ctrl.postAdminLogin);
 router.get("/logout", ctrl.adminLogout);
 
 /* ---- Dashboard ---- */
 router.get("/home", validateAdminAccess, ctrl.renderAdminHome);
 
 /* ---- Products ---- */
-router.get("/view-products", validateAdminAccess, ctrl.renderAdminViewProduct);
+router.get("/view-products", validateAdminAccess,validationMiddleware(getAdminDataPaginationSchema), ctrl.renderAdminViewProduct);
 router.get("/add-products", validateAdminAccess, ctrl.renderAdminAddProduct);
 router.post(
   "/add-products",
   validateAdminAccess,
   productImgStore.array("image", 10),
+  validationMiddleware(addProductSchema),
   ctrl.postAdminAddProduct
 );
 router.get("/edit-product/:id", validateAdminAccess, ctrl.renderAdminEditProduct);
@@ -40,6 +43,7 @@ router.post(
   "/edit-products/:id",
   validateAdminAccess,
   productImgStore.array("image", 10),
+  validationMiddleware(editProductSchema),
   ctrl.postAdminEditProduct
 );
 router.get("/delete-product/:id", validateAdminAccess, ctrl.deleteProduct);
@@ -53,12 +57,13 @@ router.post("/edit-users/:id", validateAdminAccess, ctrl.postAdminEditUser);
 router.get("/delete-user/:id", validateAdminAccess, ctrl.deleteUser);
 
 /* ---- Categories ---- */
-router.get("/view-category", validateAdminAccess, ctrl.renderViewCategory);
+router.get("/view-category", validateAdminAccess,validationMiddleware(getAdminDataPaginationSchema),ctrl.renderViewCategory);
 router.get("/add-category", validateAdminAccess, ctrl.renderAddCategory);
 router.post(
   "/add-category",
   validateAdminAccess,
   categoryImgStore.single("category_image"),
+  validationMiddleware(addCategorySchema),
   ctrl.postAddCategory
 );
 router.get("/edit-category/:id", validateAdminAccess, ctrl.renderEditCategory);
@@ -66,6 +71,7 @@ router.post(
   "/edit-category/:id",
   validateAdminAccess,
   categoryImgStore.single("category_image"),
+  validationMiddleware(addCategorySchema),
   ctrl.postEditCategory
 );
 router.get("/delete-category/", validateAdminAccess, ctrl.deleteCategory);
@@ -85,7 +91,7 @@ router.get("/delete-order/:id", validateAdminAccess, ctrl.deleteOrder);
 /* ---- Coupons ---- */
 router.get("/coupons", validateAdminAccess, ctrl.renderCoupons);
 router.get("/add-coupons", validateAdminAccess, ctrl.renderAddCoupon);
-router.post("/add-coupons", validateAdminAccess, ctrl.postAddCoupon);
+router.post("/add-coupons", validateAdminAccess, validationMiddleware(addCouponSchema), ctrl.postAddCoupon);
 router.post("/remove-coupons/:id", validateAdminAccess, ctrl.removeCoupon);
 
 /* ---- Banners ---- */

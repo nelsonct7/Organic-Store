@@ -1,6 +1,3 @@
-$(function () {
-  $("#categorytable").DataTable();
-});
 function deleteData(id) {
   Swal.fire({
     title: "Are you sure?",

@@ -6,7 +6,11 @@
       <div
         class="col-md-10 pb-4 pt-4 shadow-lg p-3 mb-5 bg-body rounded border border-dark"
       >
-        <form enctype="multipart/form-data" method="post" action="/admin/add-products">
+        <form
+          enctype="multipart/form-data"
+          method="post"
+          action="/admin/add-products"
+        >
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Title</label>
             <input
@@ -30,11 +34,9 @@
               id="category"
               onselect="validCategory()"
             >
-              <option selected>Default</option>
+              <option disabled>Please Select</option>
               {{#each category}}
-                <option
-                  value="{{this.category-name}}"
-                >{{this.category-name}}</option>
+                <option value="{{this._id}}">{{this.name}}</option>
               {{/each}}
             </select>
             <span id="category-error" class="text-danger text-center"></span>
@@ -60,7 +62,7 @@
             <input
               type="text"
               class="form-control"
-              name="storage-spec"
+              name="storageSpec"
               id="spec"
               onkeyup="validSpecification()"
             />
@@ -70,7 +72,7 @@
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Price</label>
             <input
-              type="text"
+              type="number"
               class="form-control"
               name="price"
               id="price"
@@ -84,11 +86,30 @@
             <input
               type="number"
               class="form-control"
-              name="godown-stock"
-              id="gdStock"
+              name="stock"
+              id="stock"
               onkeyup="validGdStock()"
             />
             <span id="gdStock-error" class="text-danger text-center"></span>
+          </div>
+          <div class="mb-3">
+            <label
+              for="exampleInputPassword1"
+              class="form-label"
+            >Metrics</label>
+            <select
+              class="form-select"
+              aria-label="Default metric select example"
+              name="metrics"
+              id="metrics"
+              onselect="validMetrics()"
+            >
+              <option disabled>Please Select</option>
+              {{#each metrics}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+            <span id="metrics-error" class="text-danger text-center"></span>
           </div>
 
           <div class="mb-3">
@@ -100,9 +121,8 @@
               id="status"
               onselect="validStatus()"
             >
-              <option selected>Default</option>
-              <option value="Available">Available</option>
-              <option value="Out of Stock">Out of Stock</option>
+              <option value="available">Available</option>
+              <option value="out-of-stock">Out of Stock</option>
             </select>
             <span id="status-error" class="text-danger text-center"></span>
           </div>

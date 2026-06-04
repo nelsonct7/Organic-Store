@@ -1,0 +1,45 @@
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <h4 class="mb-0" style="font-weight: 600; color: #1f2937;">Edit Category</h4>
+  <a href="/admin/view-category" class="btn btn-sm" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.8125rem; text-decoration: none;">← Back to Categories</a>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width: 600px;">
+  <div class="card-body p-4">
+    {{#if categoryData.isSubCategory}}
+    <div class="mb-3" style="background: #fef3c7; color: #92400e; border-radius: 6px; padding: 8px 14px; font-size: 0.8125rem;">
+      <i class="fa-solid fa-tag"></i> Sub category of <strong>{{categoryData.parentCategory.name}}</strong>
+    </div>
+    {{else if categoryData.childCategories.length}}
+    <div class="mb-3" style="background: #dcfce7; color: #166534; border-radius: 6px; padding: 8px 14px; font-size: 0.8125rem;">
+      <i class="fa-solid fa-folder"></i> Parent category — {{categoryData.childCategories.length}} sub categor{{#if (eq categoryData.childCategories.length 1)}}y{{else}}ies{{/if}}
+    </div>
+    {{/if}}
+
+    <form enctype="multipart/form-data" method="post" action="/admin/edit-category/{{categoryData._id}}">
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Category Name</label>
+        <input type="text" class="form-control" name="categoryname" id="cate" onkeyup="validCategory()" value="{{categoryData.name}}" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem;">
+        <span id="category-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Description</label>
+        <input type="text" class="form-control" name="categorydescription" id="catedes" onkeyup="validCategoryDes()" value="{{categoryData.description}}" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem;">
+        <span id="description-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Image</label>
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <img src="/category-images/{{categoryData.img_path}}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;" id="imgView1">
+        </div>
+        <input class="form-control" type="file" id="formFile" name="category_image" onchange="viewImage(event)" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 0.875rem;">
+        <span id="image-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+      <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid #f3f4f6;">
+        <button type="submit" class="btn" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; font-weight: 500;" onclick="return validForm()">Submit</button>
+        <a href="/admin/view-category" class="btn" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; text-decoration: none;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="/javascripts/validateEditCategory.js"></script>

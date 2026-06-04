@@ -1,0 +1,93 @@
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <h4 class="mb-0" style="font-weight: 600; color: #1f2937;">Add Category</h4>
+  <a href="/admin/view-category" class="btn btn-sm" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.8125rem; text-decoration: none;">← Back to Categories</a>
+</div>
+
+{{#unless hasParentCategories}}
+<div style="background: #fef3c7; color: #92400e; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.875rem; display: flex; align-items: center; gap: 8px; max-width: 600px;">
+  <i class="fa-solid fa-circle-info"></i>
+  No parent categories exist yet. Add a parent category first — sub-categories will be available afterward.
+</div>
+{{/unless}}
+
+<div class="card border-0 shadow-sm" style="max-width: 600px;">
+  <div class="card-body p-4">
+    <form enctype="multipart/form-data" method="post" action="/admin/add-category" name="category-form" id="category-form">
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Category Name</label>
+        <input type="text" class="form-control" name="category-name" id="category-name" onkeyup="validCategory()" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem;">
+        <span id="category-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Description</label>
+        <input type="text" class="form-control" name="category-description" id="category-description" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem;">
+        <span id="description-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Image Upload</label>
+        <input class="form-control" type="file" id="formFile" name="category_image" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 0.875rem;">
+        <span id="image-error" class="text-danger" style="font-size: 0.8125rem;"></span>
+      </div>
+
+      {{#if hasParentCategories}}
+      <div class="mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="isSubCategory" name="isSubCategory" value="true" style="border-color: #d1d5db;">
+          <label class="form-check-label" for="isSubCategory" style="font-weight: 500; color: #374151; font-size: 0.875rem;">
+            Mark as sub category
+          </label>
+        </div>
+      </div>
+
+      <div class="mb-3" id="parentDropdownGroup" style="display: none;">
+        <label class="form-label" style="font-weight: 500; color: #374151; font-size: 0.875rem;">Parent Category</label>
+        <select name="parentCategory" class="form-select" style="border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem;">
+          <option value="">— Select a parent category —</option>
+          {{#each parentCategories}}
+          <option value="{{this._id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{/if}}
+
+      <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid #f3f4f6;">
+        <button type="submit" class="btn" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; font-weight: 500;" onclick="return validCategory()">Submit</button>
+        <a href="/admin/view-category" class="btn" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; text-decoration: none;">Cancel</a>
+      </div>
+
+      {{#if addCategorySucces}}
+      <div class="alert alert-success text-center mt-3 mb-0">Category Added Successfully</div>
+      {{/if}}
+      {{#if addCategoryError}}
+      <div class="alert alert-danger text-center mt-3 mb-0">Failed to add Category</div>
+      {{/if}}
+    </form>
+  </div>
+</div>
+
+<script>
+  var check = document.getElementById('isSubCategory');
+  var group = document.getElementById('parentDropdownGroup');
+  if (check && group) {
+    check.addEventListener('change', function () {
+      group.style.display = this.checked ? 'block' : 'none';
+    });
+  }
+
+  var categoryError = document.getElementById('category-error');
+  function validCategory() {
+    var title = document.getElementById('category-name').value;
+    if (title === '') {
+      categoryError.innerHTML = 'Category name is required';
+      return false;
+    }
+    if (!title.match(/^[A-Za-z\s]+$/)) {
+      categoryError.innerHTML = 'Letters and spaces only';
+      return false;
+    }
+    categoryError.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #16a34a;"></i>';
+    return true;
+  }
+</script>

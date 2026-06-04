@@ -15,7 +15,7 @@
  <select class="form-select" aria-label="Default select example" name="category" id="category" onselect="validCategory()">
   <option value="{{product.category}}" selected>{{product.category}}</option>
   {{#each category}}
-  <option value="{{this.category-name}}">{{this.category-name}}</option>
+  <option value="{{this.name}}">{{this.name}}</option>
   {{/each}}
   </select>
   </div>

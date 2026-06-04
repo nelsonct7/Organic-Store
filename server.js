@@ -16,7 +16,7 @@ const { authLimiter } = require("./middlewares/ratelimit.middleware");
 
 // route imports
 const authRoutes = require("./routes/auth.routes");
-const baseRoutes=require("./routes/base.routes");
+const baseRoutes = require("./routes/base.routes");
 const adminRoutes = require("./routes/admin.routes");
 
 const requiredEnvVars = [
@@ -54,7 +54,13 @@ const createServer = async () => {
     );
     // middleware setup
     app.use(logger("dev"));
-    app.use(helmet());
+    app.use(
+      helmet.contentSecurityPolicy({
+        directives: {
+          scriptSrcAttr: ["'unsafe-inline'"],
+        },
+      }),
+    );
     app.use(
       cors({
         origin: env.corsOrigin || "*",
@@ -80,6 +86,16 @@ const createServer = async () => {
         saveUninitialized: false,
       }),
     );
+    // Flash middleware
+    app.use((req, res, next) => {
+      req.flash = (type, message) => {
+        if (!req.session.flash) req.session.flash = {};
+        req.session.flash[type] = message;
+      };
+      res.locals.flash = req.session.flash || {};
+      delete req.session.flash;
+      next();
+    });
     // cache control for unauthenticated users
     app.use((req, res, next) => {
       if (!req.user) {
@@ -100,12 +116,22 @@ const createServer = async () => {
     HBS.handlebars.registerHelper("eq", function (v1, v2) {
       return v1 === v2;
     });
+    HBS.handlebars.registerHelper("add", function (a, b) {
+      return parseInt(a) + parseInt(b);
+    });
+    HBS.handlebars.registerHelper("subtract", function (a, b) {
+      return parseInt(a) - parseInt(b);
+    });
 
     // health check endpoint
     app.get("/health", (req, res) => {
       res
         .status(200)
-        .json({ status: "ok", timestamp: new Date().toISOString(),message: "Server is healthy..." });
+        .json({
+          status: "ok",
+          timestamp: new Date().toISOString(),
+          message: "Server is healthy...",
+        });
     });
     // apply rate limiter to auth routes
     app.use("/v1/auth/login", authLimiter);

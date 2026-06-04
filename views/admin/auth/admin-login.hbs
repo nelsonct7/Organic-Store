@@ -32,9 +32,9 @@
       <div class="text-center mt-3">
         <a href="/" class="text-muted" style="font-size:0.8125rem;">← Back to store</a>
       </div>
-      {{#if logErr}}
+      {{#if flash.error}}
         <div class="alert alert-danger text-center mt-4 mb-0">
-          Invalid email or password
+          {{flash.error}}
         </div>
       {{/if}}
     </form>
