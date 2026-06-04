@@ -132,4 +132,7 @@ dist
 .pnp.*
 
 # uploaded files and created documents
-**/public/
+**/public/banner-images
+**/public/category-images
+**/public/product-images
+**/public/documents

@@ -47,7 +47,7 @@ const validationMiddleware = (schema) => {
     if (!errors.isEmpty()) {
       const messages = errors.array().map(err => err.msg);
       req.flash("error", messages.join("; "));
-      return res.redirect("back");
+      return res.redirect(req.get("Referrer") || "/");
     }
 
     next();
@@ -76,6 +76,12 @@ const buildValidationChains = (type, schema) => {
         chain = chain.notEmpty().withMessage(`${field} is required`);
       }
 
+      // notEmpty with custom errorMessage
+      if (rules.notEmpty) {
+        const msg = typeof rules.notEmpty === "object" ? rules.notEmpty.errorMessage : `${field} is required`;
+        chain = chain.notEmpty().withMessage(msg);
+      }
+
       // Email validation
       if (rules.isEmail) {
         chain = chain.isEmail().withMessage(`${field} must be a valid email`);
@@ -95,7 +101,13 @@ const buildValidationChains = (type, schema) => {
 
       // Integer validation
       if (rules.isInt) {
-        chain = chain.isInt().withMessage(`${field} must be an integer`);
+        const opts = rules.isInt.options || {};
+        chain = chain.isInt(opts).withMessage(rules.isInt.errorMessage || `${field} must be an integer`);
+      }
+
+      // In-list validation
+      if (rules.isIn) {
+        chain = chain.isIn(rules.isIn.options || []).withMessage(rules.isIn.errorMessage || `${field} has an invalid value`);
       }
 
       // Numeric validation
@@ -125,7 +137,8 @@ const buildValidationChains = (type, schema) => {
 
       // Custom validator
       if (rules.custom) {
-        chain = chain.custom(rules.custom);
+        const validator = typeof rules.custom === "object" && rules.custom.options ? rules.custom.options : rules.custom;
+        chain = chain.custom(validator);
       }
 
       chains.push(chain);

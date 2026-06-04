@@ -1,4 +1,5 @@
 const { productMetrics } = require("../../config/constants.config");
+const {validateObjectId} = require('../utils/mongo.utils')
 
 const adminLoginSchema = {
   body: {
@@ -40,6 +41,19 @@ const editProductSchema = {
   body: {
     title: { required: true },
     price: { required: true, isNumeric: true },
+  },
+};
+const mongoIdSchema = {
+  params: {
+    id: {
+      in: ["params"],
+      notEmpty: {
+        errorMessage: "Product id is required",
+      },
+      custom: {
+        options: validateObjectId,
+      },
+    },
   },
 };
 
@@ -112,4 +126,5 @@ module.exports = {
   addCategorySchema,
   addCouponSchema,
   getAdminDataPaginationSchema,
+  mongoIdSchema
 };

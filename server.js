@@ -57,7 +57,27 @@ const createServer = async () => {
     app.use(
       helmet.contentSecurityPolicy({
         directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'",
+            "https://ajax.googleapis.com",
+            "https://cdn.jsdelivr.net",
+            "https://kit.fontawesome.com",
+            "https://checkout.razorpay.com",
+            "https://cdn.razorpay.com",
+            "https://cdn.datatables.net",
+            "https://cdnjs.cloudflare.com",
+          ],
           scriptSrcAttr: ["'unsafe-inline'"],
+          styleSrc: ["'self'", "'unsafe-inline'",
+            "https://cdn.jsdelivr.net",
+            "https://fonts.googleapis.com",
+            "https://kit.fontawesome.com",
+            "https://ka-f.fontawesome.com",
+          ],
+          fontSrc: ["'self'", "https://fonts.gstatic.com", "https://kit.fontawesome.com", "https://ka-f.fontawesome.com"],
+          imgSrc: ["'self'", "data:", "blob:"],
+          connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://ka-f.fontawesome.com", "https://lumberjack.razorpay.com"],
+          frameSrc: ["'self'", "https://api.razorpay.com", "https://checkout.razorpay.com"],
         },
       }),
     );
