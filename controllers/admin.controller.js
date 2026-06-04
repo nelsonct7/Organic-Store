@@ -259,6 +259,9 @@ const deleteUser = async (req, res, next) => {
     await adminService.softDeleteUser(req.params.id);
     res.json({ deleted: true });
   } catch (error) {
+    if (error.message === "Cannot delete an admin user") {
+      return res.status(403).json({ deleted: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -314,8 +317,12 @@ const postAddCategory = async (req, res, next) => {
     const file = req.file;
     const imgPath = file ? file.filename : null;
     await adminService.addCategory(req.body, imgPath);
-    res.redirect("/admin/view-category");
+    res.status(201).json({ message: "Category added" });
   } catch (error) {
+    if (error.message === "Category name already exists") {
+      req.flash("error", error.message);
+      return res.redirect("/admin/add-category");
+    }
     next(error);
   }
 };
@@ -326,11 +333,14 @@ const renderEditCategory = async (req, res, next) => {
       return renderNotFound(res, "category");
     }
     const categoryData = await adminService.getCategoryById(req.params.id);
+    const parentCategories = await adminService.getParentCategories(req.params.id);
     res.render("admin/category/edit-category", {
       title: "Edit Category - Organic Store",
       admin: true,
       adminData: req.session.admin,
       categoryData,
+      parentCategories,
+      hasParentCategories: parentCategories.length > 0,
     });
   } catch (error) {
     if (error.name === "NotFoundError") return renderNotFound(res, "category");
@@ -345,8 +355,14 @@ const postEditCategory = async (req, res, next) => {
     if (file) {
       await adminService.updateCategoryImage(req.params.id, file.filename);
     }
+    req.flash("success", "Category updated");
     res.redirect("/admin/view-category");
   } catch (error) {
+    if (error.message === "Category name already exists") {
+      req.flash("error", error.message);
+      return res.redirect("/admin/edit-category/" + req.params.id);
+    }
+    if (error.name === "NotFoundError") return renderNotFound(res, "category");
     next(error);
   }
 };
@@ -356,6 +372,9 @@ const deleteCategory = async (req, res, next) => {
     await adminService.softDeleteCategory(req.params.id);
     res.json({ success: true });
   } catch (error) {
+    if (error.message === "Cannot delete category with active products" || error.message === "Cannot delete category with sub-categories") {
+      return res.status(409).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };

@@ -358,6 +358,7 @@ const getUserPage = async (options = {}) => {
       search: options.search,
       searchFields: ["name", "email", "mobile"],
     },
+    [{ path: "role", select: "name" }],
   );
   const mapped = data.map((u) => ({
     _id: u._id,
@@ -366,19 +367,9 @@ const getUserPage = async (options = {}) => {
     user_email: u.email,
     user_mobile: u.mobile,
     deleted: u.isDeleted,
-    createdAt: u.createdAt,
+    isAdmin: u.role?.name === "admin",
   }));
-  return {
-    data: mapped,
-    pagination: {
-      ...pagination,
-      start: (pagination.page - 1) * pagination.limit + 1,
-      end: Math.min(pagination.page * pagination.limit, pagination.total),
-      sort,
-      order,
-      search,
-    },
-  };
+  return { data: mapped, pagination, search, sort, order };
 };
 
 const getUserById = async (id) => {
@@ -419,6 +410,10 @@ const updateUser = async (id, body) => {
 };
 
 const softDeleteUser = async (id) => {
+  const user = await User.findById(toObjId(id)).populate("role", "name");
+  if (user && user.role?.name === "admin") {
+    throw new Error("Cannot delete an admin user");
+  }
   await User.findByIdAndUpdate(toObjId(id), {
     isDeleted: true,
     isActive: false,
@@ -442,12 +437,14 @@ const getAllCategories = async (parentOnly = false) => {
     offer: c.offer || 0,
     deleted: c.isDeleted,
     isSubCategory: c.isSubCategory || false,
-    parentCategory: c.parentCategory,
+    parentCategory: c.parentCategory ? { _id: c.parentCategory._id.toString(), name: c.parentCategory.name } : null,
   }));
 };
 
-const getParentCategories = async () => {
-  return getAllCategories(true);
+const getParentCategories = async (excludeId) => {
+  const cats = await getAllCategories(true);
+  if (excludeId) return cats.filter((c) => c._id !== excludeId);
+  return cats;
 };
 
 const getCategoryById = async (id) => {
@@ -462,13 +459,19 @@ const getCategoryById = async (id) => {
     description: c.description || "",
     img_path: c.imageUrl || false,
     isSubCategory: c.isSubCategory || false,
-    parentCategory: c.parentCategory,
+    parentCategory: c.parentCategory ? { _id: c.parentCategory._id.toString(), name: c.parentCategory.name } : null,
     childCategories: c.childCategories || [],
   };
 };
 
 const addCategory = async (body, imgPath) => {
   const name = body.categoryname || body.name || body["category-name"];
+  if (!name) throw new Error("Category name is required");
+  const existing = await Category.findOne({
+    name: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+    isDeleted: false,
+  });
+  if (existing) throw new Error("Category name already exists");
   const description =
     body.categorydescription ||
     body.description ||
@@ -495,11 +498,43 @@ const addCategory = async (body, imgPath) => {
 };
 
 const updateCategory = async (id, body) => {
+  const cat = await Category.findById(toObjId(id));
+  if (!cat) throw new NotFoundError("Category not found");
+
   const updateData = {};
-  const catName = body.categoryname || body["category-name"];
-  const catDesc = body.categorydescription || body["category-description"];
-  if (catName) updateData.name = catName;
-  if (catDesc) updateData.description = catDesc;
+  const catName = body.name || body.categoryname || body["category-name"];
+  const catDesc = body.description || body.categorydescription || body["category-description"];
+
+  if (catName) {
+    const dup = await Category.findOne({
+      name: { $regex: new RegExp(`^${catName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+      _id: { $ne: toObjId(id) },
+      isDeleted: false,
+    });
+    if (dup) throw new Error("Category name already exists");
+    updateData.name = catName;
+  }
+  if (catDesc !== undefined) updateData.description = catDesc;
+
+  const newIsSub = body.isSubCategory === "true" || body.isSubCategory === true;
+  const newParentId = body.parentCategory || null;
+  const oldParentId = cat.parentCategory ? cat.parentCategory.toString() : null;
+
+  if (cat.isSubCategory !== newIsSub || (newIsSub && oldParentId !== newParentId)) {
+    if (oldParentId) {
+      await Category.findByIdAndUpdate(toObjId(oldParentId), {
+        $pull: { childCategories: cat._id },
+      });
+    }
+    if (newIsSub && newParentId) {
+      await Category.findByIdAndUpdate(toObjId(newParentId), {
+        $addToSet: { childCategories: cat._id },
+      });
+    }
+    updateData.isSubCategory = newIsSub;
+    updateData.parentCategory = newIsSub && newParentId ? toObjId(newParentId) : null;
+  }
+
   await Category.findByIdAndUpdate(toObjId(id), updateData);
 };
 
@@ -510,6 +545,14 @@ const updateCategoryImage = async (id, imgPath) => {
 const softDeleteCategory = async (id) => {
   const cat = await Category.findById(toObjId(id));
   if (!cat) throw new NotFoundError("Category not found");
+
+  if (cat.childCategories && cat.childCategories.length > 0) {
+    throw new Error("Cannot delete category with sub-categories");
+  }
+
+  const productCount = await Product.countDocuments({ category: toObjId(id), isDeleted: false });
+  if (productCount > 0) throw new Error("Cannot delete category with active products");
+
   // Remove this category from its parent's childCategories array
   if (cat.parentCategory) {
     await Category.findByIdAndUpdate(cat.parentCategory, {

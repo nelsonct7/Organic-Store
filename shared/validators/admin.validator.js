@@ -1,12 +1,12 @@
 const { productMetrics } = require("../../config/constants.config");
 const { validateObjectId } = require("../utils/mongo.utils");
 
-const isEmptyPayload=(_, { req }) => {
-        if (Object.keys(req.body).length === 0) {
-          throw new Error("No fields provided for update");
-        }
-        return true;
-      }
+const isEmptyPayload = (_, { req }) => {
+  if (Object.keys(req.body).length === 0) {
+    throw new Error("No fields provided for update");
+  }
+  return true;
+};
 
 const adminLoginSchema = {
   body: {
@@ -117,7 +117,10 @@ const addUserSchema = {
 
 const addCategorySchema = {
   body: {
-    categoryname: { required: true },
+    name: { required: true, isLength: { min: 2 } },
+    description: { optional: true, isLength: { max: 150 } },
+    isSubCategory: { optional: true },
+    parentCategory: { optional: true },
   },
 };
 

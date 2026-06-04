@@ -45,7 +45,12 @@
               <span class="badge" style="background: #fee2e2; color: #dc2626; font-weight: 500; font-size: 0.75rem; padding: 4px 10px;">Inactive</span>
               {{/if}}
             </td>
-            <td class="px-3 py-3" style="font-weight: 500; color: #1f2937;">{{this.user_name}}</td>
+            <td class="px-3 py-3" style="font-weight: 500; color: #1f2937;">
+              {{this.user_name}}
+              {{#if this.isAdmin}}
+                <span class="badge" style="background: #dbeafe; color: #1d4ed8; font-weight: 500; font-size: 0.7rem; margin-left: 4px;">Admin</span>
+              {{/if}}
+            </td>
             <td class="px-3 py-3" style="color: #6b7280;">{{this.user_email}}</td>
             <td class="px-3 py-3" style="color: #4b5563;">{{this.user_mobile}}</td>
             <td class="px-3 py-3">
@@ -55,7 +60,9 @@
               {{else}}
                 <div class="d-flex gap-1">
                   <a href="/admin/edit-user/{{this._id}}" class="btn btn-sm" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.8125rem; text-decoration: none;">Edit</a>
+                  {{#unless this.isAdmin}}
                   <button onclick="deleteUser('{{this._id}}')" class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.8125rem;">Delete</button>
+                  {{/unless}}
                 </div>
               {{/if}}
             </td>

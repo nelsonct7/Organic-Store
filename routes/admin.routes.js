@@ -86,9 +86,10 @@ router.post(
 router.get(
   "/edit-user/:id",
   validateAdminAccess,
+  validationMiddleware(mongoIdSchema),
   ctrl.renderAdminEditUser,
 );
-router.post("/edit-users/:id", validateAdminAccess, ctrl.postAdminEditUser);
+router.post("/edit-users/:id", validateAdminAccess,validationMiddleware(mongoIdSchema), ctrl.postAdminEditUser);
 router.delete(
   "/delete-user/:id",
   validateAdminAccess,
@@ -114,6 +115,7 @@ router.post(
 router.get(
   "/edit-category/:id",
   validateAdminAccess,
+  validationMiddleware(mongoIdSchema),
   ctrl.renderEditCategory,
 );
 router.post(

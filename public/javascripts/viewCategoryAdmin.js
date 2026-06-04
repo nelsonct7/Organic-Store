@@ -15,8 +15,15 @@ function deleteData(id) {
         success: (responce) => {
           if (responce.success) {
             location.reload();
+          } else {
+            Swal.fire("Error", responce.message || "Failed to delete category.", "error");
           }
         },
+        error: (xhr) => {
+          var msg = "Failed to delete category.";
+          try { var r = JSON.parse(xhr.responseText); if (r.message) msg = r.message; } catch(e) {}
+          Swal.fire("Error", msg, "error");
+        }
       });
     }
   });
