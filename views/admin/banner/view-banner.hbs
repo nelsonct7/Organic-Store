@@ -45,7 +45,7 @@
 function deletbann(banId){
   $.ajax({
     url: '/admin/delete-banner/' + banId,
-    method: 'get',
+    method: 'delete',
     success: (response) => {
       if (response.status) {
         Swal.fire({

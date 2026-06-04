@@ -33,9 +33,13 @@ const globalErrorHandler = (err, req, res, next) => {
     });
   }
   if(err instanceof NotFoundError){
-    return res.status(404).json({
-      success: false,
-      message: err.message
+    return res.status(404).render("errors/admin-not-found", {
+      layout: false,
+      title: "Not Found - Organic Store",
+      itemType: "Resource",
+      message: err.message,
+      backLink: "/admin/home",
+      backText: "Dashboard",
     });
   }
 

@@ -12,6 +12,7 @@ const {
   addCouponSchema,
   getAdminDataPaginationSchema,
   mongoIdSchema,
+  deleteProductImageSchema,
 } = require("../shared/validators/admin.validator");
 const {
   categoryImgStore,
@@ -51,7 +52,6 @@ router.post(
 router.get(
   "/edit-product/:id",
   validateAdminAccess,
-  validationMiddleware(mongoIdSchema),
   ctrl.renderAdminEditProduct,
 );
 router.post(
@@ -61,11 +61,17 @@ router.post(
   productImgStore.array("image", 10),
   ctrl.postAdminEditProduct,
 );
-router.get(
+router.delete(
   "/delete-product/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
   ctrl.deleteProduct,
+);
+router.post(
+  "/delete-product-image",
+  validateAdminAccess,
+  validationMiddleware(deleteProductImageSchema),
+  ctrl.deleteProductImage,
 );
 
 /* ---- Users ---- */
@@ -80,11 +86,10 @@ router.post(
 router.get(
   "/edit-user/:id",
   validateAdminAccess,
-  validationMiddleware(mongoIdSchema),
   ctrl.renderAdminEditUser,
 );
 router.post("/edit-users/:id", validateAdminAccess, ctrl.postAdminEditUser);
-router.get(
+router.delete(
   "/delete-user/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
@@ -109,7 +114,6 @@ router.post(
 router.get(
   "/edit-category/:id",
   validateAdminAccess,
-  validationMiddleware(mongoIdSchema),
   ctrl.renderEditCategory,
 );
 router.post(
@@ -119,8 +123,8 @@ router.post(
   validationMiddleware(addCategorySchema),
   ctrl.postEditCategory,
 );
-router.get(
-  "/delete-category/",
+router.delete(
+  "/delete-category/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
   ctrl.deleteCategory,
@@ -135,11 +139,10 @@ router.get(
 router.get(
   "/add-cat-offer/:id",
   validateAdminAccess,
-  validationMiddleware(mongoIdSchema),
   ctrl.renderAddCatOffer,
 );
 router.post("/add-cat-offer", validateAdminAccess, ctrl.postAddCatOffer);
-router.post(
+router.delete(
   "/remove-cat-offer/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
@@ -151,11 +154,10 @@ router.get("/view-orders", validateAdminAccess, ctrl.renderViewOrders);
 router.get(
   "/edit-order/:id",
   validateAdminAccess,
-  validationMiddleware(mongoIdSchema),
   ctrl.renderEditOrder,
 );
 router.post("/update-order", validateAdminAccess, ctrl.postUpdateOrder);
-router.get(
+router.delete(
   "/delete-order/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
@@ -171,7 +173,7 @@ router.post(
   validationMiddleware(addCouponSchema),
   ctrl.postAddCoupon,
 );
-router.post(
+router.delete(
   "/remove-coupons/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
@@ -187,7 +189,7 @@ router.post(
   bannerImgStore.single("banner_image"),
   ctrl.postAddBanner,
 );
-router.get(
+router.delete(
   "/delete-banner/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),
@@ -198,7 +200,7 @@ router.get(
 router.get("/product-offers", validateAdminAccess, ctrl.renderProductOffers);
 router.get("/add-offer/:id", validateAdminAccess, ctrl.renderAddOffer);
 router.post("/add-offer", validateAdminAccess, ctrl.postAddOffer);
-router.get(
+router.delete(
   "/remove-offer/:id",
   validateAdminAccess,
   validationMiddleware(mongoIdSchema),

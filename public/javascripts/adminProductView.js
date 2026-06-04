@@ -11,7 +11,7 @@ function deleteData(id){
       if (result.isConfirmed) {
           $.ajax({
           url:"/admin/delete-product/"+id,
-          method:'get',
+          method:'delete',
           success:(responce)=>{
           if(responce.success){
               location.reload()

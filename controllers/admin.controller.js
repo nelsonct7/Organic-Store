@@ -1,5 +1,29 @@
+const mongoose = require("mongoose");
 const { productMetrics } = require("../config/constants.config");
 const adminService = require("../services/admin.service");
+
+const notFoundConfig = {
+  product:    { backLink: "/admin/view-products", backText: "Back to Products" },
+  user:       { backLink: "/admin/view-users",    backText: "Back to Users" },
+  category:   { backLink: "/admin/view-category", backText: "Back to Categories" },
+  order:      { backLink: "/admin/view-orders",   backText: "Back to Orders" },
+  banner:     { backLink: "/admin/banner",        backText: "Back to Banners" },
+  coupon:     { backLink: "/admin/coupons",       backText: "Back to Coupons" },
+  offer:      { backLink: "/admin/product-offers", backText: "Back to Offers" },
+};
+
+const renderNotFound = (res, itemType, message) => {
+  const cfg = notFoundConfig[itemType] || { backLink: "/admin/home", backText: "Dashboard" };
+  const label = itemType.charAt(0).toUpperCase() + itemType.slice(1);
+  res.status(404).render("errors/admin-not-found", {
+    layout: false,
+    title: `${label} Not Found - Organic Store`,
+    itemType: label,
+    message: message || `The ${itemType} you are looking for does not exist or has been removed.`,
+    backLink: cfg.backLink,
+    backText: cfg.backText,
+  });
+};
 
 /* ---- Auth ---- */
 const renderAdminLogin = async (req, res, next) => {
@@ -100,7 +124,7 @@ const postAdminAddProduct = async (req, res, next) => {
     const files = req.files || [];
     const imgPaths = files.map((f) => f.filename);
     await adminService.addProduct(req.body, imgPaths);
-    res.redirect("/admin/view-products");
+    res.status(201).json({message:'Product added to inventory'})
   } catch (error) {
     next(error);
   }
@@ -108,6 +132,9 @@ const postAdminAddProduct = async (req, res, next) => {
 
 const renderAdminEditProduct = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "product");
+    }
     const product = await adminService.getProductById(req.params.id);
     const categories = await adminService.getAllCategories();
     res.render("admin/product/edit-product", {
@@ -116,8 +143,11 @@ const renderAdminEditProduct = async (req, res, next) => {
       adminData: req.session.admin,
       product,
       category: categories,
+      metrics: Array.from(Object.values(productMetrics)),
+      isOnlyImage: product.img_path.length === 1,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "product");
     next(error);
   }
 };
@@ -127,7 +157,7 @@ const postAdminEditProduct = async (req, res, next) => {
     const files = req.files || [];
     const imgPaths = files.map((f) => f.filename);
     await adminService.updateProduct(req.params.id, req.body, imgPaths);
-    res.redirect("/admin/product/view-products");
+    res.status(200).json({message:'Inventory updated successfully'});
   } catch (error) {
     next(error);
   }
@@ -144,8 +174,9 @@ const deleteProduct = async (req, res, next) => {
 
 const deleteProductImage = async (req, res, next) => {
   try {
-    const { productId, imageIndex } = req.body;
-    const result = await adminService.removeProductImage(productId, imageIndex);
+    const { productId, imageId } = req.body;
+    const result = await adminService.removeProductImage(productId, imageId);
+    if (!result) return res.status(409).json({ status: false, message: "Cannot delete the last image." });
     res.json({ status: result });
   } catch (error) {
     next(error);
@@ -198,6 +229,9 @@ const postAdminAddUser = async (req, res, next) => {
 
 const renderAdminEditUser = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "user");
+    }
     const user = await adminService.getUserById(req.params.id);
     res.render("admin/user/edit-user", {
       title: "Edit User - Organic Store",
@@ -206,6 +240,7 @@ const renderAdminEditUser = async (req, res, next) => {
       userData: user,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "user");
     next(error);
   }
 };
@@ -287,6 +322,9 @@ const postAddCategory = async (req, res, next) => {
 
 const renderEditCategory = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "category");
+    }
     const categoryData = await adminService.getCategoryById(req.params.id);
     res.render("admin/category/edit-category", {
       title: "Edit Category - Organic Store",
@@ -295,6 +333,7 @@ const renderEditCategory = async (req, res, next) => {
       categoryData,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "category");
     next(error);
   }
 };
@@ -314,7 +353,7 @@ const postEditCategory = async (req, res, next) => {
 
 const deleteCategory = async (req, res, next) => {
   try {
-    await adminService.softDeleteCategory(req.query.id);
+    await adminService.softDeleteCategory(req.params.id);
     res.json({ success: true });
   } catch (error) {
     next(error);
@@ -338,6 +377,9 @@ const renderViewCategoryOffer = async (req, res, next) => {
 
 const renderAddCatOffer = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "category");
+    }
     const categ = await adminService.getCategoryById(req.params.id);
     res.render("admin/offers/add-cat-offer", {
       title: "Add Category Offer - Organic Store",
@@ -346,6 +388,7 @@ const renderAddCatOffer = async (req, res, next) => {
       categ,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "category");
     next(error);
   }
 };
@@ -393,6 +436,9 @@ const renderViewOrders = async (req, res, next) => {
 
 const renderEditOrder = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "order");
+    }
     const orderDetail = await adminService.getOrderDetails(req.params.id);
     res.render("admin/order/edit-order", {
       title: "Edit Order - Organic Store",
@@ -401,6 +447,7 @@ const renderEditOrder = async (req, res, next) => {
       orderDetail,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "order");
     next(error);
   }
 };
@@ -540,6 +587,9 @@ const renderProductOffers = async (req, res, next) => {
 
 const renderAddOffer = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return renderNotFound(res, "product");
+    }
     const product = await adminService.getProductById(req.params.id);
     res.render("admin/offers/add-offer", {
       title: "Add Offer - Organic Store",
@@ -548,6 +598,7 @@ const renderAddOffer = async (req, res, next) => {
       product,
     });
   } catch (error) {
+    if (error.name === "NotFoundError") return renderNotFound(res, "product");
     next(error);
   }
 };
@@ -564,7 +615,7 @@ const postAddOffer = async (req, res, next) => {
 const removeOffer = async (req, res, next) => {
   try {
     await adminService.removeProductOffer(req.params.id);
-    res.redirect("/admin/product-offers");
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }

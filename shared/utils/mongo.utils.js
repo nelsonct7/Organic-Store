@@ -1,4 +1,4 @@
-const {ObjectId} = require('mongodb')
+const { ObjectId } = require("mongodb");
 
 const validateObjectId = (value) => {
   if (!ObjectId.isValid(value)) {
@@ -11,4 +11,19 @@ const validateObjectId = (value) => {
   return true;
 };
 
-module.exports = { validateObjectId };
+const createUpdatablePayload = (
+  newPayload = {},
+  oldObject = {},
+  nonUpdatableFields = ["_id", "createdAt", "updatedAt"],
+) => {
+  const updatedFields = {};
+
+  for (const [key, value] of Object.entries(newPayload)) {
+    if (!nonUpdatableFields.includes(key) && value !== oldObject[key]) {
+      updatedFields[key] = value;
+    }
+  }
+
+  return updatedFields;
+};
+module.exports = { validateObjectId, createUpdatablePayload };

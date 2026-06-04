@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} — Not Found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/stylesheets/err403.css">
+  <style>
+    .error-code {
+      background: linear-gradient(135deg, #166534, #22c55e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .search-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 8px rgba(22, 101, 52, 0.1);
+      font-size: 32px;
+      color: #166534;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-403">
+    <div class="search-icon">
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="error-code">404</div>
+    <div class="error-title">{{itemType}} Not Found</div>
+    <p class="error-text">{{message}}</p>
+    <div class="error-actions">
+      <a href="{{backLink}}" class="btn-primary-admin">
+        <i class="fas fa-arrow-left"></i> {{backText}}
+      </a>
+      <a href="/admin/home" class="btn-outline-admin">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</body>
+</html>

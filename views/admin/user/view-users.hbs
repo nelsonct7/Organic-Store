@@ -92,7 +92,7 @@
       if (result.isConfirmed) {
         $.ajax({
           url: '/admin/delete-user/' + usrId,
-          method: 'get',
+          method: 'delete',
           success: (response) => {
             if (response.deleted) {
               Swal.fire('Deleted!', 'The user has been deleted.', 'success')

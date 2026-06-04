@@ -1,4 +1,7 @@
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const User = require("../collections/user.collection");
 const Product = require("../collections/product.collection");
@@ -166,7 +169,7 @@ const getDashboardStats = async () => {
       productInfo: {
         title: m.productInfo?.name || "N/A",
         price: m.productInfo?.price || 0,
-        img_path: m.productInfo?.images || [],
+        img_path: normalizeImages(m.productInfo?.images),
       },
     })),
   };
@@ -182,12 +185,13 @@ const getAllProducts = async () => {
     description: p.description,
     date: p.createdAt ? new Date(p.createdAt).toDateString() : "",
     price: p.price,
-    "storage-spec": "",
+    "storage-spec": p.storageSpec || "",
     "godown-stock": p.stock,
     status: p.isActive ? "Active" : "Inactive",
-    img_path: p.images || [],
+    img_path: normalizeImages(p.images),
     offer: 0,
     deleted: p.isDeleted,
+    metrics: p.metrics,
   }));
 };
 
@@ -213,13 +217,13 @@ const getProductPage = async (options = {}) => {
     description: p.description,
     date: p.createdAt ? new Date(p.createdAt).toDateString() : "",
     price: p.price,
-    "storage-spec": "",
+    "storage-spec": p.storageSpec || "",
     "godown-stock": p.stock,
     status: p.isActive ? "Active" : "Inactive",
-    img_path: p.images || [],
+    img_path: normalizeImages(p.images),
     offer: 0,
     deleted: p.isDeleted,
-    metrics:p.metrics
+    metrics: p.metrics,
   }));
   return {
     data: mapped,
@@ -235,22 +239,39 @@ const getProductPage = async (options = {}) => {
 };
 
 const getProductById = async (id) => {
-  const p = await Product.findById(toObjId(id)).lean();
+  const p = await Product.findById(toObjId(id)).populate('offers').lean();
   if (!p) throw new NotFoundError("Product not found");
   return {
     _id: p._id,
     title: p.name,
-    category: p.category,
     description: p.description,
-    date: p.createdAt ? new Date(p.createdAt).toDateString() : "",
+    slug:p.slug,
     price: p.price,
-    "storage-spec": "",
-    "godown-stock": p.stock,
-    status: p.isActive ? "Active" : "Inactive",
-    img_path: p.images || [],
-    offer: 0,
-    deleted: p.isDeleted || false,
+    metrics:p.metrics,
+    offers:p.offers,
+    category: p.category ? p.category.toString() : null,
+    stock: p.stock,
+    img_path: normalizeImages(p.images),
+    date: p.createdAt ? new Date(p.createdAt).toDateString() : "",
+    storageSpec: p.storageSpec || "N/A",
+    status: p.status || "available",
+    isActive: p.isActive || false,
+    deleted: p.isDeleted,
   };
+};
+
+const toImageObjects = (filenames) =>
+  (filenames || []).map((f) => ({
+    id: crypto.randomUUID(),
+    url: f,
+  }));
+
+const normalizeImages = (images) => {
+  if (!images || !images.length) return [];
+  if (typeof images[0] === "string") {
+    return images.map((filename) => ({ id: crypto.randomUUID(), url: filename }));
+  }
+  return images;
 };
 
 const addProduct = async (body, imgPaths) => {
@@ -260,11 +281,11 @@ const addProduct = async (body, imgPaths) => {
     slug: body.title.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now(),
     price: parseInt(body.price) || 0,
     category: body.category ? toObjId(body.category) : undefined,
-    stock: parseInt(
-      body["godown-stock"] || body.godownstock || body.stock || 0,
-    ),
-    images: imgPaths || [],
-    isActive: body.status !== "Inactive",
+    stock: parseInt(body.stock || 0),
+    images: toImageObjects(imgPaths),
+    isActive: body.status === "available",
+    metrics: body.metrics,
+    storageSpec: body.storageSpec,
   });
   await product.save();
 };
@@ -278,10 +299,14 @@ const updateProduct = async (id, body, imgPaths) => {
       body["godown-stock"] || body.godownstock || body.stock || 0,
     ),
     isActive: body.status !== "Inactive",
+    metrics: body.metrics,
+    storageSpec: body.storageSpec || body["storage-spec"] || body.storagespec,
   };
   if (body.category) updateData.category = toObjId(body.category);
   if (imgPaths && imgPaths.length > 0) {
-    updateData.$push = { images: { $each: imgPaths } };
+    updateData.$push = {
+      images: { $each: toImageObjects(imgPaths) },
+    };
   }
   await Product.findByIdAndUpdate(toObjId(id), updateData);
 };
@@ -293,11 +318,18 @@ const softDeleteProduct = async (id) => {
   });
 };
 
-const removeProductImage = async (productId, imageIndex) => {
+const removeProductImage = async (productId, imageId) => {
   const product = await Product.findById(toObjId(productId));
   if (!product) return false;
-  product.images.splice(imageIndex, 1);
-  await product.save();
+  if (product.images.length <= 1) return false;
+  const img = product.images.find((i) => i.id === imageId);
+  if (img) {
+    const filePath = path.join(__dirname, "..", "public", img.url);
+    fs.unlink(filePath, () => {}); // ignore delete errors
+  }
+  await Product.findByIdAndUpdate(toObjId(productId), {
+    $pull: { images: { id: imageId } },
+  });
   return true;
 };
 
@@ -403,7 +435,7 @@ const getAllCategories = async (parentOnly = false) => {
     .populate("offers")
     .lean();
   return categories.map((c) => ({
-    _id: c._id,
+    _id: c._id.toString(),
     name: c.name,
     description: c.description || "",
     img_path: c.imageUrl || false,
@@ -425,7 +457,7 @@ const getCategoryById = async (id) => {
     .lean();
   if (!c) throw new NotFoundError("Category not found");
   return {
-    _id: c._id,
+    _id: c._id.toString(),
     name: c.name,
     description: c.description || "",
     img_path: c.imageUrl || false,
@@ -508,7 +540,7 @@ const getCategoryPage = async (options = {}) => {
   );
 
   const mapped = data.map((c) => ({
-    _id: c._id,
+    _id: c._id.toString(),
     name: c.name,
     description: c.description || "",
     img_path: c.imageUrl || false,
@@ -576,7 +608,7 @@ const getProductInfoOffer = async () => {
     _id: p._id,
     title: p.name,
     price: p.price,
-    img_path: p.images || [],
+    img_path: normalizeImages(p.images),
     offer: 0,
     offerstatus: false,
   }));

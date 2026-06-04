@@ -37,6 +37,6 @@
 
 <script>
   function removeOff(catId){ $.ajax({ url: '/admin/remove-cat-offer/' + catId,
-  method: 'post', success: (response) => { if (response.status) {
+  method: 'delete', success: (response) => { if (response.status) {
   window.location.href='/admin/view-category-offer' } } }) }
 </script>

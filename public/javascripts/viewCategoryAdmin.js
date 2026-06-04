@@ -10,8 +10,8 @@ function deleteData(id) {
   }).then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: "/admin/delete-category?id=" + id,
-        method: "get",
+        url: "/admin/delete-category/" + id,
+        method: "delete",
         success: (responce) => {
           if (responce.success) {
             location.reload();

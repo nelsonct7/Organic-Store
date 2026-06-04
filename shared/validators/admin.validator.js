@@ -1,5 +1,12 @@
 const { productMetrics } = require("../../config/constants.config");
-const {validateObjectId} = require('../utils/mongo.utils')
+const { validateObjectId } = require("../utils/mongo.utils");
+
+const isEmptyPayload=(_, { req }) => {
+        if (Object.keys(req.body).length === 0) {
+          throw new Error("No fields provided for update");
+        }
+        return true;
+      }
 
 const adminLoginSchema = {
   body: {
@@ -25,13 +32,13 @@ const addProductSchema = {
     metrics: {
       required: true,
       isIn: {
-        options: [Array.from(Object.values(productMetrics))],
+        options: Array.from(Object.values(productMetrics)),
       },
     },
     status: {
       required: true,
       isIn: {
-        options: [["available", "out-of-stock"]],
+        options: ["available", "out-of-stock"],
       },
     },
   },
@@ -39,8 +46,46 @@ const addProductSchema = {
 
 const editProductSchema = {
   body: {
-    title: { required: true },
-    price: { required: true, isNumeric: true },
+    custom: {
+      options: isEmptyPayload,
+    },
+    title: {
+      optional: true,
+      isString: true,
+    },
+    price: {
+      optional: true,
+      isNumeric: true,
+    },
+    category: {
+      optional: true,
+    },
+    description: {
+      optional: true,
+      isLength: { options: { max: 150 } },
+    },
+    storageSpec: {
+      optional: true,
+      isLength: { options: { max: 150 } },
+    },
+    stock: {
+      optional: true,
+      isInt: {
+        options: { min: 0, max: 99999 },
+      },
+    },
+    metrics: {
+      optional: true,
+      isIn: {
+        options: Object.values(productMetrics),
+      },
+    },
+    status: {
+      optional: true,
+      isIn: {
+        options: ["available", "out-of-stock"],
+      },
+    },
   },
 };
 const mongoIdSchema = {
@@ -100,7 +145,7 @@ const getAdminDataPaginationSchema = {
     order: {
       optional: true,
       isIn: {
-        options: [["asc", "desc"]],
+        options: ["asc", "desc"],
       },
     },
     search: {
@@ -118,6 +163,22 @@ const addCouponSchema = {
   },
 };
 
+const deleteProductImageSchema = {
+  body: {
+    productId: {
+      in: ["body"],
+      notEmpty: { errorMessage: "Product ID is required" },
+      custom: { options: validateObjectId },
+    },
+    imageId: {
+      in: ["body"],
+      notEmpty: { errorMessage: "Image ID is required" },
+      isString: true,
+      trim: true,
+    },
+  },
+};
+
 module.exports = {
   adminLoginSchema,
   addProductSchema,
@@ -126,5 +187,6 @@ module.exports = {
   addCategorySchema,
   addCouponSchema,
   getAdminDataPaginationSchema,
-  mongoIdSchema
+  mongoIdSchema,
+  deleteProductImageSchema,
 };

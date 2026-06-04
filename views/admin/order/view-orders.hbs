@@ -132,7 +132,7 @@
       if (result.isConfirmed) {
         $.ajax({
           url: "/admin/delete-order/" + id,
-          method: 'get',
+          method: 'delete',
           success: (response) => {
             if (response.success) location.reload()
           }

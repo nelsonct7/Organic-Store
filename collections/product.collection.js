@@ -47,8 +47,8 @@ const productSchema = new Schema(
     },
     images: [
       {
-        type: String,
-        default: null,
+        id: { type: String, required: true },
+        url: { type: String, required: true },
       },
     ],
     storageSpec: {
