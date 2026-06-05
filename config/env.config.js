@@ -20,6 +20,12 @@ const env = {
   googleClientId: getEnvString('GOOGLE_CLIENT_ID', ''),
   googleClientSecret: getEnvString('GOOGLE_CLIENT_SECRET', ''),
   googleCallbackUrl: getEnvString('GOOGLE_CALLBACK_URL', '/auth/google/callback'),
+  smtpHost: getEnvString('SMTP_HOST', 'smtp.gmail.com'),
+  smtpPort: getEnvNumber('SMTP_PORT', 587),
+  smtpUser: getEnvString('SMTP_USER', ''),
+  smtpPass: getEnvString('SMTP_PASS', ''),
+  smtpFrom: getEnvString('SMTP_FROM', 'noreply@organicstore.com'),
+  appUrl: getEnvString('APP_URL', 'http://localhost:3000'),
 };
 
 module.exports = env;

@@ -44,6 +44,9 @@
                 <a href="/orders/{{this._id}}/invoice" class="btn btn-sm btn-outline-success">
                   <i class="fas fa-download"></i> Invoice
                 </a>
+                <button class="btn btn-sm btn-outline-primary email-invoice" data-order-id="{{this._id}}">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
               </div>
             </div>
           </div>
@@ -75,6 +78,35 @@
                   },
                   error: function(xhr) {
                     var msg = 'Could not cancel order';
+                    try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+                    Swal.fire('Error', msg, 'error');
+                  }
+                });
+              }
+            });
+          });
+          $('.email-invoice').on('click', function() {
+            var orderId = $(this).data('order-id');
+            Swal.fire({
+              title: 'Email Invoice?',
+              text: 'We will send the invoice to your registered email address.',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#16a34a',
+              confirmButtonText: 'Yes, send it'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire({ title: 'Sending...', text: 'Generating and sending invoice', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                $.ajax({
+                  url: '/orders/' + orderId + '/invoice/email',
+                  method: 'POST',
+                  success: function(resp) {
+                    if (resp.status) {
+                      Swal.fire('Sent!', resp.message || 'Invoice sent to your email', 'success');
+                    }
+                  },
+                  error: function(xhr) {
+                    var msg = 'Could not send invoice';
                     try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
                     Swal.fire('Error', msg, 'error');
                   }
