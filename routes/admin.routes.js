@@ -210,7 +210,9 @@ router.delete(
 );
 
 /* ---- Feedback & Messages ---- */
-router.get("/admin-feedback", validateAdminAccess, ctrl.renderFeedback);
+router.get("/admin-feedback", validateAdminAccess, validationMiddleware(getAdminDataPaginationSchema), ctrl.renderFeedback);
+router.post("/feedback/update-status/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), ctrl.updateFeedbackStatus);
+router.delete("/feedback/delete/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), ctrl.deleteFeedback);
 router.get("/view-message", validateAdminAccess, ctrl.renderMessages);
 
 /* ---- Reports ---- */

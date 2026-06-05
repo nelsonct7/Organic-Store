@@ -1,0 +1,163 @@
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Feedback</h1>
+      <p>Help us improve your experience</p>
+    </div>
+  </section>
+
+  <section class="py-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white"><h5 class="mb-0">Submit Feedback</h5></div>
+            <div class="card-body">
+              <form id="feedbackForm">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Type</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="type" id="typePlatform" value="platform" checked>
+                      <label class="form-check-label" for="typePlatform">Platform</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="type" id="typeProduct" value="product">
+                      <label class="form-check-label" for="typeProduct">Product</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3" id="productSelectWrap" style="display:none;">
+                  <label class="form-label fw-semibold">Product</label>
+                  <select class="form-select" name="productId" id="productSelect">
+                    <option value="">— Select Product —</option>
+                    {{#each products}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Rating (optional)</label>
+                  <div class="star-rating">
+                    <input type="hidden" name="rating" id="feedbackRating" value="0">
+                    {{#times 5}}
+                    <i class="far fa-star feedback-star" data-val="{{this}}" style="font-size:1.5rem;cursor:pointer;color:#ffc107;"></i>
+                    {{/times}}
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Subject <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" name="subject" id="feedbackSubject" maxlength="200" required placeholder="Brief title for your feedback">
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Message <span class="text-danger">*</span></label>
+                  <textarea class="form-control" name="message" id="feedbackMessage" rows="4" maxlength="2000" required placeholder="Describe your feedback in detail"></textarea>
+                  <div class="text-end"><small class="text-muted"><span id="charCount">0</span>/2000</small></div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Submit Feedback</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white"><h5 class="mb-0">Your Previous Feedback</h5></div>
+            <div class="card-body" style="max-height:500px;overflow-y:auto;">
+              {{#if feedbacks.length}}
+                {{#each feedbacks}}
+                <div class="mb-3 pb-3 border-bottom">
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge {{#ifCond this.type "===" "platform"}}bg-primary{{else}}bg-success{{/ifCond}}" style="font-size:0.6875rem;">{{this.type}}</span>
+                    {{#if this.productId}}<small class="text-muted">{{this.productId.name}}</small>{{/if}}
+                    {{#if this.rating}}
+                    <span>
+                      {{#times 5}}
+                      <i class="fas fa-star {{#ifCond this "lte" ../rating}}text-warning{{else}}text-secondary{{/ifCond}}" style="font-size:0.625rem;"></i>
+                      {{/times}}
+                    </span>
+                    {{/if}}
+                  </div>
+                  <strong style="font-size:0.875rem;">{{this.subject}}</strong>
+                  <p class="mb-1 small text-muted">{{this.message}}</p>
+                  <div class="d-flex align-items-center gap-2">
+                    <small class="text-muted">{{timeAgo this.createdAt}}</small>
+                    <span class="badge {{#ifCond this.status "===" "resolved"}}bg-success{{else ifCond this.status "===" "reviewed"}}bg-info{{else}}bg-secondary{{/ifCond}}" style="font-size:0.625rem;">{{this.status}}</span>
+                  </div>
+                  {{#if this.adminNote}}
+                  <div class="mt-1 p-2" style="background:#f0fdf4;border-radius:6px;font-size:0.75rem;color:#166534;">
+                    <i class="fas fa-reply"></i> {{this.adminNote}}
+                  </div>
+                  {{/if}}
+                </div>
+                {{/each}}
+              {{else}}
+                <p class="text-muted mb-0">No feedback submitted yet.</p>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+.feedback-star.active, .feedback-star:hover { color: #ffc107 !important; }
+</style>
+
+<script>
+$(document).ready(function() {
+  $('input[name="type"]').on('change', function() {
+    $('#productSelectWrap').toggle($('#typeProduct').is(':checked'));
+  });
+
+  $('.feedback-star').on('click', function() {
+    var val = $(this).data('val');
+    $('#feedbackRating').val(val);
+    $('.feedback-star').each(function() {
+      $(this).toggleClass('fas active', $(this).data('val') <= val).toggleClass('far', $(this).data('val') > val);
+    });
+  });
+
+  $('#feedbackMessage').on('input', function() {
+    $('#charCount').text($(this).val().length);
+  });
+
+  $('#feedbackForm').on('submit', function(e) {
+    e.preventDefault();
+    var data = {
+      type: $('input[name="type"]:checked').val(),
+      productId: $('#productSelect').val() || undefined,
+      rating: parseInt($('#feedbackRating').val()) || undefined,
+      subject: $('#feedbackSubject').val().trim(),
+      message: $('#feedbackMessage').val().trim(),
+    };
+    if (!data.subject) { Swal.fire({ icon: 'warning', text: 'Please enter a subject' }); return; }
+    if (!data.message) { Swal.fire({ icon: 'warning', text: 'Please enter a message' }); return; }
+    var btn = $(this).find('button[type="submit"]');
+    btn.prop('disabled', true).text('Submitting...');
+    $.ajax({
+      url: '/feedback',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: function() {
+        Swal.fire({ icon: 'success', title: 'Thank you!', text: 'Your feedback has been submitted', timer: 2000, showConfirmButton: false })
+          .then(function() { location.reload(); });
+      },
+      error: function(xhr) {
+        btn.prop('disabled', false).text('Submit Feedback');
+        var msg = 'Failed to submit feedback';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        Swal.fire({ icon: 'error', text: msg });
+      }
+    });
+  });
+});
+</script>

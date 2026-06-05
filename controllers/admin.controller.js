@@ -649,15 +649,38 @@ const removeOffer = async (req, res, next) => {
 /* ---- Feedback & Messages ---- */
 const renderFeedback = async (req, res, next) => {
   try {
-    const { page, limit } = req.query;
-    const { data, pagination } = await adminService.getFeedbackPage({ page, limit });
+    const feedbackService = require("../services/feedback.service");
+    const result = await feedbackService.getFeedbackPage(req.query);
     res.render("admin/view-feedback", {
       title: "Feedback - Organic Store",
       admin: true,
       adminData: req.session.admin,
-      data,
-      pagination,
+      data: result.data,
+      pagination: result.pagination,
+      searchValue: result.search || "",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateFeedbackStatus = async (req, res, next) => {
+  try {
+    const feedbackService = require("../services/feedback.service");
+    const { status, adminNote } = req.body;
+    const feedback = await feedbackService.updateFeedbackStatus(req.params.id, status || "reviewed", adminNote);
+    if (!feedback) return res.status(404).json({ status: false, message: "Feedback not found" });
+    res.json({ status: true, feedback });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteFeedback = async (req, res, next) => {
+  try {
+    const feedbackService = require("../services/feedback.service");
+    await feedbackService.deleteFeedback(req.params.id);
+    res.json({ status: true, message: "Feedback deleted" });
   } catch (error) {
     next(error);
   }
@@ -829,6 +852,8 @@ module.exports = {
   postAddOffer,
   removeOffer,
   renderFeedback,
+  updateFeedbackStatus,
+  deleteFeedback,
   renderMessages,
   renderReports,
   getLineData,

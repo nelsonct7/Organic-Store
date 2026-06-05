@@ -28,6 +28,11 @@ router.get("/view-product/:id", renderViewProduct);
 router.get("/add-to-cart/:id", addToCart);
 router.get("/view-profile", renderProfile);
 
+/* ---- Feedback ---- */
+const feedbackCtrl = require("../controllers/feedback.controller");
+router.get("/feedback", feedbackCtrl.renderFeedbackForm);
+router.post("/feedback", feedbackCtrl.postFeedback);
+
 
 
 

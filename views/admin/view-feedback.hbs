@@ -1,48 +1,144 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h4 class="mb-0" style="font-weight: 600; color: #1f2937;">Users Feedback</h4>
+  <h4 class="mb-0" style="font-weight: 600; color: #1f2937;">User Feedback</h4>
   <span class="badge" style="background: #dcfce7; color: #166534; font-weight: 500;">{{pagination.total}} total</span>
 </div>
+
+<form method="GET" action="/admin/admin-feedback" class="mb-3">
+  <div class="input-group" style="max-width: 400px;">
+    <input type="text" name="search" class="form-control form-control-sm" placeholder="Search feedback..." value="{{searchValue}}" style="border: 1px solid #d1d5db; border-radius: 6px 0 0 6px; font-size: 0.8125rem;">
+    <input type="hidden" name="page" value="1">
+    <button class="btn btn-sm" type="submit" style="background: #16a34a; color: #fff; border: none; border-radius: 0 6px 6px 0; font-size: 0.8125rem; padding: 6px 14px;">
+      <i class="fa-solid fa-search"></i>
+    </button>
+  </div>
+</form>
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table align-middle mb-0" id="usrtable" style="font-size: 0.875rem;">
+      <table class="table align-middle mb-0" style="font-size: 0.875rem;">
         <thead style="background: #f8fafc; border-bottom: 2px solid #e5e7eb;">
           <tr>
-            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">User Id</th>
-            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">User Name</th>
-            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Email</th>
-            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Mobile</th>
-            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Feedbacks</th>
+            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">User</th>
+            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Type</th>
+            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Subject</th>
+            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Message</th>
+            <th class="py-3 px-3" style="font-weight: 600; color: #4b5563;">Date</th>
+            <th class="py-3 px-3 text-center" style="font-weight: 600; color: #4b5563;">Status</th>
+            <th class="py-3 px-3 text-end" style="font-weight: 600; color: #4b5563;">Actions</th>
           </tr>
         </thead>
         <tbody>
           {{#each data}}
-          <tr style="border-bottom: 1px solid #f3f4f6;">
-            <td class="px-3 py-3" style="color: #6b7280; font-size: 0.8125rem;">{{this.user_data}}</td>
-            <td class="px-3 py-3" style="font-weight: 500; color: #1f2937;">{{this.user_info.user_name}}</td>
-            <td class="px-3 py-3" style="color: #6b7280;">{{this.user_info.user_email}}</td>
-            <td class="px-3 py-3" style="color: #4b5563;">{{this.user_info.user_mobile}}</td>
-            <td class="px-3 py-3">
-              {{#each this.feedbacks}}
-              <div style="color: #4b5563; line-height: 1.5;">{{@index}}: {{this}}</div>
-              {{/each}}
-            </td>
-          </tr>
-          {{/each}}
-
-          {{#if (eq data.length 0)}}
           <tr>
-            <td colspan="5" class="text-center py-5" style="color: #9ca3af;">
-              <i class="fa-solid fa-comment-dots" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
-              No feedback yet.
+            <td class="py-3 px-3">
+              <div style="font-weight: 500; color: #1f2937;">{{this.userId.name}}</div>
+              <div style="font-size: 0.75rem; color: #9ca3af;">{{this.userId.email}}</div>
+            </td>
+            <td class="py-3 px-3">
+              <span class="badge {{#ifCond this.type "===" "platform"}}bg-primary{{else}}bg-success{{/ifCond}}" style="font-size:0.6875rem;">{{this.type}}</span>
+              {{#if this.productId}}<div style="font-size:0.6875rem;color:#6b7280;margin-top:2px;">{{this.productId.name}}</div>{{/if}}
+            </td>
+            <td class="py-3 px-3" style="max-width:150px;word-break:break-word;">
+              <div style="font-weight:500;">{{this.subject}}</div>
+              {{#if this.rating}}<span class="text-warning" style="font-size:0.6875rem;">{{#times 5}}{{#ifCond this "lte" ../rating}}&#9733;{{else}}&#9734;{{/ifCond}}{{/times}}</span>{{/if}}
+            </td>
+            <td class="py-3 px-3" style="max-width:200px;word-break:break-word;color:#6b7280;">{{this.message}}</td>
+            <td class="py-3 px-3 text-muted" style="font-size:0.8125rem;white-space:nowrap;">{{timeAgo this.createdAt}}</td>
+            <td class="py-3 px-3 text-center">
+              <span class="badge status-badge" data-status="{{this.status}}" style="font-size:0.6875rem;
+                {{#ifCond this.status "===" "resolved"}}background:#dcfce7;color:#166534;
+                {{else ifCond this.status "===" "reviewed"}}background:#dbeafe;color:#1e40af;
+                {{else}}background:#f3f4f6;color:#6b7280;{{/ifCond}}">{{this.status}}</span>
+            </td>
+            <td class="py-3 px-3 text-end">
+              <div class="d-flex gap-1 justify-content-end flex-wrap" style="min-width:110px;">
+                <button class="btn btn-sm review-feedback" data-id="{{this._id}}" data-status="{{this.status}}" data-note="{{this.adminNote}}" style="background:#16a34a;color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:0.6875rem;" title="Review">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="btn btn-sm delete-feedback" data-id="{{this._id}}" style="background:#dc2626;color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:0.6875rem;" title="Delete">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
-          {{/if}}
+          <tr style="display:none;" class="admin-note-row" data-feedback-id="{{this._id}}">
+            <td colspan="7" class="px-3 py-2" style="background:#f9fafb;">
+              <div style="font-size:0.75rem;color:#6b7280;margin-bottom:4px;">Admin Note:</div>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control form-control-sm admin-note-input" value="{{this.adminNote}}" placeholder="Add admin note..." style="max-width:400px;font-size:0.8125rem;">
+                <select class="form-select form-select-sm admin-status-select" style="width:130px;font-size:0.8125rem;">
+                  <option value="pending" {{#ifCond this.status "===" "pending"}}selected{{/ifCond}}>Pending</option>
+                  <option value="reviewed" {{#ifCond this.status "===" "reviewed"}}selected{{/ifCond}}>Reviewed</option>
+                  <option value="resolved" {{#ifCond this.status "===" "resolved"}}selected{{/ifCond}}>Resolved</option>
+                </select>
+                <button class="btn btn-sm btn-success save-feedback-note" data-id="{{this._id}}">Save</button>
+              </div>
+            </td>
+          </tr>
+          {{else}}
+          <tr><td colspan="7" class="text-center py-5 text-muted">No feedback found</td></tr>
+          {{/each}}
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-{{> pagination pagination=pagination}}
+{{> pagination}}
+
+<script>
+$(document).ready(function() {
+  $('.review-feedback').on('click', function() {
+    var id = $(this).data('id');
+    $('.admin-note-row[data-feedback-id="' + id + '"]').toggle();
+  });
+
+  $('.save-feedback-note').on('click', function() {
+    var btn = $(this);
+    var id = btn.data('id');
+    var row = $('.admin-note-row[data-feedback-id="' + id + '"]');
+    var status = row.find('.admin-status-select').val();
+    var adminNote = row.find('.admin-note-input').val().trim();
+
+    btn.prop('disabled', true).text('Saving...');
+    $.ajax({
+      url: '/admin/feedback/update-status/' + id,
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ status: status, adminNote: adminNote }),
+      success: function() {
+        location.reload();
+      },
+      error: function() {
+        btn.prop('disabled', false).text('Save');
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update feedback' });
+      }
+    });
+  });
+
+  $('.delete-feedback').on('click', function() {
+    var id = $(this).data('id');
+    Swal.fire({
+      title: 'Delete Feedback?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then(function(result) {
+      if (!result.isConfirmed) return;
+      $.ajax({
+        url: '/admin/feedback/delete/' + id,
+        method: 'DELETE',
+        success: function() {
+          location.reload();
+        },
+        error: function() {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete feedback' });
+        }
+      });
+    });
+  });
+});
+</script>
