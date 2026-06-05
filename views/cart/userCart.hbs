@@ -1,145 +1,185 @@
-<link rel="stylesheet" href="/stylesheets/cart.css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container">
-<div class="">
-    <div class="row d-flex justify-content-around m-5">
-        <div class="col-md-8" id="transparenter">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>Items in your cart</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="table shoping-cart-table">
-                            <tbody>
-                            {{#each products}}
-                            <tr class="mt-3">
-                                <td width="200">
-                                    <div class="">
-                                        <img class="img-fluid" src="/product-images/{{this.product.img_path.[0]}}" alt="">
-                                    </div>
-                                </td>
-                                <td class="desc" style="width: 200px;">
-                                    <h3>
-                                    <a href="/view-product/{{this.product._id}}" class="text-navy">
-                                        {{this.product.title}}
-                                    </a>
-                                    </h3>
-                                    <div class="m-t-sm" style="margin-top: 100px;">                                        |
-                                        <a href="/remove-item-from-cart/{{this.product._id}}" class="text-muted" onclick="alert('Are you sure to remove this item')"><i class="fa fa-trash"></i> Remove item</a>
-                                    </div>
-                                </td>
-                                <td> 
-                                    <s class="small text-muted"> {{this.product.price}}</s>
-                                </td>
-                                <td class="d-flex justify-content-between"> 
-                                        <button class="btn btn-secondary btn-sm me-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.product.title}}','{{../user._id}}')"    id="{{this.product._id}}+'demo'">-</button>                                        <span id="{{this.product._id}}" style="padding-top: 10px;">{{this.quantity}}</span>
-                                        <button class="btn btn-secondary btn-sm ms-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.product.title}}','{{../user._id}}')">+</button>
-                                </td>
-                                <td>
-                                    <h4>
-                                        {{this.actualPrice}}
-                                    </h4>
-                                </td>
-                            </tr>
-                            {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-                
-                <div class="ibox-content">
-                    {{!-- <a href="/check-out" class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i>Checkout</a> --}}
-                    {{!-- <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button> --}}
-                    <a href="/"><button class="btn btn-white" ><i class="fa fa-arrow-left"></i> Continue shopping</button></a>
-                    
-
-                </div>
-            </div>
-
-        </div>
-        <div class="col-md-3" id="transparenter">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>Cart Summary</h5>
-                </div>
-                <div class="ibox-content">
-                    <span>
-                        Total
-                    </span>
-                    <h2 class="font-bold">
-                        Rs : <span id="prSum">{{total}}</span>
-                    </h2>
-
-                    <hr>
-                    
-                    <div class="m-t-sm ms-4">
-                        <div class="btn-group">
-                        <a href="/find-total/{{user._id}}" class="btn btn-success btn-sm"><i class="fa fa-shopping-cart"></i> Checkout</a>
-                        <a href="/" class="btn btn-warning btn-sm ms-4"> Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                </div>
-            </div>
-        </div>
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Shopping Cart</h1>
+      <p>{{products.length}} item(s) in your cart</p>
     </div>
-</div>
-</div>
-        <style>
-            #transparenter{
-                background: rgba( 255, 255, 255, 0.25 );
-                box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-                backdrop-filter: blur( 4px );
-                -webkit-backdrop-filter: blur( 4px );
-                border-radius: 10px;
-                border: 1px solid rgba( 255, 255, 255, 0.18 );
-            }
-        </style>
+  </section>
+
+  <section class="py-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          {{#each products}}
+          <div class="card shadow-sm mb-3 cart-item" data-item-id="{{this._id}}">
+            <div class="card-body">
+              <div class="row align-items-center g-2">
+                <div class="col-md-2">
+                  <a href="/view-product/{{this.product._id}}">
+                    <img src="/product-images/{{this.product.imageUrl}}" alt="{{this.product.title}}" class="img-fluid rounded" style="max-height:100px;width:auto;object-fit:cover;">
+                  </a>
+                </div>
+                <div class="col-md-3">
+                  <h6 class="mb-1"><a href="/view-product/{{this.product._id}}" class="text-decoration-none text-dark">{{this.product.title}}</a></h6>
+                  {{#if this.appliedOffer.offerId}}
+                  <span class="badge bg-success">
+                    {{#ifCond this.appliedOffer.type "percentage"}}{{this.appliedOffer.value}}% OFF{{/ifCond}}
+                    {{#ifCond this.appliedOffer.type "fixed"}}₹{{this.appliedOffer.value}} OFF{{/ifCond}}
+                  </span>
+                  {{/if}}
+                </div>
+                <div class="col-md-2">
+                  {{#if this.product.availableUnits.length}}
+                  <select class="form-select form-select-sm unit-select" data-item-id="{{this._id}}">
+                    {{#each this.product.availableUnits}}
+                    <option value="{{@index}}" {{#ifCond @index ../this.unitIndex}}selected{{/ifCond}}>
+                      {{this.label}} - ₹{{this.price}}
+                    </option>
+                    {{/each}}
+                  </select>
+                  {{else}}
+                  <span class="fw-bold">₹{{this.selectedUnit.price}}</span>
+                  {{/if}}
+                </div>
+                <div class="col-md-2 text-center">
+                  <div class="input-group input-group-sm justify-content-center flex-nowrap">
+                    <button class="btn btn-outline-secondary qty-btn" data-item-id="{{this._id}}" data-change="-1">−</button>
+                    <span class="input-group-text qty-display bg-white px-2" id="qty-{{this._id}}">{{this.quantity}}</span>
+                    <button class="btn btn-outline-secondary qty-btn" data-item-id="{{this._id}}" data-change="1">+</button>
+                  </div>
+                </div>
+                <div class="col-md-2 text-center">
+                  <div class="fw-bold item-subtotal" id="subtotal-{{this._id}}">₹{{this.subtotal}}</div>
+                </div>
+                <div class="col-md-1 text-end">
+                  <button class="btn btn-sm text-danger remove-item" data-item-id="{{this._id}}" title="Remove">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+
+          <div class="mt-3">
+            <a href="/" class="btn btn-outline-success"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="mb-0">Cart Summary</h5>
+            </div>
+            <div class="card-body">
+              {{#if totals.totalDiscount}}
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Subtotal</span>
+                <span>₹{{totals.totalAmount}}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-success">You Save</span>
+                <span class="text-success">− ₹{{totals.totalDiscount}}</span>
+              </div>
+              <hr>
+              {{/if}}
+              <div class="d-flex justify-content-between mb-3">
+                <span class="fw-bold">Total</span>
+                <span class="fw-bold fs-5 text-success" id="cartTotal">₹{{total}}</span>
+              </div>
+              <div class="d-grid">
+                <a href="/checkout" class="btn btn-success">
+                  <i class="fas fa-shopping-bag"></i> Proceed to Checkout
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <script>
-    function changeQuantity(cartId,prodId,count,title,userId){
-        
-        count1=parseInt(count)
-        let quantity1=parseInt(document.getElementById(prodId).innerHTML)
-        $.ajax({
-            url:'/cart-Product-Inc-Dec',
-            data:{
-                cart:cartId,
-                product:prodId,
-                count:count1,
-                quantity:quantity1,
-                userId:userId
-            },
-            method:'post',
-            success:(response)=>{
-                if(response.itemRemoved){
-                Swal.fire({
-                title: 'Success',
-                text: title+' Item Removed',
-                icon: 'succes',
-                showCancelButton: false,
-                confirmButtonColor: '#11B619',
-                cancelButtonColor: '#A19391',
-                confirmButtonText: 'Ok'
-                }).then((result) => {
-                     if (result.isConfirmed) {
-                                            location.reload()
-                                            }
-                })
-                    
-                    
-                }
-                else{
-                    console.log('quantity : '+quantity1)
-                    console.log('quantity : '+count1)
-                    document.getElementById(prodId).innerHTML=quantity1+count
-                    document.getElementById('prSum').innerHTML=response.total
-                }
-                
+$(document).ready(function() {
+  $('.qty-btn').on('click', function() {
+    var itemId = $(this).data('item-id');
+    var change = parseInt($(this).data('change'));
+    var $qtySpan = $('#qty-' + itemId);
+    var currentQty = parseInt($qtySpan.text());
+    var newQty = currentQty + change;
+
+    if (newQty < 1) {
+      Swal.fire({
+        title: 'Remove Item?',
+        text: "Do you want to remove this item?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, remove it!'
+      }).then(function(result) {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: '/cart/items/' + itemId,
+            method: 'DELETE',
+            success: function(response) {
+              if (response.status) location.reload();
             }
-        })
+          });
+        }
+      });
+      return;
     }
+
+    $.ajax({
+      url: '/cart/items/' + itemId,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({ quantity: newQty }),
+      success: function(response) {
+        if (response.status) location.reload();
+      }
+    });
+  });
+
+  $('.remove-item').on('click', function(e) {
+    e.preventDefault();
+    var itemId = $(this).data('item-id');
+    Swal.fire({
+      title: 'Remove Item?',
+      text: "This item will be removed from your cart.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, remove it!'
+    }).then(function(result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: '/cart/items/' + itemId,
+          method: 'DELETE',
+          success: function(response) {
+            if (response.status) location.reload();
+          }
+        });
+      }
+    });
+  });
+
+  $('.unit-select').on('change', function() {
+    var itemId = $(this).data('item-id');
+    var unitIndex = parseInt($(this).val());
+    $.ajax({
+      url: '/cart/items/' + itemId,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({ unitIndex: unitIndex }),
+      success: function(response) {
+        if (response.status) location.reload();
+      }
+    });
+  });
+
+});
 </script>

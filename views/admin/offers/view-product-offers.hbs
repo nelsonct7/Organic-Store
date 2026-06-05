@@ -15,14 +15,29 @@
     {{#each products}}
     <tr>
         <td>{{this.title}}</td>
-        <td>{{this.price}}</td>
+        <td>₹{{this.price}}</td>
         <td><img src='/product-images/{{this.img_path.[0].url}}' alt="" width="100px" height="100px"></td>
-        <td>{{this.offer}}</td>
-        <td>{{#if this.offerstatus}}
+        <td>
+          {{#if this.offerstatus}}
+            {{#each this.offers}}
+              {{#if this.isActive}}
+                <span class="badge bg-success">
+                  {{#ifCond this.type "percentage"}}{{this.value}}%{{/ifCond}}
+                  {{#ifCond this.type "fixed"}}₹{{this.value}}{{/ifCond}}
+                  (priority: {{this.priority}})
+                </span>
+              {{/if}}
+            {{/each}}
+          {{else}}
+            <span class="text-muted">No active offer</span>
+          {{/if}}
+        </td>
+        <td>
+          {{#if this.offerstatus}}
             <button class="btn btn-danger" onclick="removeOffer('{{this._id}}')">Remove offer</button>
-            {{else}}
+          {{else}}
             <a href="/admin/add-offer/{{this._id}}" class="btn btn-primary">Add offer</a>
-            {{/if}}
+          {{/if}}
         </td>
     </tr>
     {{/each}}

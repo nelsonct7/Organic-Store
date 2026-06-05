@@ -383,11 +383,17 @@ const deleteCategory = async (req, res, next) => {
 const renderViewCategoryOffer = async (req, res, next) => {
   try {
     const categories = await adminService.getAllCategories();
+    const enriched = categories.map((c) => {
+      const activeOffer = (c.offers || []).find(
+        (o) => o.isActive && !o.isDeleted,
+      );
+      return { ...c, offerstatus: !!activeOffer, offer: activeOffer || null };
+    });
     res.render("admin/offers/view-category-offer", {
       title: "Category Offers - Organic Store",
       admin: true,
       adminData: req.session.admin,
-      category: categories,
+      category: enriched,
     });
   } catch (error) {
     next(error);

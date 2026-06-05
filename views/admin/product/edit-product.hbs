@@ -25,21 +25,77 @@
             <input type="text" class="form-control" name="storageSpec" value="{{product.storageSpec}}">
           </div>
           <div class="mb-3">
-            <label class="form-label">Price</label>
+            <label class="form-label">Base Price</label>
             <input type="number" class="form-control" name="price" value="{{product.price}}">
           </div>
           <div class="mb-3">
             <label class="form-label">Godown Stock</label>
             <input type="number" class="form-control" name="stock" value="{{product.stock}}">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Metrics</label>
-            <select class="form-select" name="metrics">
+            <select class="form-select" name="metrics" id="metrics">
               <option value="">Please Select</option>
               {{#each metrics}}
                 <option value="{{this}}" {{#if (eq this ../product.metrics)}}selected{{/if}}>{{this}}</option>
               {{/each}}
             </select>
+          </div>
+
+          {{! Available Units — auto-suggested from metric & price }}
+          <div class="mb-3">
+            <label class="form-label">Available Units <small class="text-muted">(auto-suggested from metric &amp; price; edit as needed)</small></label>
+            <div id="unitsContainer">
+              {{#if product.availableUnits.length}}
+                {{#each product.availableUnits}}
+                <div class="row g-2 mb-2 unit-row">
+                  <div class="col-3">
+                    <input type="text" class="form-control form-control-sm" name="unitLabel[]" value="{{this.label}}">
+                  </div>
+                  <div class="col-3">
+                    <select class="form-select form-select-sm" name="unitMetric[]">
+                      <option value="grams" {{#if (eq this.metric "grams")}}selected{{/if}}>grams</option>
+                      <option value="ml" {{#if (eq this.metric "ml")}}selected{{/if}}>ml</option>
+                      <option value="numbers" {{#if (eq this.metric "numbers")}}selected{{/if}}>numbers</option>
+                    </select>
+                  </div>
+                  <div class="col-2">
+                    <input type="number" class="form-control form-control-sm" name="unitMeasure[]" value="{{this.measure}}">
+                  </div>
+                  <div class="col-2">
+                    <input type="number" step="0.01" class="form-control form-control-sm" name="unitPrice[]" value="{{this.price}}">
+                  </div>
+                  <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-unit">&times;</button>
+                  </div>
+                </div>
+                {{/each}}
+              {{else}}
+              <div class="row g-2 unit-row">
+                <div class="col-3">
+                  <input type="text" class="form-control form-control-sm" name="unitLabel[]" placeholder="e.g. 1 kg">
+                </div>
+                <div class="col-3">
+                  <select class="form-select form-select-sm" name="unitMetric[]">
+                    <option value="grams">grams</option>
+                    <option value="ml">ml</option>
+                    <option value="numbers">numbers</option>
+                  </select>
+                </div>
+                <div class="col-2">
+                  <input type="number" class="form-control form-control-sm" name="unitMeasure[]" placeholder="Qty">
+                </div>
+                <div class="col-2">
+                  <input type="number" step="0.01" class="form-control form-control-sm" name="unitPrice[]" placeholder="Price">
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-sm btn-outline-danger remove-unit" style="display:none;">&times;</button>
+                </div>
+              </div>
+              {{/if}}
+            </div>
+            <button type="button" id="addUnitRow" class="btn btn-sm btn-outline-success mt-2">+ Add Unit</button>
           </div>
           <div class="mb-3">
             <label class="form-label">Status</label>
@@ -76,4 +132,99 @@
 </section>
 
 <script>var productId = '{{product._id}}';</script>
-<script src="/javascripts/adminProductEdit.js"/>
+<script src="/javascripts/adminProductEdit.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var container = document.getElementById('unitsContainer');
+  var addBtn = document.getElementById('addUnitRow');
+  var metricsSelect = document.getElementById('metrics');
+
+  function generateDefaultUnits() {
+    var metric = metricsSelect ? metricsSelect.value : '';
+    var basePrice = parseFloat(document.querySelector('input[name="price"]')?.value || 0);
+    if (!metric || !basePrice) return;
+
+    var suggestions = [];
+    if (metric === 'Kg') {
+      suggestions = [
+        { label: '250g', metric: 'grams', measure: 250, price: (basePrice / 4).toFixed(2) },
+        { label: '500g', metric: 'grams', measure: 500, price: (basePrice / 2).toFixed(2) },
+        { label: '1 kg', metric: 'grams', measure: 1000, price: basePrice.toFixed(2) },
+      ];
+    } else if (metric === 'Li') {
+      suggestions = [
+        { label: '250ml', metric: 'ml', measure: 250, price: (basePrice / 4).toFixed(2) },
+        { label: '500ml', metric: 'ml', measure: 500, price: (basePrice / 2).toFixed(2) },
+        { label: '1 L', metric: 'ml', measure: 1000, price: basePrice.toFixed(2) },
+      ];
+    } else if (metric === 'Piece') {
+      suggestions = [
+        { label: '1', metric: 'numbers', measure: 1, price: basePrice.toFixed(2) },
+        { label: '2', metric: 'numbers', measure: 2, price: (basePrice * 2).toFixed(2) },
+        { label: '5', metric: 'numbers', measure: 5, price: (basePrice * 5).toFixed(2) },
+        { label: '10', metric: 'numbers', measure: 10, price: (basePrice * 10).toFixed(2) },
+      ];
+    }
+
+    container.innerHTML = '';
+    suggestions.forEach(function(s) {
+      var div = document.createElement('div');
+      div.className = 'row g-2 mb-2 unit-row';
+      div.innerHTML =
+        '<div class="col-3"><input type="text" class="form-control form-control-sm" name="unitLabel[]" value="' + s.label + '"></div>' +
+        '<div class="col-3"><select class="form-select form-select-sm" name="unitMetric[]">' +
+          '<option value="grams"' + (s.metric === 'grams' ? ' selected' : '') + '>grams</option>' +
+          '<option value="ml"' + (s.metric === 'ml' ? ' selected' : '') + '>ml</option>' +
+          '<option value="numbers"' + (s.metric === 'numbers' ? ' selected' : '') + '>numbers</option>' +
+        '</select></div>' +
+        '<div class="col-2"><input type="number" class="form-control form-control-sm" name="unitMeasure[]" value="' + s.measure + '"></div>' +
+        '<div class="col-2"><input type="number" step="0.01" class="form-control form-control-sm" name="unitPrice[]" value="' + s.price + '"></div>' +
+        '<div class="col-2"><button type="button" class="btn btn-sm btn-outline-danger remove-unit">&times;</button></div>';
+      container.appendChild(div);
+    });
+  }
+
+  if (metricsSelect) {
+    metricsSelect.addEventListener('change', generateDefaultUnits);
+  }
+
+  container.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-unit')) {
+      var row = e.target.closest('.unit-row');
+      if (container.querySelectorAll('.unit-row').length > 1) {
+        row.remove();
+      }
+    }
+  });
+
+  addBtn.addEventListener('click', function() {
+    var firstRow = container.querySelector('.unit-row');
+    if (!firstRow) {
+      var div = document.createElement('div');
+      div.className = 'row g-2 mb-2 unit-row';
+      div.innerHTML =
+        '<div class="col-3"><input type="text" class="form-control form-control-sm" name="unitLabel[]" placeholder="e.g. 500g"></div>' +
+        '<div class="col-3"><select class="form-select form-select-sm" name="unitMetric[]">' +
+          '<option value="grams">grams</option>' +
+          '<option value="ml">ml</option>' +
+          '<option value="numbers">numbers</option>' +
+        '</select></div>' +
+        '<div class="col-2"><input type="number" class="form-control form-control-sm" name="unitMeasure[]" placeholder="Qty"></div>' +
+        '<div class="col-2"><input type="number" step="0.01" class="form-control form-control-sm" name="unitPrice[]" placeholder="Price"></div>' +
+        '<div class="col-2"><button type="button" class="btn btn-sm btn-outline-danger remove-unit">&times;</button></div>';
+      container.appendChild(div);
+    } else {
+      var newRow = firstRow.cloneNode(true);
+      newRow.querySelectorAll('input').forEach(function(inp) { inp.value = ''; });
+      newRow.querySelectorAll('select').forEach(function(sel) { sel.selectedIndex = 0; });
+      newRow.querySelector('.remove-unit').style.display = 'inline-block';
+      container.appendChild(newRow);
+    }
+  });
+
+  var rows = container.querySelectorAll('.unit-row');
+  if (rows.length > 1) {
+    rows.forEach(function(r) { r.querySelector('.remove-unit').style.display = 'inline-block'; });
+  }
+});
+</script>

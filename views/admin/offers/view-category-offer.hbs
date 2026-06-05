@@ -12,19 +12,30 @@
         <tbody>
           {{#each category}}
             <tr>
-              <td>{{this.name}}</td>
-              <td>{{this.offer}}</td>
-              <td>{{#if this.offerstatus}}
-                  <button
-                    class="btn btn-danger"
-                    onclick="removeOff('{{this._id}}')"
-                  >Remove offer</button>
-
+              <td>
+                {{this.name}}
+                {{#if this.isSubCategory}}<span class="badge bg-warning text-dark">Sub</span>{{/if}}
+              </td>
+              <td>
+                {{#if this.offerstatus}}
+                  {{#each this.offers}}
+                    {{#if this.isActive}}
+                      <span class="badge bg-success">
+                        {{#ifCond this.type "percentage"}}{{this.value}}%{{/ifCond}}
+                        {{#ifCond this.type "fixed"}}₹{{this.value}}{{/ifCond}}
+                        (priority: {{this.priority}})
+                      </span>
+                    {{/if}}
+                  {{/each}}
                 {{else}}
-                  <a
-                    href="/admin/add-cat-offer/{{this._id}}"
-                    class="btn btn-primary"
-                  >Add offer</a>
+                  <span class="text-muted">No active offer</span>
+                {{/if}}
+              </td>
+              <td>
+                {{#if this.offerstatus}}
+                  <button class="btn btn-danger" onclick="removeOff('{{this._id}}')">Remove offer</button>
+                {{else}}
+                  <a href="/admin/add-cat-offer/{{this._id}}" class="btn btn-primary">Add offer</a>
                 {{/if}}
               </td>
             </tr>
@@ -36,7 +47,15 @@
 </section>
 
 <script>
-  function removeOff(catId){ $.ajax({ url: '/admin/remove-cat-offer/' + catId,
-  method: 'delete', success: (response) => { if (response.status) {
-  window.location.href='/admin/view-category-offer' } } }) }
+  function removeOff(catId){
+    $.ajax({
+      url: '/admin/remove-cat-offer/' + catId,
+      method: 'delete',
+      success: (response) => {
+        if (response.status) {
+          window.location.href = '/admin/view-category-offer';
+        }
+      }
+    });
+  }
 </script>

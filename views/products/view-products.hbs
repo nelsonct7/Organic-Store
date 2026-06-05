@@ -1,112 +1,237 @@
-<meta charset="UTF8">
-    <script src="https://unpkg.com/js-image-zoom@0.7.0/js-image-zoom.js" type="application/javascript"></script>
-    <link rel="stylesheet" href="/stylesheets/product_view.css">
-        <div class="row container bootdey mt-3">
+<main>
+  <section class="py-4">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/" class="text-success">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{product.name}}</li>
+        </ol>
+      </nav>
 
-            <section class="panel row">
-                <div class="panel-body d-flex justify-content-around">
-                    <div class="col-md-6 shadow-lg p-3 mb-5 bg-white rounded" >
-                        <div class=" ms-4" id="img-container">
-                            <img src="/product-images/{{ product.img_path.[0] }}" alt="" style="height: 400px; width: 400px;" class="big_img"></div>
-                            <div class="pro-img-list ms-4">
-                                {{#each product.img_path}}
-                                    <img src="/product-images/{{ this }}" alt="" style="width: 100px; height: 100px;" id="samll_img" class="samll_img">
-                                    {{/each}}
-                                </div>
-                            </div>
-                            <div class="col-md-4 ms-5 shadow-lg p-3 mb-5 bg-white rounded">
-                                <div class="" id="zoom" style="position :absolute;"></div>
-                                <h4 class="pro-d-title">
-                                    <a href="#" class="">
-                                        {{ product.title }}
-                                    </a>
-                                </h4>
-                                <p>
-                                    {{ product.description }}
-                                </p>
-                                <p>
-                                    {{ product.storage-spec }}
-                                </p>
-                                <div class="product_meta">
-                                    <span class="posted_in">
-                                        <strong>Categories:</strong>
-                                        <a rel="tag" href="#">{{ product.category }}</a>.</span>
-                                    <span class="posted_in">
-                                        <strong>Stock :</strong>
-                                        <a rel="tag" href="#">{{ product.godown-stock }}</a>.</span>
-                                    <span class="posted_in">
-                                        <strong>Status:</strong>
-                                        <a rel="tag" href="#">{{ product.status }}</a>.</span>
-                                </div>
-                                <div class="m-bot15">
-                                    <strong>Price :
-                                    </strong>
-                                    <span class="amount-old">{{ product.price }}</span>
-                                    <span class="pro-price">
-                                        {{ actualPrice }}</span>
-                                </div>
-                                <p>
-                                    <button class="btn btn-round btn-danger" type="button" onclick="addToCart('{{product._id}}')">
-                                        <i class="fa fa-shopping-cart"></i>
-                                        Add to Cart</button>
-                                </p>
-                                
-                            </div>
-                            
-                        </div>
-                    </section>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-body text-center p-4 position-relative">
+              <div id="zoomContainer" style="position:relative;display:inline-block;max-width:100%;">
+                <img id="mainImage" src="/product-images/{{product.images.[0].url}}" alt="{{product.name}}" class="img-fluid rounded" style="max-height:400px;width:100%;object-fit:contain;cursor:crosshair;">
+                <div id="zoomLens" style="display:none;position:absolute;top:0;left:0;width:120px;height:120px;border:2px solid rgba(22,163,74,0.5);background:rgba(255,255,255,0.2);pointer-events:none;border-radius:50%;"></div>
+                <div id="zoomResult" style="display:none;position:absolute;top:0;left:calc(100% + 16px);width:360px;height:360px;border:1px solid #e5e7eb;border-radius:8px;background-repeat:no-repeat;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;background-color:#fff;"></div>
+              </div>
+            </div>
+            {{#if product.images.length}}
+            <div class="card-footer bg-white d-flex gap-2 justify-content-center flex-wrap">
+              {{#each product.images}}
+              <img src="/product-images/{{this.url}}" alt="" class="img-thumbnail thumb-img" style="width:70px;height:70px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('mainImage').src=this.src; if(typeof updateZoom === 'function')updateZoom(this.src)">
+              {{/each}}
+            </div>
+            {{/if}}
+          </div>
+        </div>
 
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h3 class="fw-bold">{{product.name}}</h3>
+
+              {{#if bestOffer}}
+              <div class="mb-2">
+                <span class="badge bg-success">
+                  {{#ifCond bestOffer.type "percentage"}}{{bestOffer.value}}% OFF{{/ifCond}}
+                  {{#ifCond bestOffer.type "fixed"}}₹{{bestOffer.value}} OFF{{/ifCond}}
+                </span>
+              </div>
+              {{/if}}
+
+              <p class="text-muted">{{product.description}}</p>
+
+              {{#if product.storageSpec}}
+              <p class="small text-muted"><i class="fas fa-box"></i> {{product.storageSpec}}</p>
+              {{/if}}
+
+              <hr>
+
+              {{#if product.availableUnits.length}}
+              <div class="mb-3">
+                <label class="fw-semibold mb-2">Select Unit:</label>
+                <div class="d-flex flex-wrap gap-2" id="unitOptions">
+                  {{#each product.availableUnits}}
+                  <label class="unit-option btn btn-outline-success {{#if @first}}active{{/if}}" data-index="{{@index}}" data-price="{{this.price}}">
+                    <input type="radio" name="unit" value="{{@index}}" class="d-none" {{#if @first}}checked{{/if}}>
+                    <span class="fw-bold">{{this.label}}</span>
+                    <br><small class="text-muted">₹{{this.price}}</small>
+                  </label>
+                  {{/each}}
                 </div>
+              </div>
+              {{/if}}
 
-                <script>
-                    let zm = document.getElementById('zoom')
-                    var options1 = {
-                        width:400,
-                        height:300,
-                        fillContainer: true,
-                        offset: {
-                            vertical: 10,
-                            horizontal: 0
-                        },
-                        zoomWidth: 300,
-                        zoomContainer: zm,
-                        zoomPosition:top,
-                        zoomLensStyle: {
-                            opacity: 0,
-                        },
-                        zoomStyle: {
-                            opacity: 0.3
-                        }
-                    };
-                    setImg()
+              <div class="mb-3">
+                <span class="text-muted text-decoration-line-through" id="oldPrice" style="{{#unless bestOffer}}display:none{{/unless}}">₹<span id="oldPriceVal">{{product.price}}</span></span>
+                <span class="fs-3 fw-bold text-success">₹<span id="displayPrice">{{actualPrice}}</span></span>
+              </div>
 
-                    $(document).ready(function () {
-                        $(".samll_img").hover(function () {
-                            $(".big_img").attr('src', $(this).attr('src'));
-                            setImg()
-                        })
+              <p class="small text-muted mb-3">
+                <i class="fas fa-check-circle text-success"></i>
+                {{#ifCond product.status "available"}}In Stock{{else}}Out of Stock{{/ifCond}}
+                {{#if product.stockIn}} &middot; {{product.stockIn}} available{{/if}}
+              </p>
 
-                    })
-                    function setImg() {
-                        new ImageZoom(document.getElementById("img-container"), options1);
-                    }
-                </script>
+              <div class="mb-3">
+                <label class="fw-semibold">Quantity:</label>
+                <div class="input-group" style="max-width:140px;">
+                  <button class="btn btn-outline-secondary" type="button" id="qtyMinus">−</button>
+                  <input type="number" class="form-control text-center" id="qtyInput" value="1" min="1" readonly>
+                  <button class="btn btn-outline-secondary" type="button" id="qtyPlus">+</button>
+                </div>
+              </div>
 
-                <script>
-                        function addToCart(prdId) {
-                            $.ajax({
-                                url: '/add-to-cart/' + prdId,
-                                method: 'get',
-                                success: (response) => {
-                                    if (response.status) {
-                                        let count = $('#cartCount').html()
-                                        count = parseInt(count) + 1
-                                        $('#cartCount').html(count)
+              <button class="btn btn-success btn-lg w-100 mt-3" id="addToCartBtn" data-product-id="{{product._id}}">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </button>
+            </div>
+          </div>
 
-                                    }
-                                }
-                            })
-                        };
-                    </script>
+          <div class="card shadow-sm mt-3">
+            <div class="card-body">
+              <h6>Category</h6>
+              <p class="text-muted small mb-0">{{product.category.name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
+<style>
+.unit-option.active {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+.unit-option.active small {
+  color: #fff !important;
+}
+.unit-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+@media (max-width: 768px) {
+  #zoomResult {
+    display: none !important;
+  }
+  #zoomLens {
+    display: none !important;
+  }
+}
+</style>
 
+<script>
+$(document).ready(function() {
+  var units = {{#if product.availableUnits}}[{{#each product.availableUnits}}{ label: '{{this.label}}', price: {{this.price}} }{{#unless @last}},{{/unless}}{{/each}}]{{else}}[]{{/if}};
+  var basePrice = {{product.price}};
+  var bestOffer = {{#if bestOffer}}{ type: '{{bestOffer.type}}', value: {{bestOffer.value}} }{{else}}null{{/if}};
+
+  function calcFinalPrice(unitPrice) {
+    if (!bestOffer) return unitPrice;
+    if (bestOffer.type === 'percentage') return unitPrice - (unitPrice * bestOffer.value / 100);
+    return Math.max(0, unitPrice - bestOffer.value);
+  }
+
+  // Unit selection
+  $('#unitOptions .unit-option').on('click', function() {
+    $('#unitOptions .unit-option').removeClass('active');
+    $(this).addClass('active');
+    $(this).find('input[type="radio"]').prop('checked', true);
+    var price = parseFloat($(this).data('price'));
+    var finalPrice = calcFinalPrice(price);
+    $('#displayPrice').text(finalPrice.toFixed(2));
+    if (bestOffer && finalPrice < price) {
+      $('#oldPrice').show();
+      $('#oldPriceVal').text(price.toFixed(2));
+    } else {
+      $('#oldPrice').hide();
+    }
+  });
+
+  // Quantity
+  $('#qtyMinus').on('click', function() {
+    var val = parseInt($('#qtyInput').val());
+    if (val > 1) $('#qtyInput').val(val - 1);
+  });
+  $('#qtyPlus').on('click', function() {
+    var val = parseInt($('#qtyInput').val());
+    $('#qtyInput').val(val + 1);
+  });
+
+  // Add to cart
+  $('#addToCartBtn').on('click', function() {
+    var prdId = $(this).data('product-id');
+    var unitIndex = $('#unitOptions input[name="unit"]:checked').val();
+    var quantity = parseInt($('#qtyInput').val());
+
+    $.ajax({
+      url: '/cart/items',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ productId: prdId, unitIndex: parseInt(unitIndex), quantity: quantity }),
+      success: function(response) {
+        if (response.status) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Added!',
+            text: 'Item added to cart',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          var count = parseInt($('#cartCount').text().trim()) || 0;
+          $('#cartCount').text(count + quantity);
+        }
+      },
+      error: function(xhr) {
+        if (xhr.status === 401) {
+          window.location.href = '/v1/auth/login';
+        } else {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Could not add to cart' });
+        }
+      }
+    });
+  });
+
+  // Image zoom magnifier
+  var mainImg = document.getElementById('mainImage');
+  var lens = document.getElementById('zoomLens');
+  var result = document.getElementById('zoomResult');
+  if (mainImg && lens && result) {
+    window.updateZoom = function(src) { result.style.backgroundImage = 'url(' + src + ')'; };
+    mainImg.addEventListener('mouseenter', function(e) {
+      if (window.innerWidth <= 768) return;
+      lens.style.display = 'block';
+      result.style.display = 'block';
+      updateZoom(mainImg.getAttribute('src'));
+      zoomMove(e);
+    });
+    mainImg.addEventListener('mousemove', zoomMove);
+    mainImg.addEventListener('mouseleave', function() {
+      lens.style.display = 'none';
+      result.style.display = 'none';
+    });
+    function zoomMove(e) {
+      var rect = mainImg.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var lw = lens.offsetWidth / 2;
+      var lh = lens.offsetHeight / 2;
+      var lx = Math.min(Math.max(x - lw, 0), rect.width - lens.offsetWidth);
+      var ly = Math.min(Math.max(y - lh, 0), rect.height - lens.offsetHeight);
+      lens.style.left = lx + 'px';
+      lens.style.top = ly + 'px';
+      var rw = result.offsetWidth;
+      var rh = result.offsetHeight;
+      var zoomFactor = 2.5;
+      result.style.backgroundSize = (rect.width * zoomFactor) + 'px ' + (rect.height * zoomFactor) + 'px';
+      result.style.backgroundPosition = '-' + (lx * zoomFactor) + 'px -' + (ly * zoomFactor) + 'px';
+    }
+  }
+});
+</script>

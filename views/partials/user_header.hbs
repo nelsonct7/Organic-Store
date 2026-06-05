@@ -72,7 +72,7 @@
         </a>
         {{/if}}
 
-        <a href="/get-cart" class="btn-icon" title="Cart">
+        <a href="/cart" class="btn-icon" title="Cart">
           <i class="fas fa-shopping-bag"></i>
           <span class="cart-badge" id="cartCount">{{cartCount}}</span>
           <span class="d-none d-md-inline">Cart</span>
@@ -172,7 +172,14 @@
             html += '<a href="/view-product/' + p._id + '" class="search-item">';
             if (imgUrl) html += '<img src="' + imgUrl + '" alt="' + p.name + '">';
             html += '<div><div class="search-name">' + p.name + '</div>';
-            html += '<div class="search-price"><i class="fas fa-rupee-sign"></i> ' + p.price + '</div></div></a>';
+            html += '<div class="search-price">';
+            if (p.bestOffer) {
+              html += '<span class="text-decoration-line-through text-muted me-1"><i class="fas fa-rupee-sign"></i>' + p.price + '</span>';
+              html += '<span class="text-success fw-bold"><i class="fas fa-rupee-sign"></i>' + p.finalPrice + '</span>';
+            } else {
+              html += '<i class="fas fa-rupee-sign"></i> ' + p.price;
+            }
+            html += '</div></div></a>';
           });
           $dropdown.html(html).show();
         });

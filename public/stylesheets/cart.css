@@ -1,48 +1,10 @@
-.ibox {
-  clear: both;
-  margin-bottom: 25px;
-  margin-top: 0;
-  padding: 0;
-}
-.ibox-title {
-  -moz-border-bottom-colors: none;
-  -moz-border-left-colors: none;
-  -moz-border-right-colors: none;
-  -moz-border-top-colors: none;
-  background-color: #ffffff;
-  border-color: #e7eaec;
-  border-image: none;
-  border-style: solid solid none;
-  border-width: 3px 0 0;
-  color: inherit;
-  margin-bottom: 0;
-  padding: 14px 15px 7px;
-  min-height: 48px;
-}
-.ibox-content {
-  background-color: #ffffff;
-  color: inherit;
-  padding: 15px 20px 20px 20px;
-  border-color: #e7eaec;
-  border-image: none;
-  border-style: solid solid none;
-  border-width: 1px 0;
-}
-table.shoping-cart-table tr td {
-  border: none;
-  
+.cart-item .qty-display {
+  min-width: 32px;
+  text-align: center;
 }
 
-
-
-
-
-
-table.shoping-cart-table tr td.desc,
-table.shoping-cart-table tr td:first-child {
-  text-align: left;
+.cart-item .input-group>.qty-display {
+  border-left: 0;
+  border-right: 0;
+  z-index: 0;
 }
-table.shoping-cart-table tr td:last-child {
-  width: 80px;
-}
-

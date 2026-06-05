@@ -18,6 +18,26 @@ const cartSchema = new Schema(
         },
       },
     ],
+    totalAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    totalDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    finalAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    appliedCoupon: {
+      couponId: { type: Schema.Types.ObjectId, ref: "Coupon", default: null },
+      code: { type: String, default: null },
+      discount: { type: Number, default: 0 },
+    },
   },
   {
     timestamps: true,

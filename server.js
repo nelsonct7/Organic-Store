@@ -20,6 +20,9 @@ const googleAuthRoutes = require("./routes/google.auth.routes");
 const baseRoutes = require("./routes/base.routes");
 const errorRoutes = require("./routes/error.routes");
 const adminRoutes = require("./routes/admin.routes");
+const cartRoutes = require("./routes/cart.routes");
+const checkoutRoutes = require("./routes/checkout.routes");
+const orderRoutes = require("./routes/order.routes");
 const { dataInjectMiddleware } = require("./middlewares/data-inject.middleware");
 
 const requiredEnvVars = [
@@ -27,8 +30,6 @@ const requiredEnvVars = [
   "SESSION_SECRET",
   "MONGO_URI",
   "JWT_SECRET",
-  "PAYPAL_CLIENT_ID",
-  "PAYPAL_CLIENT_SECRET",
   "RAZORPAY_KEY_ID",
   "RAZORPAY_KEY_SECRET",
   "GOOGLE_CLIENT_ID",
@@ -156,6 +157,9 @@ const createServer = async () => {
     HBS.handlebars.registerHelper("subtract", function (a, b) {
       return parseInt(a) - parseInt(b);
     });
+    HBS.handlebars.registerHelper("multiply", function (a, b) {
+      return parseFloat(a) * parseFloat(b);
+    });
 
     // health check endpoint
     app.get("/health", (req, res) => {
@@ -177,6 +181,9 @@ const createServer = async () => {
     app.use("/auth", googleAuthRoutes);
     app.use("/admin", adminRoutes);
     app.use("/error", errorRoutes);
+    app.use("/", cartRoutes);
+    app.use("/", checkoutRoutes);
+    app.use("/", orderRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

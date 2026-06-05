@@ -6,10 +6,10 @@ const {
   renderTermsPage,
   renderPrivacyPage,
   renderCategoryProducts,
+  renderAllProducts,
   searchProducts,
   renderViewProduct,
   addToCart,
-  renderOrders,
   renderProfile,
 } = require("../controllers/base.controller");
 
@@ -22,10 +22,10 @@ router.get("/careers", renderCareersPage);
 router.get("/terms-of-service", renderTermsPage);
 router.get("/privacy-policy", renderPrivacyPage);
 router.get("/category/:id", renderCategoryProducts);
+router.get("/products", renderAllProducts);
 router.get("/api/search", searchProducts);
 router.get("/view-product/:id", renderViewProduct);
 router.get("/add-to-cart/:id", addToCart);
-router.get("/orders", renderOrders);
 router.get("/view-profile", renderProfile);
 
 

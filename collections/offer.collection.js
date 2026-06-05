@@ -13,7 +13,7 @@ const offerSchema = new Schema(
     },
     appliedTo: {
       type: String,
-      enum: ["category", "product"],
+      enum: ["category", "product", "subcategory"],
       required: true,
     },
     type: {
@@ -24,6 +24,11 @@ const offerSchema = new Schema(
     value: {
       type: Number,
       required: true,
+      min: 0,
+    },
+    priority: {
+      type: Number,
+      default: 0,
       min: 0,
     },
     startDate: {

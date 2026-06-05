@@ -1,22 +1,31 @@
 const Category = require("../collections/category.collection");
 const Product = require("../collections/product.collection");
 const Banner = require("../collections/banner.collection");
+const { paginate } = require("../shared/utils/pagination.util");
 
 const renderHomePage = async (req, res, next) => {
   try {
     const categories = await Category.find({ isDeleted: false, isActive: true }).lean();
-    const products = await Product.find({ isDeleted: false, isActive: true, status: "available" })
-      .limit(10)
-      .lean();
     const banners = await Banner.find({ isDeleted: false, isActive: true }).lean();
+
+    const baseQuery = { isDeleted: false, isActive: true, status: "available" };
+    const result = await paginate(Product, baseQuery, req.query, ["offers"]);
+
+    const { enrichProductsWithOffers } = require("../services/pricing.service");
+    const enrichedProducts = await enrichProductsWithOffers(result.data);
 
     res.render("base/index", {
       title: "Welcome to Organic Store",
       user: req.user,
       sessionUser: req.session.user,
       categories,
-      products,
+      products: enrichedProducts,
       banners,
+      pagination: {
+        ...result.pagination,
+        start: (result.pagination.page - 1) * result.pagination.limit + 1,
+        end: Math.min(result.pagination.page * result.pagination.limit, result.pagination.total),
+      },
     });
   } catch (err) {
     next(err);
@@ -57,21 +66,16 @@ const renderCategoryProducts = async (req, res, next) => {
     const category = await Category.findById(catId).lean();
     if (!category) return res.redirect("/");
 
-    const products = await Product.find({
+    const baseQuery = {
       category: catId,
       isDeleted: false,
       isActive: true,
       status: "available",
-    })
-      .limit(10)
-      .lean();
+    };
+    const result = await paginate(Product, baseQuery, req.query, ["offers"]);
 
-    const totalProducts = await Product.countDocuments({
-      category: catId,
-      isDeleted: false,
-      isActive: true,
-      status: "available",
-    });
+    const { enrichProductsWithOffers } = require("../services/pricing.service");
+    const enrichedProducts = await enrichProductsWithOffers(result.data);
 
     res.render("base/category-products", {
       title: category.name,
@@ -79,8 +83,12 @@ const renderCategoryProducts = async (req, res, next) => {
       sessionUser: req.session.user,
       categories: await Category.find({ isDeleted: false, isActive: true }).lean(),
       category,
-      products,
-      hasMore: totalProducts > 10,
+      products: enrichedProducts,
+      pagination: {
+        ...result.pagination,
+        start: (result.pagination.page - 1) * result.pagination.limit + 1,
+        end: Math.min(result.pagination.page * result.pagination.limit, result.pagination.total),
+      },
     });
   } catch (err) {
     next(err);
@@ -98,11 +106,25 @@ const searchProducts = async (req, res, next) => {
       status: "available",
       name: { $regex: q, $options: "i" },
     })
+      .populate("offers")
       .limit(8)
-      .select("name price images slug")
+      .select("name price images slug offers category")
       .lean();
 
-    res.json(products);
+    const { enrichProductsWithOffers } = require("../services/pricing.service");
+    const enriched = await enrichProductsWithOffers(products);
+
+    const result = enriched.map((p) => ({
+      _id: p._id,
+      name: p.name,
+      price: p.price,
+      images: p.images,
+      slug: p.slug,
+      finalPrice: p.finalPrice,
+      bestOffer: p.bestOffer,
+    }));
+
+    res.json(result);
   } catch (err) {
     next(err);
   }
@@ -110,14 +132,48 @@ const searchProducts = async (req, res, next) => {
 
 const renderViewProduct = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id).lean();
+    const product = await Product.findById(req.params.id).populate("category").lean();
     if (!product) return res.redirect("/");
+
+    const { resolveBestOffer, applyOffer } = require("../services/pricing.service");
+    const bestOffer = await resolveBestOffer(product._id, product.category?._id);
+    const { finalPrice } = applyOffer(
+      product.availableUnits?.[0]?.price || product.price,
+      bestOffer,
+    );
 
     res.render("products/view-products", {
       title: product.name,
       user: req.user,
       sessionUser: req.session.user,
       product,
+      actualPrice: finalPrice,
+      bestOffer,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const renderAllProducts = async (req, res, next) => {
+  try {
+    const baseQuery = { isDeleted: false, isActive: true, status: "available" };
+    const result = await paginate(Product, baseQuery, req.query, ["offers"]);
+
+    const { enrichProductsWithOffers } = require("../services/pricing.service");
+    const enrichedProducts = await enrichProductsWithOffers(result.data);
+
+    res.render("base/all-products", {
+      title: "All Products - Organic Store",
+      user: req.user,
+      sessionUser: req.session.user,
+      categories: await Category.find({ isDeleted: false, isActive: true }).lean(),
+      products: enrichedProducts,
+      pagination: {
+        ...result.pagination,
+        start: (result.pagination.page - 1) * result.pagination.limit + 1,
+        end: Math.min(result.pagination.page * result.pagination.limit, result.pagination.total),
+      },
     });
   } catch (err) {
     next(err);
@@ -134,6 +190,7 @@ const addToCart = async (req, res, next) => {
     if (!product) return res.json({ status: false });
 
     const CartItem = require("../collections/cart-item.collection");
+    const Cart = require("../collections/cart.collection");
     let cart = await Cart.findOne({ userId });
     if (!cart) {
       cart = await Cart.create({ userId, items: [] });
@@ -141,7 +198,13 @@ const addToCart = async (req, res, next) => {
 
     const existingItem = await CartItem.findOne({ cartId: cart._id, productId }).lean();
     if (existingItem) {
-      await CartItem.findByIdAndUpdate(existingItem._id, { $inc: { quantity: 1 } });
+      await CartItem.findByIdAndUpdate(existingItem._id, {
+        $inc: { quantity: 1 },
+        finalUnitPrice: product.price,
+        subtotal: product.price * (existingItem.quantity + 1),
+        price: product.price,
+        offPrice: product.price,
+      });
     } else {
       const newItem = await CartItem.create({
         productId,
@@ -149,33 +212,19 @@ const addToCart = async (req, res, next) => {
         quantity: 1,
         price: product.price,
         offPrice: product.price,
+        finalUnitPrice: product.price,
+        subtotal: product.price,
+        selectedUnit: { label: null, metric: 'grams', measure: 0, price: product.price },
       });
       cart.items.push({ cartItemId: newItem._id });
       await cart.save();
     }
+    // Recalculate cart totals
+    const { recalculateCart } = require("../services/cart.service");
+    await recalculateCart(cart._id);
     res.json({ status: true });
   } catch (err) {
     res.json({ status: false });
-  }
-};
-
-const renderOrders = async (req, res, next) => {
-  try {
-    if (!req.session.userId) return res.redirect("/v1/auth/login");
-
-    const Order = require("../collections/order.collection");
-    const orders = await Order.find({ userId: req.session.userId })
-      .sort({ createdAt: -1 })
-      .lean();
-
-    res.render("base/orders", {
-      title: "My Orders",
-      user: req.user,
-      sessionUser: req.session.user,
-      orders,
-    });
-  } catch (err) {
-    next(err);
   }
 };
 
@@ -204,9 +253,9 @@ module.exports = {
   renderTermsPage,
   renderPrivacyPage,
   renderCategoryProducts,
+  renderAllProducts,
   searchProducts,
   renderViewProduct,
   addToCart,
-  renderOrders,
   renderProfile,
 };

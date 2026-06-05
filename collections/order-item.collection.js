@@ -10,26 +10,43 @@ const orderItemSchema = new Schema(
     orderId: {
       type: Schema.Types.ObjectId,
       ref: "Order",
-      required: true,
+      default: null,
+    },
+    productName: {
+      type: String,
+      default: null,
+    },
+    selectedUnit: {
+      label: { type: String, default: null },
+      metric: { type: String, enum: ['grams', 'ml', 'numbers'], default: 'grams' },
+      measure: { type: Number, default: 0 },
     },
     quantity: {
       type: Number,
       required: true,
       min: 1,
     },
-    price: {
+    unitPrice: {
       type: Number,
       required: true,
       min: 0,
     },
-    offPrice: {
+    offerDiscount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    finalUnitPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    subtotal: {
       type: Number,
       required: true,
       min: 0,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 module.exports = mongoose.model("OrderItem", orderItemSchema, "order_items");

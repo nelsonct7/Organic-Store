@@ -1,0 +1,277 @@
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Checkout</h1>
+      <p>{{products.length}} item(s) · Total: ₹{{total}}</p>
+    </div>
+  </section>
+
+  <section class="py-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          {{! Step 1: Delivery Address }}
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white"><h5 class="mb-0">1. Delivery Address</h5></div>
+            <div class="card-body">
+              {{#if addresses.length}}
+                {{#each addresses}}
+                <div class="form-check mb-2">
+                  <input class="form-check-input address-radio" type="radio" name="addressId" value="{{this._id}}" id="addr-{{this._id}}" {{#if this.isDefault}}checked{{/if}}>
+                  <label class="form-check-label" for="addr-{{this._id}}">
+                    {{this.street}}, {{this.city}}, {{this.state}} - {{this.postalCode}}
+                  </label>
+                </div>
+                {{/each}}
+              {{else}}
+                <p class="text-muted mb-2">No saved addresses. Please add one below.</p>
+              {{/if}}
+              <hr>
+              <h6>Add New Address</h6>
+              <div class="row g-2">
+                <div class="col-6"><input type="text" class="form-control form-control-sm" id="newStreet" placeholder="Street"></div>
+                <div class="col-6"><input type="text" class="form-control form-control-sm" id="newCity" placeholder="City"></div>
+                <div class="col-4"><input type="text" class="form-control form-control-sm" id="newState" placeholder="State"></div>
+                <div class="col-4"><input type="text" class="form-control form-control-sm" id="newPostalCode" placeholder="Postal Code"></div>
+                <div class="col-4"><input type="text" class="form-control form-control-sm" id="newCountry" value="India" placeholder="Country"></div>
+                <div class="col-12"><button class="btn btn-sm btn-success" id="addAddressBtn">Save Address</button></div>
+              </div>
+            </div>
+          </div>
+
+          {{! Step 2: Mobile OTP Verification }}
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white"><h5 class="mb-0">2. Mobile Verification</h5></div>
+            <div class="card-body">
+              {{#if isMobileVerified}}
+                <div class="alert alert-success mb-0">Mobile verified</div>
+              {{else}}
+                <p class="text-muted">We'll send an OTP to <strong>{{mobile}}</strong></p>
+                <div class="row g-2 align-items-center">
+                  <div class="col-auto">
+                    <button class="btn btn-outline-success btn-sm" id="sendOtpBtn">Send OTP</button>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" class="form-control form-control-sm" id="otpInput" placeholder="Enter OTP" maxlength="6">
+                  </div>
+                  <div class="col-auto">
+                    <button class="btn btn-success btn-sm" id="verifyOtpBtn">Verify</button>
+                  </div>
+                </div>
+                <div id="otpStatus" class="mt-2"></div>
+              {{/if}}
+            </div>
+          </div>
+
+          {{! Step 3: Payment }}
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white"><h5 class="mb-0">3. Payment Method</h5></div>
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-success" id="payCOD" disabled>
+                  <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+                </button>
+                <button class="btn btn-success" id="payRazorpay" disabled>
+                  <i class="fas fa-credit-card"></i> Pay Online (Razorpay)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white"><h5 class="mb-0">Order Summary</h5></div>
+            <div class="card-body">
+              {{#each products}}
+              <div class="d-flex justify-content-between mb-1 small">
+                <span>{{this.product.title}} × {{this.quantity}}</span>
+                <span>₹{{this.subtotal}}</span>
+              </div>
+              {{/each}}
+              <hr>
+              {{#if totals.totalDiscount}}
+              <div class="d-flex justify-content-between"><span class="text-muted">Subtotal</span><span>₹{{totals.totalAmount}}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-success">You Save</span><span class="text-success">− ₹{{totals.totalDiscount}}</span></div>
+              <hr>
+              {{/if}}
+              <div class="d-flex justify-content-between fw-bold fs-5">
+                <span>Total</span><span class="text-success">₹{{total}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+let currentAddressId = $('input[name="addressId"]:checked').val() || null;
+
+$(document).ready(function() {
+  $('.address-radio').on('change', function() {
+    currentAddressId = $(this).val();
+  });
+
+  $('#addAddressBtn').on('click', function() {
+    var data = {
+      street: $('#newStreet').val(),
+      city: $('#newCity').val(),
+      state: $('#newState').val(),
+      postalCode: $('#newPostalCode').val(),
+      country: $('#newCountry').val() || 'India',
+    };
+    $.ajax({
+      url: '/checkout/address',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: function(resp) {
+        if (resp.status) {
+          location.reload();
+        }
+      },
+      error: function(xhr) {
+        var msg = 'Failed to save address';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        Swal.fire({ icon: 'error', title: 'Error', text: msg });
+      }
+    });
+  });
+
+  $('#sendOtpBtn').on('click', function() {
+    var btn = $(this);
+    btn.prop('disabled', true).text('Sending...');
+    $.ajax({
+      url: '/checkout/send-otp',
+      method: 'POST',
+      success: function(resp) {
+        if (resp.status) {
+          $('#otpStatus').html('<span class="text-success">OTP sent!</span>');
+        } else {
+          $('#otpStatus').html('<span class="text-danger">' + (resp.message || 'Failed') + '</span>');
+          btn.prop('disabled', false).text('Send OTP');
+        }
+      },
+      error: function() {
+        $('#otpStatus').html('<span class="text-danger">Failed to send OTP</span>');
+        btn.prop('disabled', false).text('Send OTP');
+      }
+    });
+  });
+
+  $('#verifyOtpBtn').on('click', function() {
+    var code = $('#otpInput').val().trim();
+    if (!code) { $('#otpStatus').html('<span class="text-danger">Enter OTP code</span>'); return; }
+    var btn = $(this);
+    btn.prop('disabled', true).text('Verifying...');
+    $.ajax({
+      url: '/checkout/verify-otp',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ code: code }),
+      success: function(resp) {
+        if (resp.status) {
+          $('#otpStatus').html('<span class="text-success">Mobile verified!</span>');
+          $('#payCOD').prop('disabled', false);
+          $('#payRazorpay').prop('disabled', false);
+          $('#sendOtpBtn, #verifyOtpBtn').prop('disabled', true);
+        } else {
+          $('#otpStatus').html('<span class="text-danger">' + (resp.message || 'Invalid OTP') + '</span>');
+          btn.prop('disabled', false).text('Verify');
+        }
+      },
+      error: function(xhr) {
+        var msg = 'Verification failed';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        $('#otpStatus').html('<span class="text-danger">' + msg + '</span>');
+        btn.prop('disabled', false).text('Verify');
+      }
+    });
+  });
+
+  {{#if isMobileVerified}}
+    $('#payCOD').prop('disabled', false);
+    $('#payRazorpay').prop('disabled', false);
+  {{/if}}
+
+  // COD
+  $('#payCOD').on('click', function() {
+    if (!currentAddressId) { Swal.fire({ icon: 'error', title: 'Select Address', text: 'Please select a delivery address' }); return; }
+    var btn = $(this);
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Placing...');
+    $.ajax({
+      url: '/checkout/cod',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ addressId: currentAddressId }),
+      success: function(resp) {
+        if (resp.status) {
+          Swal.fire({ icon: 'success', title: 'Order Placed!', timer: 2000, showConfirmButton: false })
+            .then(function() { window.location.href = '/orders'; });
+        }
+      },
+      error: function(xhr) {
+        btn.prop('disabled', false).html('<i class="fas fa-money-bill-wave"></i> Cash on Delivery');
+        var msg = 'Checkout failed';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        Swal.fire({ icon: 'error', title: 'Failed', text: msg });
+      }
+    });
+  });
+
+  // Razorpay
+  $('#payRazorpay').on('click', function() {
+    if (!currentAddressId) { Swal.fire({ icon: 'error', title: 'Select Address', text: 'Please select a delivery address' }); return; }
+    var btn = $(this);
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Creating order...');
+    $.ajax({
+      url: '/checkout/razorpay/order',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ addressId: currentAddressId }),
+      success: function(resp) {
+        if (!resp.status) { btn.prop('disabled', false).html('<i class="fas fa-credit-card"></i> Pay Online'); return; }
+        var options = {
+          key: resp.key_id,
+          amount: resp.amount,
+          currency: resp.currency || 'INR',
+          name: 'Organic Store',
+          description: 'Order #' + resp.orderId.toString().slice(-8),
+          order_id: resp.order_id,
+          handler: function(paymentResponse) {
+            $.ajax({
+              url: '/checkout/razorpay/verify',
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature
+              }),
+              success: function(vresp) {
+                if (vresp.status) {
+                  Swal.fire({ icon: 'success', title: 'Payment Successful!', timer: 2000, showConfirmButton: false })
+                    .then(function() { window.location.href = '/orders'; });
+                }
+              },
+              error: function() { Swal.fire({ icon: 'error', title: 'Payment verification failed' }); }
+            });
+          },
+          prefill: { name: '{{sessionUser.name}}' || '', email: '{{sessionUser.email}}' || '', contact: '{{sessionUser.mobile}}' || '' },
+          theme: { color: '#16a34a' },
+          modal: { ondismiss: function() { btn.prop('disabled', false).html('<i class="fas fa-credit-card"></i> Pay Online (Razorpay)'); } }
+        };
+        new Razorpay(options).open();
+      },
+      error: function(xhr) {
+        btn.prop('disabled', false).html('<i class="fas fa-credit-card"></i> Pay Online (Razorpay)');
+        var msg = 'Failed to create payment';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        Swal.fire({ icon: 'error', title: 'Error', text: msg });
+      }
+    });
+  });
+});
+</script>

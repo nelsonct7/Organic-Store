@@ -49,6 +49,11 @@ const Message =
 const toObjId = (id) =>
   typeof id === "string" ? new mongoose.Types.ObjectId(id) : id;
 
+const calculateStockIn = (metrics, stock) => {
+  if (metrics === "Kg" || metrics === "Li") return (parseInt(stock) || 0) * 1000;
+  return parseInt(stock) || 0;
+};
+
 /* ---- Auth ---- */
 const adminLogin = async (admin_field, password) => {
   const adminRole = await Roles.findOne({ name: "admin" });
@@ -192,6 +197,8 @@ const getAllProducts = async () => {
     offer: 0,
     deleted: p.isDeleted,
     metrics: p.metrics,
+    availableUnits: p.availableUnits || [],
+    stockIn: p.stockIn || 0,
   }));
 };
 
@@ -224,6 +231,8 @@ const getProductPage = async (options = {}) => {
     offer: 0,
     deleted: p.isDeleted,
     metrics: p.metrics,
+    availableUnits: p.availableUnits || [],
+    stockIn: p.stockIn || 0,
   }));
   return {
     data: mapped,
@@ -239,16 +248,18 @@ const getProductPage = async (options = {}) => {
 };
 
 const getProductById = async (id) => {
-  const p = await Product.findById(toObjId(id)).populate('offers').lean();
+  const p = await Product.findById(toObjId(id)).populate("offers").lean();
   if (!p) throw new NotFoundError("Product not found");
   return {
     _id: p._id,
     title: p.name,
     description: p.description,
-    slug:p.slug,
+    slug: p.slug,
     price: p.price,
-    metrics:p.metrics,
-    offers:p.offers,
+    metrics: p.metrics,
+    offers: p.offers,
+    availableUnits: p.availableUnits || [],
+    stockIn: p.stockIn || 0,
     category: p.category ? p.category.toString() : null,
     stock: p.stock,
     img_path: normalizeImages(p.images),
@@ -274,34 +285,61 @@ const normalizeImages = (images) => {
   return images;
 };
 
+const buildAvailableUnits = (body) => {
+  const labels = body.unitLabel;
+  const metrics = body.unitMetric;
+  const measures = body.unitMeasure;
+  const prices = body.unitPrice;
+  if (!labels || !Array.isArray(labels)) return [];
+  const units = [];
+  for (let i = 0; i < labels.length; i++) {
+    const m = parseInt(measures?.[i]);
+    const p = parseFloat(prices?.[i]);
+    const met = metrics?.[i] || "grams";
+    if (labels[i] && !isNaN(m) && !isNaN(p)) {
+      units.push({ label: labels[i], metric: met, measure: m, price: p });
+    }
+  }
+  return units;
+};
+
 const addProduct = async (body, imgPaths) => {
+  const metrics = body.metrics;
+  const stock = parseInt(body.stock || 0);
   const product = new Product({
     name: body.title,
     description: body.description,
     slug: body.title.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now(),
     price: parseInt(body.price) || 0,
     category: body.category ? toObjId(body.category) : undefined,
-    stock: parseInt(body.stock || 0),
+    stock,
     images: toImageObjects(imgPaths),
     isActive: body.status === "available",
-    metrics: body.metrics,
+    metrics,
     storageSpec: body.storageSpec,
+    availableUnits: buildAvailableUnits(body),
+    stockIn: calculateStockIn(metrics, stock),
   });
   await product.save();
 };
 
 const updateProduct = async (id, body, imgPaths) => {
+  const metrics = body.metrics;
+  const stock = parseInt(body["godown-stock"] || body.godownstock || body.stock || 0);
   const updateData = {
     name: body.title,
     description: body.description,
     price: parseInt(body.price) || 0,
-    stock: parseInt(
-      body["godown-stock"] || body.godownstock || body.stock || 0,
-    ),
+    stock,
     isActive: body.status !== "Inactive",
-    metrics: body.metrics,
+    metrics,
     storageSpec: body.storageSpec || body["storage-spec"] || body.storagespec,
   };
+  if (metrics) {
+    updateData.stockIn = calculateStockIn(metrics, stock);
+  }
+  const units = buildAvailableUnits(body);
+  if (units.length) updateData.availableUnits = units;
   if (body.category) updateData.category = toObjId(body.category);
   if (imgPaths && imgPaths.length > 0) {
     updateData.$push = {
@@ -435,6 +473,7 @@ const getAllCategories = async (parentOnly = false) => {
     description: c.description || "",
     img_path: c.imageUrl || false,
     offer: c.offer || 0,
+    offers: c.offers || [],
     deleted: c.isDeleted,
     isSubCategory: c.isSubCategory || false,
     parentCategory: c.parentCategory ? { _id: c.parentCategory._id.toString(), name: c.parentCategory.name } : null,
@@ -610,51 +649,98 @@ const getCategoryPage = async (options = {}) => {
 
 /* ---- Offers (Category & Product) ---- */
 const addCatOffer = async (data) => {
-  await Category.findByIdAndUpdate(toObjId(data.catId), {
-    offer: data.offer,
-    offer_start: new Date(),
-    offer_end: data.enddate,
-    offerstatus: true,
+  const catId = toObjId(data.catId);
+  const category = await Category.findById(catId);
+  if (!category) throw new NotFoundError("Category not found");
+
+  const offer = new Offer({
+    title: `Offer on ${category.name}`,
+    type: data.type || "percentage",
+    value: parseFloat(data.offer) || 0,
+    priority: parseInt(data.priority) || 0,
+    appliedTo: category.isSubCategory ? "subcategory" : "category",
+    startDate: new Date(),
+    endDate: data.enddate ? new Date(data.enddate) : new Date(),
+    isActive: true,
+  });
+  await offer.save();
+
+  await Category.findByIdAndUpdate(catId, {
+    $addToSet: { offers: offer._id },
   });
 };
 
 const removeCatOffer = async (id) => {
+  const cat = await Category.findById(toObjId(id));
+  if (!cat) throw new NotFoundError("Category not found");
+
+  // Soft-delete all linked active offers
+  if (cat.offers && cat.offers.length) {
+    await Offer.updateMany(
+      { _id: { $in: cat.offers }, isDeleted: false },
+      { isDeleted: true, isActive: false },
+    );
+  }
   await Category.findByIdAndUpdate(toObjId(id), {
-    offer: 0,
-    offer_start: null,
-    offer_end: null,
-    offerstatus: false,
+    $set: { offers: [] },
   });
 };
 
 const addProductOffer = async (data) => {
-  await Product.findByIdAndUpdate(toObjId(data.prId), {
-    offer: data.offer,
-    offer_start: new Date(),
-    offer_end: data.enddate,
-    offerstatus: true,
+  const prId = toObjId(data.prId);
+  const product = await Product.findById(prId);
+  if (!product) throw new NotFoundError("Product not found");
+
+  const offer = new Offer({
+    title: data.title || `Offer on ${product.name}`,
+    type: data.type || "percentage",
+    value: parseFloat(data.offer) || 0,
+    priority: parseInt(data.priority) || 0,
+    appliedTo: "product",
+    startDate: new Date(),
+    endDate: data.enddate ? new Date(data.enddate) : new Date(),
+    isActive: true,
+  });
+  await offer.save();
+
+  await Product.findByIdAndUpdate(prId, {
+    $addToSet: { offers: offer._id },
   });
 };
 
 const removeProductOffer = async (id) => {
+  const product = await Product.findById(toObjId(id));
+  if (!product) throw new NotFoundError("Product not found");
+
+  if (product.offers && product.offers.length) {
+    await Offer.updateMany(
+      { _id: { $in: product.offers }, isDeleted: false },
+      { isDeleted: true, isActive: false },
+    );
+  }
   await Product.findByIdAndUpdate(toObjId(id), {
-    offer: 0,
-    offer_start: null,
-    offer_end: null,
-    offerstatus: false,
+    $set: { offers: [] },
   });
 };
 
 const getProductInfoOffer = async () => {
-  const products = await Product.find({ isDeleted: false }).lean();
-  return products.map((p) => ({
-    _id: p._id,
-    title: p.name,
-    price: p.price,
-    img_path: normalizeImages(p.images),
-    offer: 0,
-    offerstatus: false,
-  }));
+  const products = await Product.find({ isDeleted: false })
+    .populate("offers")
+    .lean();
+  return products.map((p) => {
+    const activeOffer = (p.offers || []).find(
+      (o) => o.isActive && !o.isDeleted,
+    );
+    return {
+      _id: p._id,
+      title: p.name,
+      price: p.price,
+      img_path: normalizeImages(p.images),
+      offers: p.offers || [],
+      offerstatus: !!activeOffer,
+      offer: activeOffer ? activeOffer.value : 0,
+    };
+  });
 };
 
 /* ---- Orders ---- */

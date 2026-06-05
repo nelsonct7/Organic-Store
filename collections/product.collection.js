@@ -26,7 +26,27 @@ const productSchema = new Schema(
     metrics: {
       type: String,
       enum: Array.from(Object.values(productMetrics)),
-      default: "/Piece",
+      default: "Piece",
+    },
+    // if the metrics is Kg => all units should be defined in grams,
+    // if the metric is Li=>all units should be ml, if metric is piece=> sub unit should be defined in numbers, like egs, => 10,5,2 ..etc
+    availableUnits: [
+      {
+        label: { type: String, required: true },
+        metric: {
+          type: String,
+          enum: ['grams','ml','numbers'],
+          default: "Piece",
+        },
+        measure: { type: Number, required: true, min: 0 },
+        price: { type: Number, required: true, min: 0 },
+      },
+    ],
+    // stock converted from kg=>grams, litter=>ml, piece=numbers
+    stockIn: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
     offers: [
       {

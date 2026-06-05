@@ -1,8 +1,7 @@
 const productMetrics = {
-  Litter: "/Li",
-  Number: "/Piece",
-  Kilograms: "/Kg",
-  Bag: "/Bag",
+  Litter: "Li",
+  Number: "Piece",
+  Kilograms: "Kg",
 };
 
 module.exports = { productMetrics };
