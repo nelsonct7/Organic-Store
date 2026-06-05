@@ -33,7 +33,11 @@ const feedbackCtrl = require("../controllers/feedback.controller");
 router.get("/feedback", feedbackCtrl.renderFeedbackForm);
 router.post("/feedback", feedbackCtrl.postFeedback);
 
-
-
+/* ---- Messages ---- */
+const messageCtrl = require("../controllers/message.controller");
+router.get("/messages", messageCtrl.renderUserMessages);
+router.post("/messages", messageCtrl.postUserMessage);
+router.get("/messages/:id", messageCtrl.getConversationData);
+router.post("/messages/:id/reply", messageCtrl.postUserReply);
 
 module.exports = router;

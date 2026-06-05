@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { productMetrics } = require("../config/constants.config");
 const adminService = require("../services/admin.service");
+const messageService = require("../services/message.service");
 
 const notFoundConfig = {
   product:    { backLink: "/admin/view-products", backText: "Back to Products" },
@@ -688,15 +689,58 @@ const deleteFeedback = async (req, res, next) => {
 
 const renderMessages = async (req, res, next) => {
   try {
-    const { page, limit } = req.query;
-    const { data, pagination } = await adminService.getMessagePage({ page, limit });
+    const { page, limit, search } = req.query;
+    const result = await messageService.getConversationsPage({ page, limit, search });
     res.render("admin/view-message", {
       title: "Messages - Organic Store",
       admin: true,
       adminData: req.session.admin,
-      data,
-      pagination,
+      data: result.data,
+      pagination: result.pagination,
+      search: result.search,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ---- Message helpers ---- */
+const getAdminMessage = async (req, res, next) => {
+  try {
+    const conversation = await messageService.getConversationById(req.params.id);
+    if (!conversation) return res.status(404).json({ status: false, message: "Conversation not found" });
+    res.json({ status: true, conversation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const postAdminMessageReply = async (req, res, next) => {
+  try {
+    const { content, status } = req.body;
+    if (!content || content.length > 2000) return res.status(400).json({ status: false, message: "Invalid reply" });
+
+    const conversation = await messageService.getConversationById(req.params.id);
+    if (!conversation) return res.status(404).json({ status: false, message: "Conversation not found" });
+
+    await messageService.replyToConversation(req.params.id, "admin", content);
+
+    if (status === "closed") {
+      await messageService.closeConversation(req.params.id);
+    }
+
+    res.json({ status: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteAdminMessage = async (req, res, next) => {
+  try {
+    const Message = require("../collections/message.collection");
+    const conv = await Message.findByIdAndDelete(req.params.id);
+    if (!conv) return res.status(404).json({ status: false, message: "Conversation not found" });
+    res.json({ status: true, message: "Conversation deleted" });
   } catch (error) {
     next(error);
   }
@@ -855,6 +899,9 @@ module.exports = {
   updateFeedbackStatus,
   deleteFeedback,
   renderMessages,
+  getAdminMessage,
+  postAdminMessageReply,
+  deleteAdminMessage,
   renderReports,
   getLineData,
   renderViewReports,

@@ -214,6 +214,9 @@ router.get("/admin-feedback", validateAdminAccess, validationMiddleware(getAdmin
 router.post("/feedback/update-status/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), ctrl.updateFeedbackStatus);
 router.delete("/feedback/delete/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), ctrl.deleteFeedback);
 router.get("/view-message", validateAdminAccess, ctrl.renderMessages);
+router.get("/messages/:id", validateAdminAccess, ctrl.getAdminMessage);
+router.post("/messages/:id/reply", validateAdminAccess, ctrl.postAdminMessageReply);
+router.delete("/messages/:id", validateAdminAccess, ctrl.deleteAdminMessage);
 
 /* ---- Reports ---- */
 router.get("/reports", validateAdminAccess, ctrl.renderReports);
