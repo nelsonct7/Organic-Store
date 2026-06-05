@@ -24,6 +24,7 @@ const cartRoutes = require("./routes/cart.routes");
 const checkoutRoutes = require("./routes/checkout.routes");
 const orderRoutes = require("./routes/order.routes");
 const reviewRoutes = require("./routes/review.routes");
+const invoiceRoutes = require("./routes/invoice.routes");
 const { dataInjectMiddleware } = require("./middlewares/data-inject.middleware");
 
 const requiredEnvVars = [
@@ -210,6 +211,7 @@ const createServer = async () => {
     app.use("/", checkoutRoutes);
     app.use("/", orderRoutes);
     app.use("/", reviewRoutes);
+    app.use("/", invoiceRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

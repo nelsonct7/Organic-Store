@@ -1,61 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <section class="d-flex justify-content-around m-0" >
- 
-        <div class=" p-3 mt-4" style="background-color: rgb(211, 218, 219); border-radius: 10px;">
-            <div class="d-flex align-items-end mt-4 mb-3" >
-               <h3 class="me-3">View Orders</h3>
-                
-            </div>
-    
-       <table class="table mt-5" id="prtable" > 
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; color: #1f2937; }
+    .container { max-width: 100%; padding: 20px 30px; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .brand-icon { width: 40px; height: 40px; background: #16a34a; color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; }
+    .brand-text { font-size: 22px; font-weight: 700; color: #166534; }
+    .brand-text span { color: #16a34a; }
+    .report-title { font-size: 16px; font-weight: 600; color: #374151; margin: 4px 0 2px; }
+    .hr { border: none; border-top: 2px solid #16a34a; margin: 10px 0 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+    thead th { background: #f0fdf4; color: #166534; font-weight: 600; padding: 8px 6px; text-align: left; border-bottom: 2px solid #16a34a; }
+    thead th.ar { text-align: right; }
+    thead th.ac { text-align: center; }
+    tbody td { padding: 7px 6px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+    tbody td.ar { text-align: right; }
+    tbody td.ac { text-align: center; }
+    .items { list-style: none; padding: 0; margin: 0; }
+    .items li { padding: 1px 0; font-size: 9.5px; border-bottom: 1px dotted #e5e7eb; }
+    .items li:last-child { border-bottom: none; }
+    .items li .amt { float: right; }
+    .badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 600; }
+    .badge-delivered { background: #dcfce7; color: #166534; }
+    .badge-shipped { background: #fef3c7; color: #92400e; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+    .badge-placed { background: #dbeafe; color: #1e40af; }
+    .footer { text-align: center; margin-top: 24px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand">
+      <div class="brand-icon">OS</div>
+      <div>
+        <div class="brand-text">Organic<span>Store</span></div>
+        <div class="report-title">Sales Report — Order Details</div>
+      </div>
+    </div>
+    <hr class="hr">
+
+    {{#if orders.length}}
+    <table>
       <thead>
         <tr>
-          
-          
-          <th scope="col">Date</th>
-          <th scope="col">User Name</th>
-          <th scope="col">Products</th>
-          <th scope="col">Payment</th>
-          <th scope="col">Status</th>
-          <th scope="col">Amount</th>
+          <th style="width:52px;">Order</th>
+          <th style="width:76px;">Date</th>
+          <th style="width:80px;">Customer</th>
+          <th>Items</th>
+          <th style="width:44px;" class="ac">Pay</th>
+          <th style="width:48px;" class="ac">Status</th>
+          <th style="width:58px;" class="ar">Total</th>
         </tr>
       </thead>
       <tbody>
         {{#each orders}}
         <tr>
-          
-         
+          <td style="font-weight:600;">{{this.orderId}}</td>
           <td>{{this.ordDate}}</td>
-          <td>{{this.user_info.user_name}}</td>
-          <!-- <td>                  
-                                        {{this.address.address_collection.first_name}}<br>{{this.address.address_collection.house_name}}<br>{{this.address.address_collection.street}}
-                                        {{this.address.address_collection.town}}{{this.address.address_collection.pin}}<br>{{this.address.address_collection.state}}
-                                        {{this.address.address_collection.country}}
-                                        
-          </td> -->
-        
-          <!-- <td>{{this.user_info.user_mobile}}</td> -->
+          <td>{{this.customer}}</td>
           <td>
-              {{#each this.products}}
-              {{this.product_id}}
+            <ul class="items">
+              {{#each this.items}}
+              <li>{{this.name}} × {{this.qty}} <span class="amt">₹{{this.subtotal}}</span></li>
               {{/each}}
+            </ul>
           </td>
-          <td>{{this.payment_option}}</td>
-          <td>{{this.status}}</td>
-    
-          <td>{{this.total_amount}}</td>
-         
+          <td class="ac" style="font-size:9px;">{{this.payment_option}}</td>
+          <td class="ac"><span class="badge badge-{{this.statusClass}}">{{this.status}}</span></td>
+          <td class="ar" style="font-weight:600;">₹{{this.grand_total}}</td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-        </div>
-    </section>
-    
-  </body>
+    {{else}}
+    <p style="text-align:center;padding:40px 0;color:#9ca3af;">No orders found in the selected date range.</p>
+    {{/if}}
+  </div>
+  <div class="footer">Organic Store — Report generated automatically</div>
+</body>
 </html>

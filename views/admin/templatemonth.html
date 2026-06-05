@@ -1,35 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <section class="d-flex justify-content-around m-0" >
- 
-        <div class=" p-3 mt-4" style="background-color: rgb(211, 218, 219); border-radius: 10px;">
-            <div class="d-flex align-items-end mt-4 mb-3" >
-               <h3 class="me-3">Monthly Sales</h3>
-                
-            </div>
-    
-       <table class="table mt-5" id="prtable" > 
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; color: #1f2937; }
+    .container { max-width: 100%; padding: 20px 30px; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .brand-icon { width: 40px; height: 40px; background: #16a34a; color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; }
+    .brand-text { font-size: 22px; font-weight: 700; color: #166534; }
+    .brand-text span { color: #16a34a; }
+    .report-title { font-size: 16px; font-weight: 600; color: #374151; margin: 4px 0 2px; }
+    .hr { border: none; border-top: 2px solid #16a34a; margin: 10px 0 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { background: #f0fdf4; color: #166534; font-weight: 600; padding: 10px 12px; text-align: left; border-bottom: 2px solid #16a34a; }
+    thead th.ar { text-align: right; }
+    tbody td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tbody td.ar { text-align: right; font-weight: 600; }
+    tbody tr:last-child td { border-bottom: none; }
+    .footer { text-align: center; margin-top: 24px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand">
+      <div class="brand-icon">OS</div>
+      <div>
+        <div class="brand-text">Organic<span>Store</span></div>
+        <div class="report-title">Monthly Sales Report</div>
+      </div>
+    </div>
+    <hr class="hr">
+
+    {{#if orders.length}}
+    <table>
       <thead>
         <tr>
-          <th scope="col">Month</th>
-          <th scope="col" style="margin-left: 100px;">Total Sale</th>
+          <th>Month</th>
+          <th class="ar">Total Sales (₹)</th>
         </tr>
       </thead>
       <tbody>
         {{#each orders}}
         <tr>
           <td>{{this._id}}</td>
-          <td style="margin-left: 100px;">{{this.totalSaleAmount}}</td>
+          <td class="ar">₹{{this.totalSaleAmount}}</td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-        </div>
-    </section>
-    
-  </body>
+    {{else}}
+    <p style="text-align:center;padding:40px 0;color:#9ca3af;">No sales data available.</p>
+    {{/if}}
+  </div>
+  <div class="footer">Organic Store — Report generated automatically</div>
+</body>
 </html>

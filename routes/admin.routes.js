@@ -21,6 +21,7 @@ const {
 } = require("../middlewares/multer.middleware");
 
 const ctrl = require("../controllers/admin.controller");
+const reportCtrl = require("../controllers/report.controller");
 
 /* ---- Auth (no admin guard) ---- */
 router.get("/", ctrl.renderAdminLogin);
@@ -220,7 +221,11 @@ router.delete("/messages/:id", validateAdminAccess, ctrl.deleteAdminMessage);
 
 /* ---- Reports ---- */
 router.get("/reports", validateAdminAccess, ctrl.renderReports);
+router.get("/view-reports", validateAdminAccess, reportCtrl.renderViewReports);
 router.post("/get-line-data", validateAdminAccess, ctrl.getLineData);
+router.get("/reports/pdf", validateAdminAccess, reportCtrl.getSalesPDF);
+router.get("/reports/excel", validateAdminAccess, reportCtrl.getSalesExcel);
+router.get("/reports/download/:filename", validateAdminAccess, reportCtrl.downloadReport);
 
 /* ---- Offers control page ---- */
 router.get("/view-offers", validateAdminAccess, ctrl.renderOfferControl);

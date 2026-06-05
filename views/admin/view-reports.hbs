@@ -12,73 +12,41 @@
     <div class="row">
       <div class="col-12">
         <div class="row d-flex justify-content-between m-0 p-3">
-          <div
-            class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark"
-          >
+          <div class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark">
             <div class="row">
-              <div class="col-md-5">Lastyear Sales</div>
-              <div class="col-md-6 d-flex justify-content-between"><a
-                  href="/pdf/yearPdf"
-                  class="btn btn-outline-dark mb-3"
-                >Pdf</a><a
-                  href="/pdf/yearXml"
-                  class="btn btn-outline-secondary ms-3 mb-3"
-                >Excel</a></div>
+              <div class="col-md-5">Yearly Sales</div>
+              <div class="col-md-6 d-flex justify-content-between">
+                <button class="btn btn-outline-dark mb-3" onclick="getReport('yearly','pdf')">PDF</button>
+                <button class="btn btn-outline-secondary ms-3 mb-3" onclick="getReport('yearly','excel')">Excel</button>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-5">Monthly Sales</div>
-              <div class="col-md-6 d-flex justify-content-between"><a
-                  href="/pdf/monthPdf"
-                  class="btn btn-outline-dark mb-3"
-                >Pdf</a><a
-                  href="/pdf/monthXml"
-                  class="btn btn-outline-secondary ms-3 mb-3"
-                >Excel</a></div>
+              <div class="col-md-6 d-flex justify-content-between">
+                <button class="btn btn-outline-dark mb-3" onclick="getReport('monthly','pdf')">PDF</button>
+                <button class="btn btn-outline-secondary ms-3 mb-3" onclick="getReport('monthly','excel')">Excel</button>
+              </div>
             </div>
-            {{! <div class="row">
-                <div class="col-md-6">Lastweek Sales</div>
-                <div class="col-md-6"><button type="button" class="btn btn-outline-dark  mb-3" onclick="getWeekPdf()">Pdf</button><button type="button" class="btn btn-outline-secondary" onclick="getWeekxml()">Excel</button></div>
-            </div> }}
             <div class="row">
               <div class="col-md-5">Daily Sales</div>
-              <div class="col-md-6 d-flex justify-content-between"><a
-                  href="/pdf/dayPdf"
-                  class="btn btn-outline-dark mb-3"
-                >Pdf</a><a
-                  href="/pdf/dayXml"
-                  class="btn btn-outline-secondary ms-3 mb-3"
-                >Excel</a></div>
+              <div class="col-md-6 d-flex justify-content-between">
+                <button class="btn btn-outline-dark mb-3" onclick="getReport('daily','pdf')">PDF</button>
+                <button class="btn btn-outline-secondary ms-3 mb-3" onclick="getReport('daily','excel')">Excel</button>
+              </div>
             </div>
           </div>
-          <div
-            class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark"
-          >
+          <div class="col-md-5 d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded border border-dark">
             <div class="row mt-3">
               <div class="col-5">From</div>
-              <div class="col-6"><input
-                  type="date"
-                  name="startDate"
-                  id="startDate"
-                /></div>
+              <div class="col-6"><input type="date" name="startDate" id="startDate" class="form-control form-control-sm"></div>
             </div>
             <div class="row mt-3">
               <div class="col-5">To</div>
-              <div class="col-6"><input
-                  type="date"
-                  name="endDate"
-                  id="endDate"
-                /></div>
+              <div class="col-6"><input type="date" name="endDate" id="endDate" class="form-control form-control-sm"></div>
             </div>
             <div class="row mt-3">
-              <div class="col-5"><button
-                  type="button"
-                  onclick="getPdf()"
-                  class="btn btn-secondary"
-                >PDF</button></div>
-              <div class="col-6"><button
-                  onclick="getXml()"
-                  class="btn btn-secondary"
-                >XML</button></div>
+              <div class="col-5"><button type="button" onclick="getReport('custom','pdf')" class="btn btn-secondary">PDF</button></div>
+              <div class="col-6"><button onclick="getReport('custom','excel')" class="btn btn-secondary">Excel</button></div>
             </div>
           </div>
         </div>
@@ -87,30 +55,27 @@
     <div class="row">
       <div class="col-12">
         <div class="row m-0">
-          <div
-            class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark">
+          <div class="col-12 shadow-lg p-4 mb-5 mt-5 bg-body rounded border border-dark">
             <h2>Latest Orders</h2>
             <table class="table mt-5" id="prtable">
               <thead>
                 <tr>
-
                   <th scope="col">Order Id</th>
-                  <th scope="col">User Id</th>
+                  <th scope="col">Customer</th>
                   <th scope="col">Amount</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Payment option</th>
-
+                  <th scope="col">Payment</th>
                 </tr>
               </thead>
               <tbody>
                 {{#each orders}}
-                  <tr>
-                    <td>{{this._id}}</td>
-                    <td>{{this.user_data}}</td>
-                    <td>{{this.total_amount}}</td>
-                    <td>{{this.status}}</td>
-                    <td>{{this.payment_option}}</td>
-                  </tr>
+                <tr>
+                  <td>{{this._id}}</td>
+                  <td>{{this.user_data}}</td>
+                  <td>₹{{this.total_amount}}</td>
+                  <td>{{this.status}}</td>
+                  <td>{{this.payment_option}}</td>
+                </tr>
                 {{/each}}
               </tbody>
             </table>
@@ -118,8 +83,48 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
-<script src="/javascripts/viewRepot.js"></script>
+<style>
+#download-toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #166534; color: #fff; padding: 14px 24px;
+  border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none; font-size: 0.9rem; font-weight: 500;
+}
+</style>
+
+<div id="download-toast">
+  <i class="fas fa-spinner fa-spin me-2"></i> Generating report...
+</div>
+
+<script>
+function getReport(type, format) {
+  var params = '?type=' + type;
+  if (type === 'custom') {
+    var s = $('#startDate').val();
+    var e = $('#endDate').val();
+    if (!s || !e) { alert('Please select start and end dates.'); return; }
+    params += '&sdate=' + s + '&edate=' + e;
+  }
+
+  $('#download-toast').show();
+
+  $.getJSON('/admin/reports/' + format + params, function(resp) {
+    if (resp.status && resp.file) {
+      $('#download-toast').html('<i class="fas fa-check-circle me-2"></i> Report ready!');
+      setTimeout(function() {
+        $('#download-toast').fadeOut();
+        window.location.href = '/admin/reports/download/' + resp.file;
+      }, 500);
+    } else {
+      $('#download-toast').hide();
+      alert('Failed to generate report.');
+    }
+  }).fail(function() {
+    $('#download-toast').hide();
+    alert('An error occurred while generating the report.');
+  });
+}
+</script>
