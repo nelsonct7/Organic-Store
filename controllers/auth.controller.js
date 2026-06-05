@@ -57,6 +57,7 @@ const login = async (req, res, next) => {
 };
 
 const logout = (req, res) => {
+  req.logout();
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroying session:", err);

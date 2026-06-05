@@ -34,10 +34,17 @@
       <p>Join the organic revolution today</p>
     </div>
 
-    {{#if error}}
+    {{#if flash.error}}
     <div class="auth-alert auth-alert-danger">
       <i class="fas fa-exclamation-circle"></i>
-      <span>{{error}}</span>
+      <span>{{flash.error}}</span>
+    </div>
+    {{/if}}
+
+    {{#if flash.success}}
+    <div class="auth-alert auth-alert-success">
+      <i class="fas fa-check-circle"></i>
+      <span>{{flash.success}}</span>
     </div>
     {{/if}}
 
@@ -106,14 +113,10 @@
     <div class="auth-divider"><span>Or sign up with</span></div>
 
     <div class="auth-social-btns">
-      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Google signup will be available soon.', 'info')">
+      <a href="/auth/google" class="auth-btn-social">
         <i class="fab fa-google google-color"></i>
         Google
-      </button>
-      <button type="button" class="auth-btn-social" onclick="Swal.fire('Coming Soon!', 'Facebook signup will be available soon.', 'info')">
-        <i class="fab fa-facebook facebook-color"></i>
-        Facebook
-      </button>
+      </a>
     </div>
 
     <div class="auth-switch">

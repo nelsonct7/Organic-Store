@@ -17,6 +17,9 @@ const env = {
   twilioAuthToken: getEnvString('TWILIO_AUTH_TOKEN', 'your-twilio-auth-token'),
   twilioPhoneNumber: getEnvString('TWILIO_PHONE_NUMBER', 'your-twilio-phone-number'),
   corsOrigin: getEnvString('CORS_ORIGIN', '*'),
+  googleClientId: getEnvString('GOOGLE_CLIENT_ID', ''),
+  googleClientSecret: getEnvString('GOOGLE_CLIENT_SECRET', ''),
+  googleCallbackUrl: getEnvString('GOOGLE_CALLBACK_URL', '/auth/google/callback'),
 };
 
 module.exports = env;

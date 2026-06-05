@@ -20,9 +20,11 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, // oauth is enabled, and the password should be optional
       index: true,
     },
+    authProvider: { type: String, enum: ["local", "google"], default: "local" },
+    googleId: { type: String, default: null },
     role: {
       type: Schema.Types.ObjectId,
       ref: "Roles",

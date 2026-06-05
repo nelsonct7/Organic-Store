@@ -4,12 +4,13 @@ const { ConflictError, NotFoundError } = require("../shared/utils/error.util");
 const { hashPassword, comparePassword } = require("../shared/utils/auth.utils");
 
 const logIn = async (email, password) => {
-  // Find user by email
   const user = await User.findOne({ email });
   if (!user) {
     throw new NotFoundError("User not found");
   }
-  // Check password
+  if (user.authProvider === "google") {
+    throw new NotFoundError("This account uses Google login. Please sign in with Google.");
+  }
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch) {
     throw new NotFoundError("Invalid credentials");
@@ -19,6 +20,7 @@ const logIn = async (email, password) => {
     email: user.email,
     name: user.name,
     roles: user.roles || [],
+    authProvider: user.authProvider || "local",
     isMobileVerified:user.isMobileVerified || false,
     isEmailVerified:user.isEmailVerified || false,
   };

@@ -16,6 +16,7 @@ const { authLimiter } = require("./middlewares/ratelimit.middleware");
 
 // route imports
 const authRoutes = require("./routes/auth.routes");
+const googleAuthRoutes = require("./routes/google.auth.routes");
 const baseRoutes = require("./routes/base.routes");
 const adminRoutes = require("./routes/admin.routes");
 
@@ -28,6 +29,8 @@ const requiredEnvVars = [
   "PAYPAL_CLIENT_SECRET",
   "RAZORPAY_KEY_ID",
   "RAZORPAY_KEY_SECRET",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
 ];
 
 const createServer = async () => {
@@ -83,7 +86,7 @@ const createServer = async () => {
     );
     app.use(
       cors({
-        origin: env.corsOrigin || "*",
+        origin: env.corsOrigin || "*", 
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
         credentials: true,
       }),
@@ -116,6 +119,11 @@ const createServer = async () => {
       delete req.session.flash;
       next();
     });
+
+    // Passport initialization
+    const passport = require("./config/passport.config");
+    app.use(passport.initialize());
+    app.use(passport.session());
     // cache control for unauthenticated users
     app.use((req, res, next) => {
       if (!req.user) {
@@ -160,6 +168,7 @@ const createServer = async () => {
     // routes setup
     app.use("/", baseRoutes);
     app.use("/v1/auth", authRoutes);
+    app.use("/auth", googleAuthRoutes);
     app.use("/admin", adminRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
