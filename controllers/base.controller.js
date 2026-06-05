@@ -142,6 +142,11 @@ const renderViewProduct = async (req, res, next) => {
       bestOffer,
     );
 
+    const reviewService = require("../services/review.service");
+    const reviews = await reviewService.getProductReviews(product._id);
+    const summary = await reviewService.getProductRatingSummary(product._id);
+    const userReview = await reviewService.getUserReviewForProduct(req.session.userId, product._id);
+
     res.render("products/view-products", {
       title: product.name,
       user: req.user,
@@ -149,6 +154,9 @@ const renderViewProduct = async (req, res, next) => {
       product,
       actualPrice: finalPrice,
       bestOffer,
+      reviews,
+      summary,
+      userReview,
     });
   } catch (err) {
     next(err);
@@ -235,11 +243,15 @@ const renderProfile = async (req, res, next) => {
     const UserModel = require("../collections/user.collection");
     const userData = await UserModel.findById(req.session.userId).lean();
 
+    const reviewService = require("../services/review.service");
+    const reviews = await reviewService.getUserReviews(req.session.userId);
+
     res.render("base/profile", {
       title: "My Account",
       user: req.user,
       sessionUser: req.session.user,
       userData,
+      reviews,
     });
   } catch (err) {
     next(err);

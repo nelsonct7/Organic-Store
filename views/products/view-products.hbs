@@ -36,8 +36,8 @@
               {{#if bestOffer}}
               <div class="mb-2">
                 <span class="badge bg-success">
-                  {{#ifCond bestOffer.type "percentage"}}{{bestOffer.value}}% OFF{{/ifCond}}
-                  {{#ifCond bestOffer.type "fixed"}}₹{{bestOffer.value}} OFF{{/ifCond}}
+              {{#ifCond bestOffer.type "===" "percentage"}}{{bestOffer.value}}% OFF{{/ifCond}}
+              {{#ifCond bestOffer.type "===" "fixed"}}₹{{bestOffer.value}} OFF{{/ifCond}}
                 </span>
               </div>
               {{/if}}
@@ -72,7 +72,7 @@
 
               <p class="small text-muted mb-3">
                 <i class="fas fa-check-circle text-success"></i>
-                {{#ifCond product.status "available"}}In Stock{{else}}Out of Stock{{/ifCond}}
+                {{#ifCond product.status "===" "available"}}In Stock{{else}}Out of Stock{{/ifCond}}
                 {{#if product.stockIn}} &middot; {{product.stockIn}} available{{/if}}
               </p>
 
@@ -101,6 +101,73 @@
       </div>
     </div>
   </section>
+  <section class="py-4 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+              <h5 class="mb-0">Reviews</h5>
+              <span class="badge bg-success fs-6">{{summary.count}} review{{#ifCond summary.count "===" 1}}{{else}}s{{/ifCond}}</span>
+            </div>
+            <div class="card-body">
+              {{#if summary.count}}
+              <div class="text-center mb-4">
+                <span class="display-5 fw-bold text-success">{{summary.average}}</span>
+                <span class="text-muted"> / 5</span>
+                <div class="my-1">
+                  {{#times 5}}
+                  <i class="fas fa-star {{#ifCond this "lte" ../summary.average}}text-warning{{else}}text-secondary{{/ifCond}}"></i>
+                  {{/times}}
+                </div>
+              </div>
+              {{/if}}
+
+              {{#if sessionUser}}
+                {{#if userReview}}
+                <div class="alert alert-info">You rated this product {{userReview.rating}}/5</div>
+                {{else}}
+                <form id="reviewForm" class="mb-4 p-3 border rounded">
+                  <h6>Write a Review</h6>
+                  <div class="mb-2 star-rating">
+                    <input type="hidden" name="rating" id="ratingInput" value="0">
+                    {{#times 5}}
+                    <i class="far fa-star star-btn fs-4" data-value="{{this}}" style="cursor:pointer;color:#ffc107;"></i>
+                    {{/times}}
+                  </div>
+                  <div class="mb-2">
+                    <textarea class="form-control" id="commentInput" rows="2" placeholder="Share your experience (optional)" maxlength="500"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-success btn-sm">Submit Review</button>
+                </form>
+                {{/if}}
+              {{else}}
+              <p class="text-muted"><a href="/v1/auth/login" class="text-success">Login</a> to write a review.</p>
+              {{/if}}
+
+              {{#if reviews.length}}
+              <hr>
+              {{#each reviews}}
+              <div class="mb-3 pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <strong>{{this.userId.name}}</strong>
+                  <span>
+                    {{#times 5}}
+                    <i class="fas fa-star {{#ifCond this "lte" ../rating}}text-warning{{else}}text-secondary{{/ifCond}}" style="font-size:0.75rem;"></i>
+                    {{/times}}
+                  </span>
+                  <small class="text-muted">{{timeAgo this.createdAt}}</small>
+                </div>
+                {{#if this.comment}}<p class="mb-0 small">{{this.comment}}</p>{{/if}}
+              </div>
+              {{/each}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <style>
@@ -115,6 +182,9 @@
 .unit-option input[type="radio"] {
   position: absolute;
   opacity: 0;
+}
+.star-btn:hover, .star-btn.active {
+  color: #ffc107 !important;
 }
 @media (max-width: 768px) {
   #zoomResult {
@@ -233,5 +303,47 @@ $(document).ready(function() {
       result.style.backgroundPosition = '-' + (lx * zoomFactor) + 'px -' + (ly * zoomFactor) + 'px';
     }
   }
+
+  // Star rating
+  $('.star-btn').on('click', function() {
+    var val = parseInt($(this).data('value'));
+    $('#ratingInput').val(val);
+    $('.star-btn').each(function() {
+      if (parseInt($(this).data('value')) <= val) {
+        $(this).removeClass('far').addClass('fas active');
+      } else {
+        $(this).removeClass('fas active').addClass('far');
+      }
+    });
+  });
+
+  // Submit review
+  $('#reviewForm').on('submit', function(e) {
+    e.preventDefault();
+    var rating = parseInt($('#ratingInput').val());
+    if (!rating) { Swal.fire({ icon: 'warning', text: 'Please select a rating' }); return; }
+    var btn = $(this).find('button[type="submit"]');
+    btn.prop('disabled', true).text('Submitting...');
+    $.ajax({
+      url: '/api/review',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        productId: '{{product._id}}',
+        rating: rating,
+        comment: $('#commentInput').val().trim()
+      }),
+      success: function() {
+        Swal.fire({ icon: 'success', title: 'Thank you!', text: 'Your review has been submitted', timer: 1500, showConfirmButton: false })
+          .then(function() { location.reload(); });
+      },
+      error: function(xhr) {
+        btn.prop('disabled', false).text('Submit Review');
+        var msg = 'Failed to submit review';
+        try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+        Swal.fire({ icon: 'error', text: msg });
+      }
+    });
+  });
 });
 </script>

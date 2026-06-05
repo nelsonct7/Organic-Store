@@ -23,6 +23,7 @@ const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const checkoutRoutes = require("./routes/checkout.routes");
 const orderRoutes = require("./routes/order.routes");
+const reviewRoutes = require("./routes/review.routes");
 const { dataInjectMiddleware } = require("./middlewares/data-inject.middleware");
 
 const requiredEnvVars = [
@@ -142,10 +143,16 @@ const createServer = async () => {
     });
 
     // register handlebars helpers
-    HBS.handlebars.registerHelper("ifCond", function (v1, v2, options) {
-      if (v1 === v2) {
-        return options.fn(this);
+    HBS.handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
+      // Support both old {{#ifCond a b}} (equality) and new {{#ifCond a "lte" b}} syntax
+      if (arguments.length < 4) {
+        options = v2;
+        v2 = operator;
+        operator = "===";
       }
+      const ops = { "===": (a,b)=>a===b, "==": (a,b)=>a==b, "!==": (a,b)=>a!==b, "!=": (a,b)=>a!=b, "<": (a,b)=>a<b, "<=": (a,b)=>a<=b, ">": (a,b)=>a>b, ">=": (a,b)=>a>=b, "lte": (a,b)=>a<=b, "gte": (a,b)=>a>=b, "lt": (a,b)=>a<b, "gt": (a,b)=>a>b };
+      const fn = ops[operator] || ((a, b) => a === b);
+      if (fn(v1, v2)) return options.fn(this);
       return options.inverse(this);
     });
     HBS.handlebars.registerHelper("eq", function (v1, v2) {
@@ -159,6 +166,24 @@ const createServer = async () => {
     });
     HBS.handlebars.registerHelper("multiply", function (a, b) {
       return parseFloat(a) * parseFloat(b);
+    });
+    HBS.handlebars.registerHelper("times", function (n, options) {
+      let out = "";
+      for (let i = 1; i <= n; i++) {
+        out += options.fn(i);
+      }
+      return out;
+    });
+    HBS.handlebars.registerHelper("timeAgo", function (date) {
+      if (!date) return "";
+      const now = new Date();
+      const diff = Math.floor((now - new Date(date)) / 1000);
+      if (diff < 60) return "just now";
+      if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+      if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+      if (diff < 172800) return "1 day ago";
+      if (diff < 604800) return Math.floor(diff / 86400) + "d ago";
+      return new Date(date).toLocaleDateString();
     });
 
     // health check endpoint
@@ -184,6 +209,7 @@ const createServer = async () => {
     app.use("/", cartRoutes);
     app.use("/", checkoutRoutes);
     app.use("/", orderRoutes);
+    app.use("/", reviewRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

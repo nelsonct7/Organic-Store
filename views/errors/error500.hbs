@@ -1,36 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>500 — Server Error</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/stylesheets/err403.css">
-  <style>
-    .error-code { background: linear-gradient(135deg, #dc2626, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .error-icon { color: #dc2626; }
-    .lock-icon { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.1); color: #dc2626; }
-  </style>
-</head>
-<body>
-  <div class="error-403">
-    <div class="lock-icon error-icon">
-      <i class="fas fa-exclamation-triangle"></i>
-    </div>
-    <div class="error-code">500</div>
-    <div class="error-title">Server Error</div>
-    <p class="error-text">{{message}}</p>
-    <div class="error-actions">
-      <a href="/" class="btn-primary-admin">
-        <i class="fas fa-home"></i> Go Home
-      </a>
-      <a href="javascript:location.reload()" class="btn-outline-admin">
-        <i class="fas fa-redo"></i> Try Again
-      </a>
-    </div>
+<link rel="stylesheet" href="/stylesheets/err403.css">
+<style>
+  .error-code { background: linear-gradient(135deg, #dc2626, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .error-icon { color: #dc2626; }
+  .lock-icon { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.1); color: #dc2626; }
+</style>
+<div class="error-403">
+  <div class="lock-icon error-icon">
+    <i class="fas fa-exclamation-triangle"></i>
   </div>
-</body>
-</html>
+  <div class="error-code">500</div>
+  <div class="error-title">Server Error</div>
+  <p class="error-text">{{message}}</p>
+  <div class="error-actions">
+    <a href="/" class="btn-primary-admin">
+      <i class="fas fa-home"></i> Go Home
+    </a>
+    <a href="javascript:location.reload()" class="btn-outline-admin">
+      <i class="fas fa-redo"></i> Try Again
+    </a>
+  </div>
+</div>

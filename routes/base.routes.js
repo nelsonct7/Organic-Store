@@ -29,4 +29,6 @@ router.get("/add-to-cart/:id", addToCart);
 router.get("/view-profile", renderProfile);
 
 
+
+
 module.exports = router;

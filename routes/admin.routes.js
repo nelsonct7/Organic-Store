@@ -220,4 +220,24 @@ router.post("/get-line-data", validateAdminAccess, ctrl.getLineData);
 /* ---- Offers control page ---- */
 router.get("/view-offers", validateAdminAccess, ctrl.renderOfferControl);
 
+/* ---- Reviews ---- */
+router.get(
+  "/reviews",
+  validateAdminAccess,
+  validationMiddleware(getAdminDataPaginationSchema),
+  ctrl.renderAdminReviews,
+);
+router.get(
+  "/reviews/:productId",
+  validateAdminAccess,
+  validationMiddleware(getAdminDataPaginationSchema),
+  ctrl.renderAdminProductReviews,
+);
+router.post(
+  "/review/toggle-approval/:id",
+  validateAdminAccess,
+  validationMiddleware(mongoIdSchema),
+  ctrl.postToggleReviewApproval,
+);
+
 module.exports = router;

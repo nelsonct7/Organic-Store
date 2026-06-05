@@ -725,6 +725,65 @@ const renderOfferControl = async (req, res, next) => {
   }
 };
 
+/* ---- Reviews ---- */
+const reviewService = require("../services/review.service");
+
+const renderAdminReviews = async (req, res, next) => {
+  try {
+    const result = await reviewService.getAllProductsWithReviewStats(req.query);
+    res.render("admin/reviews/view-reviews", {
+      title: "Product Reviews - Organic Store",
+      admin: true,
+      adminData: req.session.admin,
+      products: result.data,
+      pagination: {
+        ...result.pagination,
+        start: (result.pagination.page - 1) * result.pagination.limit + 1,
+        end: Math.min(result.pagination.page * result.pagination.limit, result.pagination.total),
+      },
+      searchValue: result.search || "",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const renderAdminProductReviews = async (req, res, next) => {
+  try {
+    const Product = require("../collections/product.collection");
+    const product = await Product.findById(req.params.productId).select("name images price").lean();
+    if (!product) return renderNotFound(res, "product");
+
+    const result = await reviewService.getProductReviewsPaginated(req.params.productId, req.query);
+    res.render("admin/reviews/product-reviews", {
+      title: `Reviews: ${product.name} - Organic Store`,
+      admin: true,
+      adminData: req.session.admin,
+      product,
+      reviews: result.data,
+      pagination: {
+        ...result.pagination,
+        start: (result.pagination.page - 1) * result.pagination.limit + 1,
+        end: Math.min(result.pagination.page * result.pagination.limit, result.pagination.total),
+        sort: result.sort,
+        order: result.order,
+      },
+      searchValue: result.search || "",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const postToggleReviewApproval = async (req, res, next) => {
+  try {
+    const review = await reviewService.toggleReviewApproval(req.params.id);
+    res.json({ status: true, isApproved: review.isApproved });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   renderAdminLogin,
   postAdminLogin,
@@ -775,4 +834,7 @@ module.exports = {
   getLineData,
   renderViewReports,
   renderOfferControl,
+  renderAdminReviews,
+  renderAdminProductReviews,
+  postToggleReviewApproval,
 };
