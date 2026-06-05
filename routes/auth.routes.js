@@ -11,6 +11,7 @@ const {
 
 router.get("/login", authController.renderLogin);
 router.get("/register", authController.renderRegister);
+router.get("/logout", authController.logout);
 
 router.post(
   "/register",

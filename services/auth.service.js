@@ -27,15 +27,16 @@ const logIn = async (email, password) => {
 };
 const register = async (name, email, password, mobile, confirmPassword) => {
   try {
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
       throw new ConflictError("Email already in use");
     }
-    // hash password
+    const existingMobile = await User.findOne({ mobile });
+    if (existingMobile) {
+      throw new ConflictError("Mobile number already in use");
+    }
     const hashedPassword = await hashPassword(password);
     const userRole = await Roles.findOne({ name: "user" });
-    // Create new user
     const newUser = new User({
       name,
       email,
@@ -46,6 +47,10 @@ const register = async (name, email, password, mobile, confirmPassword) => {
     await newUser.save();
     return newUser._id;
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      throw new ConflictError(`${field === "email" ? "Email" : "Mobile number"} already in use`);
+    }
     throw err;
   }
 };

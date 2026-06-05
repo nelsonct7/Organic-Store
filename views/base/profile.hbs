@@ -1,0 +1,26 @@
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>My Account</h1>
+      <p>Manage your profile and preferences</p>
+    </div>
+  </section>
+
+  <section class="py-4">
+    <div class="container">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4>Profile Information</h4>
+          <hr>
+          <div class="row mb-2"><div class="col-sm-3 text-muted">Name</div><div class="col-sm-9">{{userData.name}}</div></div>
+          <div class="row mb-2"><div class="col-sm-3 text-muted">Email</div><div class="col-sm-9">{{userData.email}}</div></div>
+          <div class="row mb-2"><div class="col-sm-3 text-muted">Mobile</div><div class="col-sm-9">{{userData.mobile}}</div></div>
+          <div class="mt-4">
+            <a href="/orders" class="btn btn-success me-2">My Orders</a>
+            <a href="/" class="btn btn-outline-success">Continue Shopping</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

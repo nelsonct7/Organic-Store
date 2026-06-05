@@ -1,50 +1,24 @@
-{{!-- <link rel="stylesheet" href="/stylesheets/err404.css">
-<div class="row ">
-    <div class="col-12 errbody">
-        <h1 class="err">Whoops!</h1> 
-        <p class="err1">Something went wrong</p><br>
-        <a href="/"><p class="err1">Back to Home..</p></a> 
-    </div>
-</div> --}}
-<link rel="stylesheet" href="/stylesheets/err404.css">
-<section class="mt-5">
-  <header class="top-header">
-</header>
+<style>
+  .error-404-wrap { padding: 80px 24px; text-align: center; }
+  .error-code-404 { font-size: 120px; font-weight: 800; line-height: 1; background: linear-gradient(135deg, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+  .error-icon-404 { width: 80px; height: 80px; margin: 0 auto 20px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.1); font-size: 32px; color: #f59e0b; }
+  .error-title { font-size: 28px; font-weight: 700; color: #32325d; margin-bottom: 12px; }
+  .error-text { font-size: 16px; color: #8898aa; line-height: 1.6; margin-bottom: 32px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .error-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary-admin { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; background: linear-gradient(135deg, #11cdef, #1171ef); color: #fff; border: none; border-radius: 4px; font-weight: 600; font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.15s ease; box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0,0,0,0.08); }
+  .btn-primary-admin:hover { transform: translateY(-1px); box-shadow: 0 7px 14px rgba(50,50,93,0.1), 0 3px 6px rgba(0,0,0,0.08); color: #fff; }
+</style>
 
-<!--dust particel-->
-<div>
-  <div class="starsec"></div>
-  <div class="starthird"></div>
-  <div class="starfourth"></div>
-  <div class="starfifth"></div>
-</div>
-<!--Dust particle end--->
-
-
-<div class="lamp__wrap">
-  <div class="lamp">
-    <div class="cable"></div>
-    <div class="cover"></div>
-    <div class="in-cover">
-      <div class="bulb"></div>
-    </div>
-    <div class="light"></div>
+<div class="error-404-wrap">
+  <div class="error-icon-404">
+    <i class="fas fa-map-signs"></i>
+  </div>
+  <div class="error-code-404">404</div>
+  <div class="error-title">Page Not Found</div>
+  <p class="error-text">{{message}}</p>
+  <div class="error-actions">
+    <a href="/" class="btn-primary-admin">
+      <i class="fas fa-home"></i> Go Home
+    </a>
   </div>
 </div>
-<!-- END Lamp -->
-<section class="error">
-  <!-- Content -->
-  <div class="error__content">
-    <div class="error__message message">
-      <h1 class="message__title">Page Not Found</h1>
-      <p class="message__text">We're sorry, the page you were looking for isn't found here. The link you followed may either be broken or no longer exists. Please try again, or take a look at our.</p>
-    </div>
-    <div class="error__nav e-nav">
-      <a href="/" target="_blanck" class="e-nav__link"></a>
-    </div>
-  </div>
-  <!-- END Content -->
-
-</section>
-</section>
-

@@ -4,7 +4,11 @@
       <span><i class="fas fa-leaf"></i> Free delivery on orders above ₹299</span>
       <span>
         <a href="/about-us">About</a>
-        {{#if user}}
+        <a href="/privacy-policy" class="ms-2">Privacy</a>
+        <a href="/terms-of-service" class="ms-2">Terms</a>
+        {{#if sessionUser}}
+        <span class="ms-3">Welcome, {{sessionUser.name}}</span>
+        {{else if user}}
         <span class="ms-3">Welcome, {{user.name}}</span>
         {{else}}
         <a href="/admin" class="ms-3">Admin In</a>
@@ -20,23 +24,47 @@
         <span class="logo-text">Organic <span>Store</span></span>
       </a>
 
-      <div class="header-search">
-        <form action="/search" method="get">
-          <input type="text" name="q" placeholder="Search organic fruits, vegetables & more..." autocomplete="off">
-          <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
+      <div class="header-search" id="headerSearch">
+        <input type="text" id="searchInput" placeholder="Search organic fruits, vegetables & more..." autocomplete="off">
+        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+        <div class="search-dropdown" id="searchDropdown" style="display:none;"></div>
       </div>
 
       <div class="header-actions">
-        {{#if user}}
-        <a href="/view-profile" class="btn-icon" title="My Account">
-          <i class="far fa-user"></i>
-          <span class="d-none d-md-inline">Account</span>
-        </a>
-        <a href="#" class="btn-icon" title="Wallet">
-          <i class="fa-solid fa-money-bill-wave"></i>
-          <span class="d-none d-md-inline">₹{{walletBalance}}</span>
-        </a>
+        {{#if sessionUser}}
+        <div class="btn-icon dropdown-wrapper" id="accountDropdown">
+          <button class="btn-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border:none;background:transparent;">
+            <i class="far fa-user"></i>
+            <span class="d-none d-md-inline">Account</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/view-profile"><i class="far fa-user"></i> My Account</a></li>
+            <li><a class="dropdown-item" href="/orders"><i class="fas fa-truck"></i> My Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/about-us"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a class="dropdown-item" href="/privacy-policy"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+            <li><a class="dropdown-item" href="/terms-of-service"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="return doalert(event)"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
+        {{else if user}}
+        <div class="btn-icon dropdown-wrapper" id="accountDropdown">
+          <button class="btn-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border:none;background:transparent;">
+            <i class="far fa-user"></i>
+            <span class="d-none d-md-inline">Account</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/view-profile"><i class="far fa-user"></i> My Account</a></li>
+            <li><a class="dropdown-item" href="/orders"><i class="fas fa-truck"></i> My Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/about-us"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a class="dropdown-item" href="/privacy-policy"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+            <li><a class="dropdown-item" href="/terms-of-service"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="return doalert(event)"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </div>
         {{else}}
         <a href="/v1/auth/login" class="btn-icon">
           <i class="far fa-user"></i>
@@ -46,7 +74,7 @@
 
         <a href="/get-cart" class="btn-icon" title="Cart">
           <i class="fas fa-shopping-bag"></i>
-          {{#if cartCount}}<span class="cart-badge" id="cartCount">{{cartCount}}</span>{{/if}}
+          <span class="cart-badge" id="cartCount">{{cartCount}}</span>
           <span class="d-none d-md-inline">Cart</span>
         </a>
       </div>
@@ -59,21 +87,47 @@
         <li><a href="/" class="active"><i class="fas fa-home"></i> Home</a></li>
         <li>
           <a href="#"><i class="fas fa-th-large"></i> Categories <i class="fas fa-chevron-down"></i></a>
-          {{#if category}}
+          {{#if categories.length}}
           <div class="nav-dropdown">
-            {{#each category}}
-            <a href="/category/{{this.category-name}}">{{this.category-name}}</a>
+            {{#each categories}}
+            <a href="/category/{{this._id}}">{{this.name}}</a>
             {{/each}}
           </div>
           {{/if}}
         </li>
-        {{#if user}}
+        {{#if sessionUser}}
+        <li><a href="/orders"><i class="fas fa-truck"></i> Orders</a></li>
+        <li><a href="/view-profile"><i class="far fa-user"></i> Account</a></li>
         <li><a href="#" onclick="return doalert(event)"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {{else if user}}
+        <li><a href="/orders"><i class="fas fa-truck"></i> Orders</a></li>
+        <li><a href="/view-profile"><i class="far fa-user"></i> Account</a></li>
+        <li><a href="#" onclick="return doalert(event)"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {{else}}
+        <li><a href="/v1/auth/login"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
         {{/if}}
       </ul>
     </div>
   </nav>
 </header>
+
+<style>
+.header-search { position: relative; }
+.search-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 1000;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 360px; overflow-y: auto;
+}
+.search-dropdown .search-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+  border-bottom: 1px solid #f3f4f6; cursor: pointer; text-decoration: none; color: inherit;
+}
+.search-dropdown .search-item:hover { background: #f9fafb; }
+.search-dropdown .search-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+.search-dropdown .search-item .search-name { font-size: 14px; font-weight: 500; }
+.search-dropdown .search-item .search-price { font-size: 13px; color: #16a34a; font-weight: 600; }
+.search-dropdown .search-no-results { padding: 20px; text-align: center; color: #9ca3af; }
+</style>
 
 <script>
   function doalert(e) {
@@ -89,7 +143,7 @@
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: '/logout',
+          url: '/v1/auth/logout',
           method: 'get',
           success: () => location.reload()
         })
@@ -97,22 +151,36 @@
     })
   }
 
-  $("#msg").click(async function(event) {
-    event.preventDefault();
-    const { value: text } = await Swal.fire({
-      input: 'textarea',
-      inputLabel: 'Message',
-      inputPlaceholder: 'Type your message here...',
-      inputAttributes: { 'aria-label': 'Type your message here' },
-      showCancelButton: true
-    })
-    if (text) {
-      $.ajax({
-        url: '/userMessage',
-        method: 'post',
-        data: { message: text },
-        success: () => Swal.fire('Message Sent to Admin')
-      })
-    }
+  $(document).ready(function() {
+    var searchTimer;
+    var $input = $('#searchInput');
+    var $dropdown = $('#searchDropdown');
+
+    $input.on('input', function() {
+      clearTimeout(searchTimer);
+      var q = $(this).val().trim();
+      if (q.length < 2) { $dropdown.hide(); return; }
+      searchTimer = setTimeout(function() {
+        $.getJSON('/api/search?q=' + encodeURIComponent(q), function(data) {
+          if (!data || !data.length) {
+            $dropdown.html('<div class="search-no-results">No products found</div>').show();
+            return;
+          }
+          var html = '';
+          data.forEach(function(p) {
+            var imgUrl = (p.images && p.images[0]) ? '/product-images/' + p.images[0].url : '';
+            html += '<a href="/view-product/' + p._id + '" class="search-item">';
+            if (imgUrl) html += '<img src="' + imgUrl + '" alt="' + p.name + '">';
+            html += '<div><div class="search-name">' + p.name + '</div>';
+            html += '<div class="search-price"><i class="fas fa-rupee-sign"></i> ' + p.price + '</div></div></a>';
+          });
+          $dropdown.html(html).show();
+        });
+      }, 300);
+    });
+
+    $(document).on('click', function(e) {
+      if (!$(e.target).closest('#headerSearch').length) $dropdown.hide();
+    });
   });
 </script>

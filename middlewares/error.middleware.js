@@ -45,7 +45,7 @@ const globalErrorHandler = (err, req, res, next) => {
 
   res.status(500).render("errors/error500", {
     title: "Server Error",
-    message: "An unexpected error occurred. Please try again later.",
+    message: err.message || "An unexpected error occurred. Please try again later.",
   });
 };
 

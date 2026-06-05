@@ -6,21 +6,114 @@
         <h1>Fresh &amp; Organic<br><span>Delivered to You</span></h1>
         <p>Farm-fresh fruits, vegetables and organic groceries delivered straight from the farm to your doorstep. 100% organic and chemical free.</p>
         <div class="hero-cta">
-          <a href="/v1/auth/register" class="btn-primary-custom">
+          <a href="#products" class="btn-primary-custom">
             Shop Now <i class="fas fa-arrow-right"></i>
           </a>
-          <a href="/about-use" class="btn-outline-custom">
+          <a href="/about-us" class="btn-outline-custom">
             Learn More <i class="fas fa-leaf"></i>
           </a>
         </div>
       </div>
       <div class="hero-image">
-        <div class="hero-image-placeholder">
-          <i class="fas fa-seedling"></i>
-        </div>
+        <img src="/assets/img/base/hero1.png" alt="Fresh Organic Produce" class="hero-img">
       </div>
     </div>
   </section>
+
+  {{#if banners.length}}
+  {{!-- Banner Carousel --}}
+  <section class="banner-carousel-section">
+    <div class="container">
+      <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-indicators">
+          {{#each banners}}
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}" aria-current="{{#if @first}}true{{/if}}" aria-label="Slide {{add @index 1}}"></button>
+          {{/each}}
+        </div>
+        <div class="carousel-inner rounded-3 overflow-hidden">
+          {{#each banners}}
+          <div class="carousel-item {{#if @first}}active{{/if}}">
+            <img src="/banner-images/{{this.imageUrl}}" class="d-block w-100" alt="{{this.title}}" style="height:400px;object-fit:contain;">
+            <div class="carousel-caption d-none d-md-block">
+              {{!-- <h3>{{this.title}}</h3> --}}
+              {{#if this.link}}<a href="{{this.link}}" class="btn btn-light btn-sm mt-2">Shop Now</a>{{/if}}
+            </div>
+          </div>
+          {{/each}}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if categories.length}}
+  {{!-- Categories Section --}}
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Shop by Category</h2>
+        <p>Browse our wide range of organic products</p>
+      </div>
+      <div class="category-grid">
+        {{#each categories}}
+        <a href="/category/{{this._id}}" class="category-card">
+          {{#if this.imageUrl}}
+          <img src="/category-images/{{this.imageUrl}}" alt="{{this.name}}">
+          {{else}}
+          <div class="category-icon"><i class="fas fa-leaf"></i></div>
+          {{/if}}
+          <h3>{{this.name}}</h3>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if products.length}}
+  {{!-- Products Section --}}
+  <section class="products-section" id="products">
+    <div class="container">
+      <div class="section-header">
+        <h2>Fresh Organic Produce</h2>
+        <p>Handpicked and delivered fresh from the farm</p>
+      </div>
+      <div class="product-grid">
+        {{#each products}}
+        <div class="product-card">
+          <a href="/view-product/{{this._id}}" class="card-img">
+            {{#if this.images.length}}
+            <img src="/product-images/{{this.images.[0].url}}" alt="{{this.name}}">
+            {{else}}
+            <i class="fas fa-image" style="font-size:2rem;color:#ccc;"></i>
+            {{/if}}
+          </a>
+          <div class="card-body">
+            <h3><a href="/view-product/{{this._id}}">{{this.name}}</a></h3>
+            <div class="card-price">
+              <span class="current"><i class="fas fa-rupee-sign"></i> {{this.price}}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-add-cart" onclick="addToCart('{{this._id}}')">
+                <i class="fas fa-shopping-cart"></i> Add to cart
+              </button>
+              <a href="/view-product/{{this._id}}" class="btn-view-more">View More</a>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+  {{/if}}
 
   {{!-- Features Bar --}}
   <section class="features-bar">
@@ -56,59 +149,6 @@
     </div>
   </section>
 
-  {{#if products}}
-  {{!-- Best Sellers --}}
-  <section class="products-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Best Sellers</h2>
-        <p>Add bestselling products to your weekly line up</p>
-      </div>
-      <div class="product-grid" id="bestseller-grid">
-        {{#each products}}
-        <div class="product-card">
-          <a href="/view-product/{{this._id}}" class="card-img">
-            {{#if this.img_path.[0]}}
-            <img src="/product-images/{{this.img_path.[0]}}" alt="{{this.title}}">
-            {{else}}
-            <i class="fas fa-image" style="font-size:2rem;color:#ccc;"></i>
-            {{/if}}
-            <span class="card-badge">New</span>
-          </a>
-          <div class="card-body">
-            <h3><a href="/view-product/{{this._id}}">{{this.title}}</a></h3>
-            <div class="card-price">
-              <span class="current"><i class="fas fa-rupee-sign" style="font-size:0.8em;"></i> {{this.actualprice}}</span>
-              {{#if this.price}}<span class="original"><i class="fas fa-rupee-sign" style="font-size:0.8em;"></i> {{this.price}}</span>{{/if}}
-            </div>
-            <div class="card-actions">
-              <button class="btn-add-cart" onclick="addToCart('{{this._id}}')">
-                <i class="fas fa-shopping-cart"></i> Add to cart
-              </button>
-            </div>
-          </div>
-        </div>
-        {{/each}}
-      </div>
-    </div>
-  </section>
-  {{/if}}
-
-  {{!-- Banner Strip --}}
-  <section class="banner-strip">
-    <div class="container">
-      <div class="banner-item">
-        <img src="/banner/chips.jpg" alt="Snacks">
-      </div>
-      <div class="banner-item">
-        <img src="/banner/icecream.jpg" alt="Ice Cream">
-      </div>
-      <div class="banner-item">
-        <img src="/banner/almonds.jpg" alt="Dry Fruits">
-      </div>
-    </div>
-  </section>
-
   {{!-- Newsletter --}}
   <section class="newsletter-section">
     <div class="container">
@@ -127,6 +167,7 @@
 
 <script>
   function addToCart(prdId) {
+    if (!prdId) return;
     $.ajax({
       url: '/add-to-cart/' + prdId,
       method: 'get',
@@ -143,8 +184,8 @@
 
 <script>
   $(document).ready(async function () {
-    let delivery = document.getElementById('deliveryStatus').value
-    let deliveryStatus = document.getElementById('orderId').value
+    let delivery = document.getElementById('deliveryStatus')?.value
+    let deliveryStatus = document.getElementById('orderId')?.value
     if (delivery == 'true') {
       const { value: text } = await Swal.fire({
         input: 'textarea',

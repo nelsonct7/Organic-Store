@@ -18,7 +18,9 @@ const { authLimiter } = require("./middlewares/ratelimit.middleware");
 const authRoutes = require("./routes/auth.routes");
 const googleAuthRoutes = require("./routes/google.auth.routes");
 const baseRoutes = require("./routes/base.routes");
+const errorRoutes = require("./routes/error.routes");
 const adminRoutes = require("./routes/admin.routes");
+const { dataInjectMiddleware } = require("./middlewares/data-inject.middleware");
 
 const requiredEnvVars = [
   "PORT",
@@ -124,6 +126,10 @@ const createServer = async () => {
     const passport = require("./config/passport.config");
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // inject commonly used fields in to all routes
+    app.use(dataInjectMiddleware)
+
     // cache control for unauthenticated users
     app.use((req, res, next) => {
       if (!req.user) {
@@ -170,6 +176,7 @@ const createServer = async () => {
     app.use("/v1/auth", authRoutes);
     app.use("/auth", googleAuthRoutes);
     app.use("/admin", adminRoutes);
+    app.use("/error", errorRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

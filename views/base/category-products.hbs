@@ -1,0 +1,62 @@
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>{{category.name}}</h1>
+      {{#if category.description}}<p>{{category.description}}</p>{{/if}}
+    </div>
+  </section>
+
+  <section class="products-section">
+    <div class="container">
+      {{#if products.length}}
+      <div class="product-grid">
+        {{#each products}}
+        <div class="product-card">
+          <a href="/view-product/{{this._id}}" class="card-img">
+            {{#if this.images.length}}
+            <img src="/product-images/{{this.images.[0].url}}" alt="{{this.name}}">
+            {{else}}
+            <i class="fas fa-image" style="font-size:2rem;color:#ccc;"></i>
+            {{/if}}
+          </a>
+          <div class="card-body">
+            <h3><a href="/view-product/{{this._id}}">{{this.name}}</a></h3>
+            <div class="card-price">
+              <span class="current"><i class="fas fa-rupee-sign"></i> {{this.price}}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-add-cart" onclick="addToCart('{{this._id}}')">
+                <i class="fas fa-shopping-cart"></i> Add to cart
+              </button>
+              <a href="/view-product/{{this._id}}" class="btn-view-more">View More</a>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="text-center py-5">
+        <i class="fas fa-box-open" style="font-size:3rem;color:#ccc;"></i>
+        <p class="mt-3">No products found in this category.</p>
+      </div>
+      {{/if}}
+    </div>
+  </section>
+</main>
+
+<script>
+  function addToCart(prdId) {
+    if (!prdId) return;
+    $.ajax({
+      url: '/add-to-cart/' + prdId,
+      method: 'get',
+      success: (response) => {
+        if (response.status) {
+          let count = $('#cartCount').html()
+          count = parseInt(count) + 1
+          $('#cartCount').html(count)
+        }
+      }
+    })
+  }
+</script>
