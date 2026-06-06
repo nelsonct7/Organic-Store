@@ -38,7 +38,7 @@
                   <div class="d-flex gap-3">
                     <div style="width:60px;height:60px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#f3f4f6;">
                       {{#if this.productId.images.length}}
-                      <img src="/product-images/{{this.productId.images.[0].url}}" alt="" style="width:100%;height:100%;object-fit:cover;">
+                      <img src="{{this.productId.images.[0].url}}" alt="" style="width:100%;height:100%;object-fit:cover;">
                       {{else}}
                       <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image" style="color:#d1d5db;"></i></div>
                       {{/if}}

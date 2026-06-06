@@ -26,6 +26,11 @@ const env = {
   smtpPass: getEnvString('SMTP_PASS', ''),
   smtpFrom: getEnvString('SMTP_FROM', 'noreply@organicstore.com'),
   appUrl: getEnvString('APP_URL', 'http://localhost:3000'),
+
+  // Cloudinary
+  cloudinaryCloudName: getEnvString('CLOUDINARY_CLOUD_NAME', ''),
+  cloudinaryApiKey: getEnvString('CLOUDINARY_API_KEY', ''),
+  cloudinaryApiSecret: getEnvString('CLOUDINARY_API_SECRET', ''),
 };
 
 module.exports = env;

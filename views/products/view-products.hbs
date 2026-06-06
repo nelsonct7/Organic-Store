@@ -13,7 +13,7 @@
           <div class="card shadow-sm">
             <div class="card-body text-center p-4 position-relative">
               <div id="zoomContainer" style="position:relative;display:inline-block;max-width:100%;">
-                <img id="mainImage" src="/product-images/{{product.images.[0].url}}" alt="{{product.name}}" class="img-fluid rounded" style="max-height:400px;width:100%;object-fit:contain;cursor:crosshair;">
+                <img id="mainImage" src="{{product.images.[0].url}}" alt="{{product.name}}" class="img-fluid rounded" style="max-height:400px;width:100%;object-fit:contain;cursor:crosshair;">
                 <div id="zoomLens" style="display:none;position:absolute;top:0;left:0;width:120px;height:120px;border:2px solid rgba(22,163,74,0.5);background:rgba(255,255,255,0.2);pointer-events:none;border-radius:50%;"></div>
                 <div id="zoomResult" style="display:none;position:absolute;top:0;left:calc(100% + 16px);width:360px;height:360px;border:1px solid #e5e7eb;border-radius:8px;background-repeat:no-repeat;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;background-color:#fff;"></div>
               </div>
@@ -21,7 +21,7 @@
             {{#if product.images.length}}
             <div class="card-footer bg-white d-flex gap-2 justify-content-center flex-wrap">
               {{#each product.images}}
-              <img src="/product-images/{{this.url}}" alt="" class="img-thumbnail thumb-img" style="width:70px;height:70px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('mainImage').src=this.src; if(typeof updateZoom === 'function')updateZoom(this.src)">
+              <img src="{{this.url}}" alt="" class="img-thumbnail thumb-img" style="width:70px;height:70px;object-fit:cover;cursor:pointer;" onclick="document.getElementById('mainImage').src=this.src; if(typeof updateZoom === 'function')updateZoom(this.src)">
               {{/each}}
             </div>
             {{/if}}

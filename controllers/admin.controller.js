@@ -123,7 +123,7 @@ const renderAdminAddProduct = async (req, res, next) => {
 const postAdminAddProduct = async (req, res, next) => {
   try {
     const files = req.files || [];
-    const imgPaths = files.map((f) => f.filename);
+    const imgPaths = files.map((f) => f.path);
     await adminService.addProduct(req.body, imgPaths);
     res.status(201).json({message:'Product added to inventory'})
   } catch (error) {
@@ -156,7 +156,7 @@ const renderAdminEditProduct = async (req, res, next) => {
 const postAdminEditProduct = async (req, res, next) => {
   try {
     const files = req.files || [];
-    const imgPaths = files.map((f) => f.filename);
+    const imgPaths = files.map((f) => f.path);
     await adminService.updateProduct(req.params.id, req.body, imgPaths);
     res.status(200).json({message:'Inventory updated successfully'});
   } catch (error) {
@@ -316,7 +316,7 @@ const renderAddCategory = async (req, res, next) => {
 const postAddCategory = async (req, res, next) => {
   try {
     const file = req.file;
-    const imgPath = file ? file.filename : null;
+    const imgPath = file ? file.path : null;
     await adminService.addCategory(req.body, imgPath);
     res.status(201).json({ message: "Category added" });
   } catch (error) {
@@ -354,7 +354,7 @@ const postEditCategory = async (req, res, next) => {
     const file = req.file;
     await adminService.updateCategory(req.params.id, req.body);
     if (file) {
-      await adminService.updateCategoryImage(req.params.id, file.filename);
+      await adminService.updateCategoryImage(req.params.id, file.path);
     }
     req.flash("success", "Category updated");
     res.redirect("/admin/view-category");
@@ -579,7 +579,7 @@ const renderAddBanner = async (req, res, next) => {
 const postAddBanner = async (req, res, next) => {
   try {
     if (req.file) {
-      await adminService.addBanner(req.file.filename);
+      await adminService.addBanner(req.file.path);
     }
     res.redirect("/admin/banner");
   } catch (error) {

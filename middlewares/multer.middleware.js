@@ -1,30 +1,31 @@
 const multer = require("multer");
-// TODO : implement s3 upload, rather than using the file system
-// TODO : if possible try with signed url upload to s3 from front end
-const categoryStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/category-images");
-  },
-  filename: function (req, file, callback) {
-    callback(null, "category_image-" + Date.now() + ".jpeg");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary.config");
+
+const categoryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "organic-store/categories",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 800, height: 800, crop: "limit", quality: "auto" }],
   },
 });
 
-const productStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/product-images");
-  },
-  filename: function (req, file, callback) {
-    callback(null, "product_image-" + Date.now() + ".jpeg");
+const productStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "organic-store/products",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 1200, height: 1200, crop: "limit", quality: "auto" }],
   },
 });
 
-const bannerStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/banner-images");
-  },
-  filename: function (req, file, callback) {
-    callback(null, "banner_image-" + Date.now() + ".webp");
+const bannerStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "organic-store/banners",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 1920, height: 600, crop: "fill", quality: "auto" }],
   },
 });
 

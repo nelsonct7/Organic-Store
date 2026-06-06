@@ -15,7 +15,7 @@
           <div class="card-img-wrap">
             <a href="/view-product/{{this._id}}" class="card-img">
               {{#if this.images.length}}
-              <img src="/product-images/{{this.images.[0].url}}" alt="{{this.name}}">
+              <img src="{{this.images.[0].url}}" alt="{{this.name}}">
               {{else}}
               <i class="fas fa-image" style="font-size:2rem;color:#ccc;"></i>
               {{/if}}

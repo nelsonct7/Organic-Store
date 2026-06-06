@@ -36,6 +36,9 @@ const requiredEnvVars = [
   "RAZORPAY_KEY_SECRET",
   "GOOGLE_CLIENT_ID",
   "GOOGLE_CLIENT_SECRET",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
 ];
 
 const createServer = async () => {
@@ -83,7 +86,7 @@ const createServer = async () => {
             "https://ka-f.fontawesome.com",
           ],
           fontSrc: ["'self'", "https://fonts.gstatic.com", "https://kit.fontawesome.com", "https://ka-f.fontawesome.com"],
-          imgSrc: ["'self'", "data:", "blob:"],
+          imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
           connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://ka-f.fontawesome.com", "https://lumberjack.razorpay.com"],
           frameSrc: ["'self'", "https://api.razorpay.com", "https://checkout.razorpay.com"],
         },

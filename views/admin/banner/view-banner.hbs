@@ -17,7 +17,7 @@
           {{#each banners}}
           <tr style="border-bottom: 1px solid #f3f4f6;">
             <td class="px-3 py-3">
-              <img src="/banner-images/{{this.img_path}}" alt="" style="width: 400px; height: 160px; border-radius: 8px; object-fit: cover;">
+              <img src="{{this.img_path}}" alt="" style="width: 400px; height: 160px; border-radius: 8px; object-fit: cover;">
             </td>
             <td class="px-3 py-3">
               <button onclick="deletbann('{{this._id}}')" class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.8125rem;">Delete</button>

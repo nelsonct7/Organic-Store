@@ -39,7 +39,7 @@
           {{#each categories}}
           <tr style="border-bottom: 1px solid #f3f4f6;">
             <td class="px-3 py-3">
-              <img src="/category-images/{{this.img_path}}" alt="" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+              <img src="{{this.img_path}}" alt="" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
             </td>
             <td class="px-3 py-3" style="font-weight: 500; color: #1f2937;">
               {{this.name}}
@@ -58,7 +58,7 @@
           {{#if (eq this.parentCategory._id ../this._id)}}
           <tr style="border-bottom: 1px solid #f9fafb; background: #f9fafb;">
             <td class="px-3 py-2" style="padding-left: 48px !important;">
-              <img src="/category-images/{{this.img_path}}" alt="" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;">
+              <img src="{{this.img_path}}" alt="" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;">
             </td>
             <td class="px-3 py-2" style="color: #4b5563; font-size: 0.8125rem;">
               <i class="fa-solid fa-arrow-right" style="color: #9ca3af; font-size: 0.625rem; margin-right: 6px;"></i>

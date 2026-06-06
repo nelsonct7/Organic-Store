@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
 const mongoose = require("mongoose");
+const cloudinary = require("../config/cloudinary.config");
 const User = require("../collections/user.collection");
 const Product = require("../collections/product.collection");
 const Category = require("../collections/category.collection");
@@ -361,9 +360,13 @@ const removeProductImage = async (productId, imageId) => {
   if (!product) return false;
   if (product.images.length <= 1) return false;
   const img = product.images.find((i) => i.id === imageId);
-  if (img) {
-    const filePath = path.join(__dirname, "..", "public", img.url);
-    fs.unlink(filePath, () => {}); // ignore delete errors
+  if (img && img.url && img.url.includes("res.cloudinary.com")) {
+    const urlParts = img.url.split("/upload/");
+    if (urlParts.length === 2) {
+      const publicIdWithExt = urlParts[1].replace(/^v\d+\//, "");
+      const publicId = publicIdWithExt.replace(/\.[^.]+$/, "");
+      cloudinary.uploader.destroy(publicId, () => {});
+    }
   }
   await Product.findByIdAndUpdate(toObjId(productId), {
     $pull: { images: { id: imageId } },

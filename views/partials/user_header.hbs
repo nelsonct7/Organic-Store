@@ -172,7 +172,7 @@
           }
           var html = '';
           data.forEach(function(p) {
-            var imgUrl = (p.images && p.images[0]) ? '/product-images/' + p.images[0].url : '';
+            var imgUrl = (p.images && p.images[0]) ? p.images[0].url : '';
             html += '<a href="/view-product/' + p._id + '" class="search-item">';
             if (imgUrl) html += '<img src="' + imgUrl + '" alt="' + p.name + '">';
             html += '<div><div class="search-name">' + p.name + '</div>';
