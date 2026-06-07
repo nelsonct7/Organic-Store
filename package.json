@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "seed": "node scripts/seed-admin.js"
+    "seed": "node scripts/seed-admin.js",
+    "postinstall": "npx puppeteer browsers install chrome || true"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -45,6 +46,7 @@
     "passport-google-oauth20": "^2.0.0",
     "paypal-rest-sdk": "^1.8.1",
     "pdf-creator-node": "^4.0.1",
+    "puppeteer": "^24.0.0",
     "razorpay": "^2.8.1",
     "twilio": "^6.0.2",
     "xlsx": "^0.18.5"
