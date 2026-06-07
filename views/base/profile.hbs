@@ -2,29 +2,68 @@
   <section class="page-hero">
     <div class="container">
       <h1>My Account</h1>
-      <p>Manage your profile and reviews</p>
+      <p>Manage your profile, addresses and reviews</p>
     </div>
   </section>
 
   <section class="py-4">
     <div class="container">
       <div class="row g-4">
+
+        {{! Profile Info + Addresses }}
         <div class="col-lg-5">
-          <div class="card shadow-sm">
+          {{! Profile Information }}
+          <div class="card shadow-sm mb-4">
             <div class="card-body">
               <h4>Profile Information</h4>
               <hr>
               <div class="row mb-2"><div class="col-sm-4 text-muted">Name</div><div class="col-sm-8">{{userData.name}}</div></div>
               <div class="row mb-2"><div class="col-sm-4 text-muted">Email</div><div class="col-sm-8">{{userData.email}}</div></div>
-              <div class="row mb-2"><div class="col-sm-4 text-muted">Mobile</div><div class="col-sm-8">{{userData.mobile}}</div></div>
+              <div class="row mb-2">
+                <div class="col-sm-4 text-muted">Mobile</div>
+                <div class="col-sm-8">
+                  {{userData.mobile}}
+                  <button class="btn btn-sm btn-outline-success ms-2" id="editMobileBtn"><i class="fas fa-pen"></i></button>
+                </div>
+              </div>
               <div class="mt-4">
                 <a href="/orders" class="btn btn-success me-2">My Orders</a>
                 <a href="/" class="btn btn-outline-success">Continue Shopping</a>
               </div>
             </div>
           </div>
+
+          {{! Saved Addresses }}
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+              <h5 class="mb-0">Saved Addresses</h5>
+              <button class="btn btn-sm btn-success" id="addAddressBtn"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div class="card-body" id="addressesContainer">
+              {{#if addresses.length}}
+                {{#each addresses}}
+                <div class="mb-3 pb-3 border-bottom address-item" data-address-id="{{this._id}}">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <strong>{{this.street}}</strong><br>
+                      <span class="small text-muted">{{this.city}}, {{this.state}} - {{this.postalCode}}</span>
+                      {{#if this.isDefault}}<span class="badge bg-success ms-2">Default</span>{{/if}}
+                    </div>
+                    <div class="d-flex gap-1">
+                      <button class="btn btn-sm btn-outline-success edit-address-btn" data-address-id="{{this._id}}" data-street="{{this.street}}" data-city="{{this.city}}" data-state="{{this.state}}" data-postal="{{this.postalCode}}" data-country="{{this.country}}"><i class="fas fa-pen"></i></button>
+                      <button class="btn btn-sm btn-outline-danger delete-address-btn" data-address-id="{{this._id}}"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </div>
+                </div>
+                {{/each}}
+              {{else}}
+                <p class="text-muted mb-0">No saved addresses.</p>
+              {{/if}}
+            </div>
+          </div>
         </div>
 
+        {{! Reviews }}
         <div class="col-lg-7">
           <div class="card shadow-sm">
             <div class="card-header bg-white d-flex align-items-center justify-content-between">
@@ -67,13 +106,14 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
 </main>
 
 <script>
-// Delegate star clicks in SweetAlert2 modals (registered once at document level)
+// Delegate star clicks in SweetAlert2 modals
 $(document).on('click', '.star-btn-edit', function() {
   var val = $(this).data('val');
   $('#swal-rating').val(val);
@@ -83,7 +123,161 @@ $(document).on('click', '.star-btn-edit', function() {
 });
 
 $(document).ready(function() {
-  // Edit review
+  // ---- Mobile Edit ----
+  $('#editMobileBtn').on('click', function() {
+    Swal.fire({
+      title: 'Edit Mobile Number',
+      html: '<input id="swal-mobile" class="form-control" value="{{userData.mobile}}" maxlength="10" placeholder="10-digit mobile number">',
+      showCancelButton: true,
+      confirmButtonText: 'Update',
+      confirmButtonColor: '#16a34a',
+      cancelButtonText: 'Cancel',
+      preConfirm: function() {
+        var mobile = $('#swal-mobile').val().replace(/[^0-9]/g, '');
+        if (mobile.length !== 10) { Swal.showValidationMessage('Enter a valid 10-digit mobile number'); return false; }
+        return mobile;
+      }
+    }).then(function(result) {
+      if (!result.isConfirmed) return;
+      $.ajax({
+        url: '/profile/mobile',
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({ mobile: result.value }),
+        success: function(resp) {
+          Swal.fire({ icon: 'success', title: 'Mobile updated!', timer: 1500, showConfirmButton: false })
+            .then(function() { location.reload(); });
+        },
+        error: function(xhr) {
+          var msg = 'Failed to update mobile';
+          try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+          Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        }
+      });
+    });
+  });
+
+  // ---- Add Address ----
+  $('#addAddressBtn').on('click', function() {
+    Swal.fire({
+      title: 'Add Address',
+      html:
+        '<input id="swal-street" class="form-control mb-2" placeholder="Street">' +
+        '<input id="swal-city" class="form-control mb-2" placeholder="City">' +
+        '<div class="row g-2 mb-2"><div class="col-6"><input id="swal-state" class="form-control" placeholder="State"></div>' +
+        '<div class="col-6"><input id="swal-postal" class="form-control" placeholder="Postal Code"></div></div>' +
+        '<input id="swal-country" class="form-control" value="India" placeholder="Country">',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      confirmButtonColor: '#16a34a',
+      cancelButtonText: 'Cancel',
+      preConfirm: function() {
+        var street = $('#swal-street').val().trim();
+        var city = $('#swal-city').val().trim();
+        var state = $('#swal-state').val().trim();
+        var postal = $('#swal-postal').val().trim();
+        var country = $('#swal-country').val().trim() || 'India';
+        if (!street || !city || !state || !postal) { Swal.showValidationMessage('All fields except country are required'); return false; }
+        return { street: street, city: city, state: state, postalCode: postal, country: country };
+      }
+    }).then(function(result) {
+      if (!result.isConfirmed) return;
+      $.ajax({
+        url: '/profile/address',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(result.value),
+        success: function() {
+          Swal.fire({ icon: 'success', title: 'Address added!', timer: 1500, showConfirmButton: false })
+            .then(function() { location.reload(); });
+        },
+        error: function(xhr) {
+          var msg = 'Failed to add address';
+          try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+          if (msg.toLowerCase().indexOf('area') !== -1 || msg.toLowerCase().indexOf('delivery') !== -1) {
+            $('#pincodeError').text(msg).show();
+          }
+          Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        }
+      });
+    });
+  });
+
+  // ---- Edit Address ----
+  $(document).on('click', '.edit-address-btn', function() {
+    var btn = $(this);
+    var id = btn.data('address-id');
+    Swal.fire({
+      title: 'Edit Address',
+      html:
+        '<input id="swal-street" class="form-control mb-2" value="' + btn.data('street') + '">' +
+        '<input id="swal-city" class="form-control mb-2" value="' + btn.data('city') + '">' +
+        '<div class="row g-2 mb-2"><div class="col-6"><input id="swal-state" class="form-control" value="' + btn.data('state') + '"></div>' +
+        '<div class="col-6"><input id="swal-postal" class="form-control" value="' + btn.data('postal') + '"></div></div>' +
+        '<input id="swal-country" class="form-control" value="' + (btn.data('country') || 'India') + '">',
+      showCancelButton: true,
+      confirmButtonText: 'Update',
+      confirmButtonColor: '#16a34a',
+      cancelButtonText: 'Cancel',
+      preConfirm: function() {
+        var street = $('#swal-street').val().trim();
+        var city = $('#swal-city').val().trim();
+        var state = $('#swal-state').val().trim();
+        var postal = $('#swal-postal').val().trim();
+        var country = $('#swal-country').val().trim() || 'India';
+        if (!street || !city || !state || !postal) { Swal.showValidationMessage('All fields except country are required'); return false; }
+        return { street: street, city: city, state: state, postalCode: postal, country: country };
+      }
+    }).then(function(result) {
+      if (!result.isConfirmed) return;
+      $.ajax({
+        url: '/profile/address/' + id,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(result.value),
+        success: function() {
+          Swal.fire({ icon: 'success', title: 'Address updated!', timer: 1500, showConfirmButton: false })
+            .then(function() { location.reload(); });
+        },
+        error: function(xhr) {
+          var msg = 'Failed to update address';
+          try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+          Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        }
+      });
+    });
+  });
+
+  // ---- Delete Address ----
+  $(document).on('click', '.delete-address-btn', function() {
+    var id = $(this).data('address-id');
+    Swal.fire({
+      title: 'Delete Address?',
+      text: 'This action cannot be undone',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then(function(result) {
+      if (!result.isConfirmed) return;
+      $.ajax({
+        url: '/profile/address/' + id,
+        method: 'DELETE',
+        success: function() {
+          Swal.fire({ icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false })
+            .then(function() { location.reload(); });
+        },
+        error: function(xhr) {
+          var msg = 'Failed to delete address';
+          try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+          Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        }
+      });
+    });
+  });
+
+  // ---- Edit Review ----
   $('.edit-review-btn').on('click', function() {
     var btn = $(this);
     var reviewId = btn.data('review-id');
@@ -131,7 +325,7 @@ $(document).ready(function() {
     });
   });
 
-  // Delete review
+  // ---- Delete Review ----
   $('.delete-review-btn').on('click', function() {
     var reviewId = $(this).data('review-id');
     Swal.fire({

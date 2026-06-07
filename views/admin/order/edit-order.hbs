@@ -62,8 +62,14 @@
           <tr>
             <td style="width: 160px; font-weight: 600; color: #4b5563; border: none; padding: 12px 0;">Delivery</td>
             <td style="border: none; padding: 12px 0;">
-              {{#if orderDetail.dispatched}}
-              <input type="text" class="form-control" style="background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #166534; font-weight: 500; max-width: 320px;" value="Shipped — out for delivery" disabled>
+              {{#if (eq orderDetail.status "delivered")}}
+              <input type="text" class="form-control" style="background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; color: #166534; font-weight: 500; max-width: 320px;" value="Delivered" disabled>
+              {{else if orderDetail.dispatched}}
+              <input type="hidden" name="dispatched" value="true">
+              <select name="delivered" class="form-select" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; max-width: 320px;">
+                <option value="false" selected>Shipped — out for delivery</option>
+                <option value="true">Mark as Delivered</option>
+              </select>
               {{else}}
               <select name="dispatched" class="form-select" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px; font-size: 0.875rem; max-width: 320px;">
                 <option value="false" selected>Pending / Processing</option>
@@ -76,7 +82,7 @@
       </table>
 
       <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid #f3f4f6;">
-        {{#unless orderDetail.dispatched}}
+        {{#unless (eq orderDetail.status "delivered")}}
         <button type="submit" class="btn" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; font-weight: 500;">Update Order</button>
         {{/unless}}
         <a href="/admin/view-orders" class="btn" style="background: #f3f4f6; color: #4b5563; border: none; border-radius: 6px; padding: 8px 20px; font-size: 0.875rem; text-decoration: none;">Cancel</a>

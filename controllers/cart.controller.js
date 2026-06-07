@@ -1,5 +1,35 @@
 const cartService = require("../services/cart.service");
 
+const applyCoupon = async (req, res, next) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) return res.status(401).json({ status: false, message: "Please login first" });
+
+    const { code } = req.body;
+    if (!code || !code.trim()) return res.status(400).json({ status: false, message: "Coupon code is required" });
+
+    const result = await cartService.applyCartCoupon(userId, code.trim());
+    res.json({ status: true, cart: result });
+  } catch (err) {
+    if (err.name === "NotFoundError") return res.status(404).json({ status: false, message: err.message });
+    if (err.name === "ValidationError") return res.status(400).json({ status: false, message: err.message });
+    next(err);
+  }
+};
+
+const removeCoupon = async (req, res, next) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) return res.status(401).json({ status: false, message: "Please login first" });
+
+    const result = await cartService.removeCartCoupon(userId);
+    res.json({ status: true, cart: result });
+  } catch (err) {
+    if (err.name === "NotFoundError") return res.status(404).json({ status: false, message: err.message });
+    next(err);
+  }
+};
+
 const addCartItem = async (req, res, next) => {
   try {
     const userId = req.session.userId;
@@ -97,10 +127,11 @@ const getCartPage = async (req, res, next) => {
       total: result.totals.finalAmount,
       totals: result.totals,
       cartCount: result.items.length,
+      appliedCoupon: result.appliedCoupon,
     });
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = { addCartItem, updateCartItem, deleteCartItem, getCartPage };
+module.exports = { addCartItem, updateCartItem, deleteCartItem, getCartPage, applyCoupon, removeCoupon };

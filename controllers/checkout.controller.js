@@ -1,8 +1,10 @@
 const checkoutService = require("../services/checkout.service");
 const addressService = require("../services/address.service");
 const cartService = require("../services/cart.service");
+const walletService = require("../services/wallet.service");
 const { sendOTP, verifyOTP } = require("../shared/utils/otp.utils");
 const User = require("../collections/user.collection");
+const { DELIVERY_CHARGE, FREE_DELIVERY_THRESHOLD } = require("../config/constants.config");
 
 const renderCheckoutPage = async (req, res, next) => {
   try {
@@ -14,6 +16,9 @@ const renderCheckoutPage = async (req, res, next) => {
 
     const addresses = await addressService.getUserAddresses(userId);
     const user = await User.findById(userId).select("mobile isMobileVerified").lean();
+    const wallet = await walletService.getWallet(userId);
+
+    const deliveryCharge = result.totals.grandTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
 
     res.render("cart/checkout", {
       title: "Checkout - Organic Store",
@@ -25,6 +30,9 @@ const renderCheckoutPage = async (req, res, next) => {
       addresses,
       mobile: user?.mobile || "",
       isMobileVerified: user?.isMobileVerified || false,
+      walletBalance: wallet.balance,
+      deliveryCharge,
+      freeDeliveryThreshold: FREE_DELIVERY_THRESHOLD,
     });
   } catch (err) {
     next(err);
@@ -45,6 +53,7 @@ const addAddress = async (req, res, next) => {
     const addresses = await addressService.getUserAddresses(userId);
     res.json({ status: true, addresses });
   } catch (err) {
+    if (err.name === "ValidationError") return res.status(400).json({ status: false, message: err.message });
     next(err);
   }
 };
@@ -92,13 +101,13 @@ const createCODOrder = async (req, res, next) => {
     const userId = req.session.userId;
     if (!userId) return res.status(401).json({ status: false, message: "Please login first" });
 
-    const { addressId } = req.body;
+    const { addressId, walletAmount } = req.body;
     if (!addressId) return res.status(400).json({ status: false, message: "Please select a delivery address" });
 
     const user = await User.findById(userId).select("isMobileVerified").lean();
     if (!user?.isMobileVerified) return res.status(400).json({ status: false, message: "Please verify your mobile number first" });
 
-    const order = await checkoutService.createCODOrder(userId, addressId);
+    const order = await checkoutService.createCODOrder(userId, addressId, parseFloat(walletAmount) || 0);
 
     res.status(201).json({
       status: true,
@@ -117,14 +126,14 @@ const createRazorpayOrder = async (req, res, next) => {
     const userId = req.session.userId;
     if (!userId) return res.status(401).json({ status: false, message: "Please login first" });
 
-    const { addressId } = req.body;
+    const { addressId, walletAmount } = req.body;
     if (!addressId) return res.status(400).json({ status: false, message: "Please select a delivery address" });
 
     const user = await User.findById(userId).select("isMobileVerified").lean();
     if (!user?.isMobileVerified) return res.status(400).json({ status: false, message: "Please verify your mobile number first" });
 
     const env = require("../config/env.config");
-    const result = await checkoutService.createRazorpayOrder(userId, addressId);
+    const result = await checkoutService.createRazorpayOrder(userId, addressId, parseFloat(walletAmount) || 0);
 
     res.status(201).json({
       status: true,

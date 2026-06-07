@@ -1,0 +1,200 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Return Requests</h3>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="GET" action="/admin/returns" class="row g-2 mb-3">
+        <div class="col-md-4">
+          <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by reason..." value="{{search}}">
+        </div>
+        <div class="col-md-3">
+          <select name="status" class="form-select form-select-sm">
+            <option value="">All Status</option>
+            <option value="requested" {{#ifCond statusFilter "requested"}}selected{{/ifCond}}>Requested</option>
+            <option value="approved" {{#ifCond statusFilter "approved"}}selected{{/ifCond}}>Approved</option>
+            <option value="rejected" {{#ifCond statusFilter "rejected"}}selected{{/ifCond}}>Rejected</option>
+            <option value="refunded" {{#ifCond statusFilter "refunded"}}selected{{/ifCond}}>Refunded</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-sm btn-success w-100" type="submit">Filter</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table align-items-center">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Refund Amount</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Requested</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#if returns.length}}
+            {{#each returns}}
+            <tr>
+              <td>{{add @index 1}}</td>
+              <td><code>{{this.orderId._id}}</code></td>
+              <td>
+                <strong>{{this.userId.name}}</strong><br>
+                <small class="text-muted">{{this.userId.email}}</small>
+              </td>
+              <td>
+                {{#each this.items}}
+                <div class="small">{{this.productName}} × {{this.quantity}}</div>
+                {{/each}}
+              </td>
+              <td>₹{{this.refundAmount}}</td>
+              <td><span class="small">{{truncate this.reason 40}}</span></td>
+              <td>
+                {{#ifCond this.status "requested"}}<span class="badge bg-warning text-dark">Requested</span>{{/ifCond}}
+                {{#ifCond this.status "approved"}}<span class="badge bg-info">Approved</span>{{/ifCond}}
+                {{#ifCond this.status "rejected"}}<span class="badge bg-danger">Rejected</span>{{/ifCond}}
+                {{#ifCond this.status "refunded"}}<span class="badge bg-success">Refunded</span>{{/ifCond}}
+              </td>
+              <td><small>{{timeAgo this.requestedAt}}</small></td>
+              <td>
+                {{#ifCond this.status "requested"}}
+                <button class="btn btn-sm btn-success approve-return" data-id="{{this._id}}" title="Approve">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-danger reject-return" data-id="{{this._id}}" title="Reject">
+                  <i class="fas fa-times"></i>
+                </button>
+                {{/ifCond}}
+                {{#ifCond this.status "approved"}}
+                <button class="btn btn-sm btn-info refund-return" data-id="{{this._id}}" title="Refund to Wallet">
+                  <i class="fas fa-wallet"></i> Refund
+                </button>
+                {{/ifCond}}
+                {{#ifCond this.status "rejected"}}
+                <span class="text-muted small">Rejected</span>
+                {{/ifCond}}
+                {{#ifCond this.status "refunded"}}
+                <span class="text-success small"><i class="fas fa-check-circle"></i> Refunded</span>
+                {{/ifCond}}
+              </td>
+            </tr>
+            {{/each}}
+            {{else}}
+            <tr>
+              <td colspan="9" class="text-center py-4 text-muted">No return requests found</td>
+            </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+
+      {{> pagination}}
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $('.approve-return').on('click', function() {
+    var id = $(this).data('id');
+    Swal.fire({
+      title: 'Approve Return?',
+      text: 'The return will be approved and ready for refund.',
+      icon: 'question',
+      input: 'textarea',
+      inputLabel: 'Admin Note (optional)',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      confirmButtonText: 'Approve'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: '/admin/returns/approve/' + id,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ adminNote: result.value || '' }),
+          success: function(resp) {
+            if (resp.status) {
+              Swal.fire('Approved', 'Return has been approved', 'success').then(function() { location.reload(); });
+            }
+          },
+          error: function(xhr) {
+            var msg = 'Failed to approve';
+            try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+            Swal.fire('Error', msg, 'error');
+          }
+        });
+      }
+    });
+  });
+
+  $('.reject-return').on('click', function() {
+    var id = $(this).data('id');
+    Swal.fire({
+      title: 'Reject Return?',
+      text: 'This return request will be rejected.',
+      icon: 'warning',
+      input: 'textarea',
+      inputLabel: 'Admin Note (required)',
+      inputValidator: function(val) { if (!val) return 'Please provide a reason for rejection'; },
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Reject'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: '/admin/returns/reject/' + id,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ adminNote: result.value || '' }),
+          success: function(resp) {
+            if (resp.status) {
+              Swal.fire('Rejected', 'Return request has been rejected', 'success').then(function() { location.reload(); });
+            }
+          },
+          error: function(xhr) {
+            var msg = 'Failed to reject';
+            try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+            Swal.fire('Error', msg, 'error');
+          }
+        });
+      }
+    });
+  });
+
+  $('.refund-return').on('click', function() {
+    var id = $(this).data('id');
+    Swal.fire({
+      title: 'Process Refund?',
+      text: 'The refund amount will be credited to the customer wallet.',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      confirmButtonText: 'Yes, Refund'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: '/admin/returns/refund/' + id,
+          method: 'POST',
+          success: function(resp) {
+            if (resp.status) {
+              Swal.fire('Refunded', 'Amount credited to wallet', 'success').then(function() { location.reload(); });
+            }
+          },
+          error: function(xhr) {
+            var msg = 'Refund failed';
+            try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
+            Swal.fire('Error', msg, 'error');
+          }
+        });
+      }
+    });
+  });
+});
+</script>

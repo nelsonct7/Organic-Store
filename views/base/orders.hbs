@@ -35,11 +35,16 @@
                 {{/each}}
               </div>
               {{/if}}
-              <div class="mt-2 d-flex gap-2">
+              <div class="mt-2 d-flex gap-2 flex-wrap">
                 {{#ifCond this.status "placed"}}
                 <button class="btn btn-sm btn-outline-danger cancel-order" data-order-id="{{this._id}}">
                   <i class="fas fa-times"></i> Cancel
                 </button>
+                {{/ifCond}}
+                {{#ifCond this.status "delivered"}}
+                <a href="/orders/{{this._id}}/return" class="btn btn-sm btn-outline-warning">
+                  <i class="fas fa-undo-alt"></i> Return
+                </a>
                 {{/ifCond}}
                 <a href="/orders/{{this._id}}/invoice" class="btn btn-sm btn-outline-success">
                   <i class="fas fa-download"></i> Invoice

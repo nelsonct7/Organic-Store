@@ -4,8 +4,11 @@ const CartItem = require("../collections/cart-item.collection");
 const Product = require("../collections/product.collection");
 const Order = require("../collections/order.collection");
 const OrderItem = require("../collections/order-item.collection");
+const Address = require("../collections/user.address.collection");
 const { NotFoundError, ValidationError } = require("../shared/utils/error.util");
 const { resolveBestOffer, applyOffer, calculateCartTotals, applyCoupon } = require("./pricing.service");
+const { DELIVERY_CHARGE, FREE_DELIVERY_THRESHOLD } = require("../config/constants.config");
+const { isPincodeServiceable } = require("../shared/utils/pincode.utils");
 
 const CouponUsage = mongoose.models.CheckoutCouponUsage || mongoose.model("CheckoutCouponUsage",
   new mongoose.Schema({
@@ -62,6 +65,8 @@ const validateCheckout = async (userId) => {
   return { cart, validItems, errors };
 };
 
+const walletService = require("./wallet.service");
+
 const clearCart = async (cart, session) => {
   const itemIds = cart.items.map((i) => i.cartItemId);
   await CartItem.deleteMany({ _id: { $in: itemIds } }, { session });
@@ -73,7 +78,7 @@ const clearCart = async (cart, session) => {
   await cart.save({ session });
 };
 
-const createCODOrder = async (userId, addressId) => {
+const createCODOrder = async (userId, addressId, walletAmount = 0) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -100,6 +105,30 @@ const createCODOrder = async (userId, addressId) => {
     }
 
     const totals = calculateCartTotals(pricedItems, couponDiscount);
+
+    // Validate pincode
+    const addrDoc = await Address.findById(addressId).lean();
+    if (!addrDoc || !isPincodeServiceable(addrDoc.postalCode)) {
+      throw new ValidationError("Delivery not available to your area");
+    }
+
+    // Calculate delivery charge
+    const deliveryCharge = totals.grandTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
+    totals.deliveryCharge = deliveryCharge;
+    totals.grandTotal = Math.round((totals.grandTotal + deliveryCharge) * 100) / 100;
+
+    // Handle wallet payment
+    let walletUsed = false;
+    let finalWalletAmount = 0;
+    if (walletAmount > 0) {
+      const wallet = await walletService.getWallet(userId);
+      if (wallet.balance < walletAmount) throw new ValidationError("Insufficient wallet balance");
+      finalWalletAmount = Math.min(walletAmount, totals.grandTotal);
+      if (finalWalletAmount > 0) {
+        await walletService.debit(userId, finalWalletAmount, `Payment for order via COD`, null);
+        walletUsed = true;
+      }
+    }
 
     for (const item of pricedItems) {
       if (item.required > 0) {
@@ -141,8 +170,11 @@ const createCODOrder = async (userId, addressId) => {
       offerDiscount: totals.offerDiscount,
       couponDiscount: totals.couponDiscount,
       grandTotal: totals.grandTotal,
+      deliveryCharge: totals.deliveryCharge,
       appliedCoupon: appliedCouponData,
       items: orderItems.map((oi) => ({ orderItemId: oi._id })),
+      walletUsed,
+      walletAmount: finalWalletAmount,
     }], { session });
 
     for (const oi of orderItems) { oi.orderId = order._id; await oi.save({ session }); }
@@ -164,7 +196,7 @@ const createCODOrder = async (userId, addressId) => {
   }
 };
 
-const createRazorpayOrder = async (userId, addressId) => {
+const createRazorpayOrder = async (userId, addressId, walletAmount = 0) => {
   const razorpay = require("./razorpay.service");
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -192,6 +224,32 @@ const createRazorpayOrder = async (userId, addressId) => {
     }
 
     const totals = calculateCartTotals(pricedItems, couponDiscount);
+
+    // Validate pincode
+    const addrDoc = await Address.findById(addressId).lean();
+    if (!addrDoc || !isPincodeServiceable(addrDoc.postalCode)) {
+      throw new ValidationError("Delivery not available to your area");
+    }
+
+    // Calculate delivery charge
+    const deliveryCharge = totals.grandTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
+    totals.deliveryCharge = deliveryCharge;
+    totals.grandTotal = Math.round((totals.grandTotal + deliveryCharge) * 100) / 100;
+
+    // Handle wallet payment
+    let walletUsed = false;
+    let finalWalletAmount = 0;
+    let razorpayAmount = totals.grandTotal;
+    if (walletAmount > 0) {
+      const wallet = await walletService.getWallet(userId);
+      if (wallet.balance < walletAmount) throw new ValidationError("Insufficient wallet balance");
+      finalWalletAmount = Math.min(walletAmount, totals.grandTotal);
+      if (finalWalletAmount > 0) {
+        await walletService.debit(userId, finalWalletAmount, `Payment for order via Razorpay`, null);
+        walletUsed = true;
+        razorpayAmount = totals.grandTotal - finalWalletAmount;
+      }
+    }
 
     // Do NOT reserve stock yet — only on payment verification
     const orderItems = [];
@@ -227,8 +285,11 @@ const createRazorpayOrder = async (userId, addressId) => {
       offerDiscount: totals.offerDiscount,
       couponDiscount: totals.couponDiscount,
       grandTotal: totals.grandTotal,
+      deliveryCharge: totals.deliveryCharge,
       appliedCoupon: appliedCouponData,
       items: orderItems.map((oi) => ({ orderItemId: oi._id })),
+      walletUsed,
+      walletAmount: finalWalletAmount,
     }], { session });
 
     for (const oi of orderItems) { oi.orderId = order._id; await oi.save({ session }); }
@@ -237,8 +298,8 @@ const createRazorpayOrder = async (userId, addressId) => {
       await CouponUsage.updateMany({ couponId: appliedCouponData.couponId, orderId: null }, { orderId: order._id }, { session });
     }
 
-    // Create Razorpay order
-    const razorpayOrder = await razorpay.createOrder(totals.grandTotal, order._id.toString());
+    // Create Razorpay order for the remaining amount (after wallet deduction)
+    const razorpayOrder = await razorpay.createOrder(razorpayAmount, order._id.toString());
 
     // Save razorpayOrderId on the order
     order.razorpayOrderId = razorpayOrder.id;

@@ -887,6 +887,12 @@ const dispatchOrder = async (orderId) => {
   });
 };
 
+const deliverOrder = async (orderId) => {
+  await Order.findByIdAndUpdate(toObjId(orderId), {
+    status: "delivered",
+  });
+};
+
 const deleteOrder = async (id) => {
   await Order.findByIdAndUpdate(toObjId(id), {
     isDeleted: true,
@@ -1220,6 +1226,7 @@ module.exports = {
   getOrderPage,
   getOrderDetails,
   dispatchOrder,
+  deliverOrder,
   deleteOrder,
   getCoupons,
   addCoupon,

@@ -11,6 +11,10 @@ const {
   renderViewProduct,
   addToCart,
   renderProfile,
+  updateProfileMobile,
+  addProfileAddress,
+  updateProfileAddress,
+  deleteProfileAddress,
 } = require("../controllers/base.controller");
 
 const router = express.Router();
@@ -27,6 +31,14 @@ router.get("/api/search", searchProducts);
 router.get("/view-product/:id", renderViewProduct);
 router.get("/add-to-cart/:id", addToCart);
 router.get("/view-profile", renderProfile);
+router.put("/profile/mobile", updateProfileMobile);
+router.post("/profile/address", addProfileAddress);
+router.put("/profile/address/:id", updateProfileAddress);
+router.delete("/profile/address/:id", deleteProfileAddress);
+
+/* ---- Wallet ---- */
+const walletCtrl = require("../controllers/wallet.controller");
+router.get("/wallet", walletCtrl.renderWalletPage);
 
 /* ---- Feedback ---- */
 const feedbackCtrl = require("../controllers/feedback.controller");

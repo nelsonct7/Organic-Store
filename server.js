@@ -25,6 +25,8 @@ const checkoutRoutes = require("./routes/checkout.routes");
 const orderRoutes = require("./routes/order.routes");
 const reviewRoutes = require("./routes/review.routes");
 const invoiceRoutes = require("./routes/invoice.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
+const returnRoutes = require("./routes/return.routes");
 const { dataInjectMiddleware } = require("./middlewares/data-inject.middleware");
 
 const requiredEnvVars = [
@@ -163,10 +165,10 @@ const createServer = async () => {
       return v1 === v2;
     });
     HBS.handlebars.registerHelper("add", function (a, b) {
-      return parseInt(a) + parseInt(b);
+      return (parseFloat(a) || 0) + (parseFloat(b) || 0);
     });
     HBS.handlebars.registerHelper("subtract", function (a, b) {
-      return parseInt(a) - parseInt(b);
+      return (parseFloat(a) || 0) - (parseFloat(b) || 0);
     });
     HBS.handlebars.registerHelper("multiply", function (a, b) {
       return parseFloat(a) * parseFloat(b);
@@ -177,6 +179,11 @@ const createServer = async () => {
         out += options.fn(i);
       }
       return out;
+    });
+    HBS.handlebars.registerHelper("truncate", function (str, len) {
+      if (!str) return "";
+      if (str.length <= len) return str;
+      return str.substring(0, len) + "...";
     });
     HBS.handlebars.registerHelper("timeAgo", function (date) {
       if (!date) return "";
@@ -215,6 +222,8 @@ const createServer = async () => {
     app.use("/", orderRoutes);
     app.use("/", reviewRoutes);
     app.use("/", invoiceRoutes);
+    app.use("/", wishlistRoutes);
+    app.use("/", returnRoutes);
 
     // 404 handler - keep this before the global error handler to catch 404s
     app.use((req, res, next) => {

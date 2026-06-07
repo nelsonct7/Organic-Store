@@ -106,6 +106,9 @@
             <button class="btn-add-cart-quick" onclick="addToCart('{{this._id}}')" title="Add to cart">
               <i class="fas fa-shopping-cart"></i>
             </button>
+            <button class="btn-wishlist-card {{#if this.inWishlist}}active{{/if}}" onclick="toggleWishlist('{{this._id}}')" title="Add to wishlist">
+              <i class="fas fa-heart"></i>
+            </button>
           </div>
           <div class="card-body">
             <h3><a href="/view-product/{{this._id}}">{{this.name}}</a></h3>
@@ -203,6 +206,20 @@
         }
       }
     })
+  }
+
+  function toggleWishlist(productId) {
+    $.ajax({
+      url: '/wishlist/toggle/' + productId,
+      method: 'POST',
+      success: function(resp) {
+        if (resp.status) {
+          $('#wishlistCount').html(resp.count).toggle(resp.count > 0);
+          var btn = $('.btn-wishlist-card[onclick*="' + productId + '"]');
+          if (resp.added) { btn.addClass('active'); } else { btn.removeClass('active'); }
+        }
+      }
+    });
   }
 </script>
 

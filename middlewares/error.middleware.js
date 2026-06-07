@@ -43,7 +43,8 @@ const globalErrorHandler = (err, req, res, next) => {
     });
   }
 
-  res.status(500).render("errors/error500", {
+  res.status(500).render("errors/error500-standalone", {
+    layout: false,
     title: "Server Error",
     message: err.message || "An unexpected error occurred. Please try again later.",
   });

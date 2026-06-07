@@ -1,0 +1,73 @@
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>My Wallet</h1>
+      <p>Your balance and transaction history</p>
+    </div>
+  </section>
+
+  <section class="py-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="card shadow-sm text-center">
+            <div class="card-body py-5">
+              <div class="display-6 text-success mb-2">₹{{wallet.balance}}</div>
+              <p class="text-muted mb-0">Available Balance</p>
+              <a href="/" class="btn btn-success mt-4"><i class="fas fa-shopping-bag"></i> Continue Shopping</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="mb-0">Transaction History</h5>
+            </div>
+            <div class="card-body p-0">
+              {{#if transactions.length}}
+              <div class="table-responsive">
+                <table class="table table-hover mb-0" style="font-size:0.875rem;">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="px-3 py-3">Date</th>
+                      <th class="px-3 py-3">Type</th>
+                      <th class="px-3 py-3">Description</th>
+                      <th class="px-3 py-3 text-end">Amount</th>
+                      <th class="px-3 py-3 text-end">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each transactions}}
+                    <tr>
+                      <td class="px-3 py-2 text-muted" style="white-space:nowrap;">{{timeAgo this.createdAt}}</td>
+                      <td class="px-3 py-2">
+                        {{#if (eq this.type "credit")}}
+                        <span class="badge bg-success">Credit</span>
+                        {{else}}
+                        <span class="badge bg-danger">Debit</span>
+                        {{/if}}
+                      </td>
+                      <td class="px-3 py-2">{{this.description}}</td>
+                      <td class="px-3 py-2 text-end fw-bold {{#if (eq this.type "credit")}}text-success{{else}}text-danger{{/if}}">
+                        {{#if (eq this.type "credit")}}+{{else}}-{{/if}}₹{{this.amount}}
+                      </td>
+                      <td class="px-3 py-2 text-end">₹{{this.balanceAfter}}</td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+              {{else}}
+              <div class="text-center py-5 text-muted">
+                <i class="fas fa-wallet fa-2x mb-2" style="opacity:0.4;"></i>
+                <p class="mb-0">No transactions yet</p>
+              </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

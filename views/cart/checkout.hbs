@@ -33,6 +33,7 @@
                 <div class="col-6"><input type="text" class="form-control form-control-sm" id="newCity" placeholder="City"></div>
                 <div class="col-4"><input type="text" class="form-control form-control-sm" id="newState" placeholder="State"></div>
                 <div class="col-4"><input type="text" class="form-control form-control-sm" id="newPostalCode" placeholder="Postal Code"></div>
+                <div class="col-12"><small id="pincodeError" class="text-danger" style="display:none;"></small></div>
                 <div class="col-4"><input type="text" class="form-control form-control-sm" id="newCountry" value="India" placeholder="Country"></div>
                 <div class="col-12"><button class="btn btn-sm btn-success" id="addAddressBtn">Save Address</button></div>
               </div>
@@ -63,9 +64,37 @@
             </div>
           </div>
 
-          {{! Step 3: Payment }}
+          {{! Step 3: Wallet }}
+          {{#ifCond walletBalance ">" 0}}
           <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white"><h5 class="mb-0">3. Payment Method</h5></div>
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Wallet Balance</h5>
+              <span class="fw-bold text-success">₹{{walletBalance}}</span>
+            </div>
+            <div class="card-body">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="useWalletCheck">
+                <label class="form-check-label" for="useWalletCheck">
+                  Use wallet balance to pay
+                </label>
+              </div>
+              <div id="walletInfo" class="mt-2 small" style="display:none;">
+                <div class="d-flex justify-content-between">
+                  <span>Wallet to pay</span>
+                  <span class="text-success" id="walletToPay">₹0</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Remaining to pay</span>
+                  <span id="remainingToPay">₹{{total}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/ifCond}}
+
+          {{! Step 4: Payment }}
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white"><h5 class="mb-0">Payment Method</h5></div>
             <div class="card-body">
               <div class="d-grid gap-2">
                 <button class="btn btn-outline-success" id="payCOD" disabled>
@@ -95,9 +124,23 @@
               <div class="d-flex justify-content-between"><span class="text-success">You Save</span><span class="text-success">− ₹{{totals.totalDiscount}}</span></div>
               <hr>
               {{/if}}
-              <div class="d-flex justify-content-between fw-bold fs-5">
-                <span>Total</span><span class="text-success">₹{{total}}</span>
+              {{#ifCond deliveryCharge ">" 0}}
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Delivery Charge</span>
+                <span>₹{{deliveryCharge}}</span>
               </div>
+              {{else}}
+              <div class="d-flex justify-content-between text-success small">
+                <span>Free Delivery</span>
+                <span>₹0</span>
+              </div>
+              {{/ifCond}}
+              <div class="d-flex justify-content-between fw-bold fs-5">
+                <span>Total</span><span class="text-success" id="checkoutTotal">₹{{add total deliveryCharge}}</span>
+              </div>
+              {{#ifCond deliveryCharge ">" 0}}
+              <div class="text-muted small mt-1">Free delivery on orders above ₹{{freeDeliveryThreshold}}</div>
+              {{/ifCond}}
             </div>
           </div>
         </div>
@@ -108,18 +151,40 @@
 
 <script>
 let currentAddressId = $('input[name="addressId"]:checked').val() || null;
+var totalAmount = {{total}};
+var deliveryCharge = {{deliveryCharge}};
+var totalWithDelivery = totalAmount + deliveryCharge;
+var walletBalance = {{walletBalance}};
+var useWalletAmount = 0;
 
 $(document).ready(function() {
+  var useWalletCheck = document.getElementById('useWalletCheck');
+  if (useWalletCheck) {
+    useWalletCheck.addEventListener('change', function() {
+      if (this.checked) {
+        useWalletAmount = Math.min(walletBalance, totalWithDelivery);
+        document.getElementById('walletInfo').style.display = 'block';
+        document.getElementById('walletToPay').textContent = '₹' + useWalletAmount.toFixed(2);
+        document.getElementById('remainingToPay').textContent = '₹' + (totalWithDelivery - useWalletAmount).toFixed(2);
+      } else {
+        useWalletAmount = 0;
+        document.getElementById('walletInfo').style.display = 'none';
+        document.getElementById('remainingToPay').textContent = '₹' + totalWithDelivery.toFixed(2);
+      }
+    });
+  }
+
   $('.address-radio').on('change', function() {
     currentAddressId = $(this).val();
   });
 
   $('#addAddressBtn').on('click', function() {
+    var postalCode = $('#newPostalCode').val().trim();
     var data = {
       street: $('#newStreet').val(),
       city: $('#newCity').val(),
       state: $('#newState').val(),
-      postalCode: $('#newPostalCode').val(),
+      postalCode: postalCode,
       country: $('#newCountry').val() || 'India',
     };
     $.ajax({
@@ -135,7 +200,12 @@ $(document).ready(function() {
       error: function(xhr) {
         var msg = 'Failed to save address';
         try { msg = JSON.parse(xhr.responseText).message; } catch(e) {}
-        Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        if (msg.toLowerCase().indexOf('area') !== -1 || msg.toLowerCase().indexOf('pincode') !== -1 || msg.toLowerCase().indexOf('delivery') !== -1) {
+          $('#pincodeError').text(msg).show();
+        } else {
+          $('#pincodeError').hide();
+          Swal.fire({ icon: 'error', title: 'Error', text: msg });
+        }
       }
     });
   });
@@ -205,7 +275,7 @@ $(document).ready(function() {
       url: '/checkout/cod',
       method: 'POST',
       contentType: 'application/json',
-      data: JSON.stringify({ addressId: currentAddressId }),
+      data: JSON.stringify({ addressId: currentAddressId, walletAmount: useWalletAmount }),
       success: function(resp) {
         if (resp.status) {
           Swal.fire({ icon: 'success', title: 'Order Placed!', timer: 2000, showConfirmButton: false })
@@ -230,7 +300,7 @@ $(document).ready(function() {
       url: '/checkout/razorpay/order',
       method: 'POST',
       contentType: 'application/json',
-      data: JSON.stringify({ addressId: currentAddressId }),
+      data: JSON.stringify({ addressId: currentAddressId, walletAmount: useWalletAmount }),
       success: function(resp) {
         if (!resp.status) { btn.prop('disabled', false).html('<i class="fas fa-credit-card"></i> Pay Online'); return; }
         var options = {

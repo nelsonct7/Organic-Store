@@ -85,9 +85,14 @@
                 </div>
               </div>
 
-              <button class="btn btn-success btn-lg w-100 mt-3" id="addToCartBtn" data-product-id="{{product._id}}">
-                <i class="fas fa-shopping-cart"></i> Add to Cart
-              </button>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-success btn-lg flex-grow-1" id="addToCartBtn" data-product-id="{{product._id}}">
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+                <button class="btn btn-outline-danger btn-lg wishlist-product-btn" id="wishlistBtn" data-product-id="{{product._id}}" title="Add to wishlist">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -232,6 +237,31 @@ $(document).ready(function() {
   $('#qtyPlus').on('click', function() {
     var val = parseInt($('#qtyInput').val());
     $('#qtyInput').val(val + 1);
+  });
+
+  // Wishlist toggle
+  $('#wishlistBtn').on('click', function() {
+    var prdId = $(this).data('product-id');
+    var btn = $(this);
+    $.ajax({
+      url: '/wishlist/toggle/' + prdId,
+      method: 'POST',
+      success: function(resp) {
+        if (resp.status) {
+          $('#wishlistCount').html(resp.count).toggle(resp.count > 0);
+          if (resp.added) {
+            btn.removeClass('btn-outline-danger').addClass('btn-danger');
+            Swal.fire({ icon: 'success', title: 'Added to Wishlist', timer: 1000, showConfirmButton: false });
+          } else {
+            btn.removeClass('btn-danger').addClass('btn-outline-danger');
+            Swal.fire({ icon: 'info', title: 'Removed from Wishlist', timer: 1000, showConfirmButton: false });
+          }
+        }
+      },
+      error: function(xhr) {
+        if (xhr.status === 401) window.location.href = '/v1/auth/login';
+      }
+    });
   });
 
   // Add to cart

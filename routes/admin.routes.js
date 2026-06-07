@@ -230,6 +230,13 @@ router.get("/reports/download/:filename", validateAdminAccess, reportCtrl.downlo
 /* ---- Offers control page ---- */
 router.get("/view-offers", validateAdminAccess, ctrl.renderOfferControl);
 
+/* ---- Returns ---- */
+const returnCtrl = require("../controllers/return.controller");
+router.get("/returns", validateAdminAccess, returnCtrl.adminRenderReturns);
+router.post("/returns/approve/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), returnCtrl.adminApproveReturn);
+router.post("/returns/reject/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), returnCtrl.adminRejectReturn);
+router.post("/returns/refund/:id", validateAdminAccess, validationMiddleware(mongoIdSchema), returnCtrl.adminRefundReturn);
+
 /* ---- Reviews ---- */
 router.get(
   "/reviews",

@@ -1,8 +1,8 @@
 const Cart = require("../collections/cart.collection");
 const CartItem = require("../collections/cart-item.collection");
 const Product = require("../collections/product.collection");
-const { NotFoundError } = require("../shared/utils/error.util");
-const { resolveBestOffer, applyOffer } = require("./pricing.service");
+const { NotFoundError, ValidationError } = require("../shared/utils/error.util");
+const { resolveBestOffer, applyOffer, applyCoupon } = require("./pricing.service");
 
 const addCartItem = async (userId, productId, unitIndex, quantity) => {
   const product = await Product.findById(productId);
@@ -247,6 +247,7 @@ const getCart = async (userId) => {
       totalDiscount: cart.totalDiscount || 0,
       finalAmount: cart.finalAmount || 0,
     },
+    appliedCoupon: cart.appliedCoupon || { couponId: null, code: null, discount: 0 },
   };
 };
 
@@ -267,6 +268,39 @@ const recalculateCart = async (cartId) => {
   });
 };
 
+const applyCartCoupon = async (userId, couponCode) => {
+  const cart = await Cart.findOne({ userId });
+  if (!cart) throw new NotFoundError("Cart not found");
+
+  const cartItems = await CartItem.find({ cartId: cart._id }).lean();
+  if (!cartItems.length) throw new ValidationError("Cart is empty");
+
+  const afterOfferAmount = cart.totalAmount - cart.totalDiscount;
+  const result = await applyCoupon(couponCode, userId, afterOfferAmount);
+  if (result.error) throw new ValidationError(result.error);
+
+  cart.appliedCoupon = {
+    couponId: result.coupon._id,
+    code: result.coupon.code,
+    discount: result.discount,
+  };
+  cart.finalAmount = Math.max(0, cart.totalAmount - cart.totalDiscount - result.discount);
+  await cart.save();
+
+  return getCart(userId);
+};
+
+const removeCartCoupon = async (userId) => {
+  const cart = await Cart.findOne({ userId });
+  if (!cart) throw new NotFoundError("Cart not found");
+
+  cart.appliedCoupon = { couponId: null, code: null, discount: 0 };
+  cart.finalAmount = Math.max(0, (cart.totalAmount || 0) - (cart.totalDiscount || 0));
+  await cart.save();
+
+  return getCart(userId);
+};
+
 module.exports = {
   addCartItem,
   updateCartItemQuantity,
@@ -274,4 +308,6 @@ module.exports = {
   removeCartItem,
   getCart,
   recalculateCart,
+  applyCartCoupon,
+  removeCartCoupon,
 };

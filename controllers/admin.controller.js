@@ -480,7 +480,9 @@ const renderEditOrder = async (req, res, next) => {
 
 const postUpdateOrder = async (req, res, next) => {
   try {
-    if (req.body.dispatched === "true") {
+    if (req.body.delivered === "true") {
+      await adminService.deliverOrder(req.body.orderId);
+    } else if (req.body.dispatched === "true") {
       await adminService.dispatchOrder(req.body.orderId);
     }
     res.redirect("/admin/view-orders");

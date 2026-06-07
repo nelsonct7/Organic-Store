@@ -17,7 +17,7 @@ router.get("/404", (req, res) => {
 });
 
 router.get("/500", (req, res) => {
-  res.status(500).render("errors/error500", {
+  res.status(500).render("errors/error500-standalone", {
     layout: false,
     title: "Server Error",
     message: "An unexpected error occurred. Please try again later.",

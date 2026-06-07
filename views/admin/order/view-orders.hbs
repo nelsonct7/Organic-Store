@@ -87,9 +87,9 @@
                 {{#if this.deleted}}
                   <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Edit</button>
                   <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Delete</button>
-                {{else if this.dispatched}}
-                  <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Edit</button>
-                  <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Delete</button>
+                {{else if (eq this.status "shipped")}}
+                  <a href="/admin/edit-order/{{this._id}}" class="btn btn-sm" style="background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.8125rem; text-decoration: none;">Edit</a>
+                  <button onclick="deleteData('{{this._id}}')" class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.8125rem;">Delete</button>
                 {{else if this.canceled}}
                   <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Edit</button>
                   <button class="btn btn-sm" style="background: #f3f4f6; color: #9ca3af; border: none; cursor: not-allowed;" disabled>Delete</button>

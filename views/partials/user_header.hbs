@@ -40,6 +40,7 @@
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="/view-profile"><i class="far fa-user"></i> My Account</a></li>
             <li><a class="dropdown-item" href="/orders"><i class="fas fa-truck"></i> My Orders</a></li>
+            <li><a class="dropdown-item" href="/wallet"><i class="fas fa-wallet"></i> Wallet (₹{{walletBalance}})</a></li>
             <li><a class="dropdown-item" href="/messages"><i class="fas fa-envelope"></i> Messages</a></li>
             <li><a class="dropdown-item" href="/feedback"><i class="fas fa-comment-dots"></i> Feedback</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -59,6 +60,7 @@
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="/view-profile"><i class="far fa-user"></i> My Account</a></li>
             <li><a class="dropdown-item" href="/orders"><i class="fas fa-truck"></i> My Orders</a></li>
+            <li><a class="dropdown-item" href="/wallet"><i class="fas fa-wallet"></i> Wallet (₹{{walletBalance}})</a></li>
             <li><a class="dropdown-item" href="/messages"><i class="fas fa-envelope"></i> Messages</a></li>
             <li><a class="dropdown-item" href="/feedback"><i class="fas fa-comment-dots"></i> Feedback</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -73,6 +75,38 @@
         <a href="/v1/auth/login" class="btn-icon">
           <i class="far fa-user"></i>
           <span>Sign In</span>
+        </a>
+        {{/if}}
+
+        {{#if sessionUser}}
+        <a href="/wallet" class="btn-icon" title="Wallet" style="text-decoration:none;">
+          <i class="fas fa-wallet"></i>
+          <strong class="text-success ms-1">₹{{walletBalance}}</strong>
+        </a>
+
+        <a href="/wishlist" class="btn-icon" title="Wishlist">
+          <i class="far fa-heart"></i>
+          {{#if wishlistCount}}
+          <span class="cart-badge" id="wishlistCount">{{wishlistCount}}</span>
+          {{else}}
+          <span class="cart-badge" id="wishlistCount" style="display:none">0</span>
+          {{/if}}
+          <span class="d-none d-md-inline">Wishlist</span>
+        </a>
+        {{else if user}}
+        <a href="/wallet" class="btn-icon" title="Wallet" style="text-decoration:none;">
+          <i class="fas fa-wallet"></i>
+          <strong class="text-success ms-1">₹{{walletBalance}}</strong>
+        </a>
+
+        <a href="/wishlist" class="btn-icon" title="Wishlist">
+          <i class="far fa-heart"></i>
+          {{#if wishlistCount}}
+          <span class="cart-badge" id="wishlistCount">{{wishlistCount}}</span>
+          {{else}}
+          <span class="cart-badge" id="wishlistCount" style="display:none">0</span>
+          {{/if}}
+          <span class="d-none d-md-inline">Wishlist</span>
         </a>
         {{/if}}
 

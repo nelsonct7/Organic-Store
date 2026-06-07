@@ -14,8 +14,17 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "placed", "processing", "shipped", "delivered", "cancelled"],
+      enum: ["pending", "placed", "processing", "shipped", "delivered", "cancelled", "return_requested", "returned"],
       default: "placed",
+    },
+    walletUsed: {
+      type: Boolean,
+      default: false,
+    },
+    walletAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
     address: {
       type: Schema.Types.ObjectId,
@@ -50,6 +59,11 @@ const orderSchema = new Schema(
       min: 0,
     },
     grandTotal: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    deliveryCharge: {
       type: Number,
       default: 0,
       min: 0,
